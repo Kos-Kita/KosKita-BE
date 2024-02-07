@@ -22,5 +22,5 @@ func main() {
 
 	router.InitRouter(dbSql, e)
 	//start server and port
-	e.Logger.Fatal(e.Start(":8000"))
+	e.Logger.Fatal(e.Start(":8080"))
 }

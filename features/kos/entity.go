@@ -1,13 +1,13 @@
 package kos
 
-import ("time"
-"KosKita/features/user")
+import ("time")
+// "KosKita/features/user")
 
 type Core struct {
 	ID              uint
 	Name            string `validate:"required"`
 	Description     string
-	Category        string `gorm:"column:status; type:enum('putra', 'putri', 'campur');"`
+	Category        string `validate:"oneof=putra putri campur"`
 	Price           int    `validate:"required"`
 	Rooms           int    `validate:"required"`
 	Address         string `validate:"required"`
@@ -21,7 +21,7 @@ type Core struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	UserID          uint
-	User user.Core
+	// User user.Core
 }
 
 type KosDataInterface interface {

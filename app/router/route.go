@@ -25,7 +25,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	userHandlerAPI := uh.New(userService, cloudinaryUploader)
 
 	kosData := kd.New(db)
-	kosService := ks.New(kosData)
+	kosService := ks.New(kosData, userService)
 	kosHandlerAPI := kh.New(kosService, cloudinaryUploader)
 
 	// define routes/ endpoint USER

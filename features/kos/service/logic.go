@@ -4,7 +4,6 @@ import (
 	"KosKita/features/kos"
 	"KosKita/features/user"
 	"errors"
-	"fmt"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -15,10 +14,11 @@ type kosService struct {
 	validate *validator.Validate
 }
 
-func New(repo kos.KosDataInterface) kos.KosServiceInterface {
+func New(repo kos.KosDataInterface, us user.UserServiceInterface) kos.KosServiceInterface {
 	return &kosService{
 		kosData:  repo,
 		validate: validator.New(),
+		userService: us,
 	}
 }
 
@@ -28,31 +28,29 @@ func (ks *kosService) Create(userIdLogin int, input kos.Core) error {
 	if err != nil {
 		return err
 	}
-	
-	fmt.Println("user - ", user.Role)
 
 	if user.Role != "owner" {
-		return errors.New("only owners can create kos")
+		return errors.New("lu bukan owner")
 	}
 
 	if input.Name == "" {
-		return errors.New("name is required")
+		return errors.New("lu belum buat name")
 	}
 
 	if input.Category == "" {
-		return errors.New("category is required")
+		return errors.New("category nya mana bos")
 	}
 
 	if input.Price <= 0 {
-		return errors.New("price must be positive")
+		return errors.New("harga nya lu belum isi")
 	}
 
 	if input.Rooms <= 0 {
-		return errors.New("rooms must be positive")
+		return errors.New("isi rooms nya")
 	}
 
 	if input.Address == "" {
-		return errors.New("address is required")
+		return errors.New("alamat lu dimana")
 	}
 
 	if input.PhotoMain == "" {
