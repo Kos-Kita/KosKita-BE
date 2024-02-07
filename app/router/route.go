@@ -26,6 +26,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/users", userHandlerAPI.RegisterUser)
 	e.GET("/users", userHandlerAPI.GetUser, middlewares.JWTMiddleware())
 	e.PUT("/users", userHandlerAPI.UpdateUser, middlewares.JWTMiddleware())
-	// e.DELETE("/users", userHandlerAPI.DeleteUser, middlewares.JWTMiddleware())
+	e.DELETE("/users", userHandlerAPI.DeleteUser, middlewares.JWTMiddleware())
 
 }

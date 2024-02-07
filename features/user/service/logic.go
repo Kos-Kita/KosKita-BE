@@ -69,7 +69,11 @@ func (service *userService) Update(userId int, input user.Core) error {
 
 // Delete implements user.UserServiceInterface.
 func (service *userService) Delete(userId int) error {
-	panic("unimplemented")
+	if userId <= 0 {
+		return errors.New("invalid id")
+	}
+	err := service.userData.Delete(userId)
+	return err
 }
 
 // Login implements user.UserServiceInterface.

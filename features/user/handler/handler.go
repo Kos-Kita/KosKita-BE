@@ -98,3 +98,14 @@ func (handler *UserHandler) UpdateUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success update data", nil))
 }
+
+func (handler *UserHandler) DeleteUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	errDelete := handler.userService.Delete(userIdLogin)
+	if errDelete != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete data. "+errDelete.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete data", nil))
+}
