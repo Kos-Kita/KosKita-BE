@@ -4,7 +4,7 @@ import (
 	"KosKita/app/config"
 	"fmt"
 
-	// ud "KosKita/features/user/data"
+	ud "KosKita/features/user/data"
 	// pd "KosKita/features/product/data"
 	// cd "KosKita/features/cart/data"
 	// od "KosKita/features/order/data"
@@ -23,7 +23,7 @@ func InitDBMysql(cfg *config.AppConfig) *gorm.DB {
 		panic(err)
 	}
 
-	// DB.AutoMigrate(&ud.User{})
+	DB.AutoMigrate(&ud.User{})
 
 	return DB
 }

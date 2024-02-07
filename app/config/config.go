@@ -10,8 +10,8 @@ import (
 
 var (
 	JWT_SECRET string
-	CLD_URL string
-	MID_KEY string
+	CLD_URL    string
+	MID_KEY    string
 )
 
 type AppConfig struct {
@@ -55,7 +55,7 @@ func ReadEnv() *AppConfig {
 		JWT_SECRET = val
 		isRead = false
 	}
-  if val, found := os.LookupEnv("CLDURL"); found {
+	if val, found := os.LookupEnv("CLDURL"); found {
 		CLD_URL = val
 		isRead = false
 	}
