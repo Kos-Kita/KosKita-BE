@@ -3,6 +3,7 @@ package service
 import (
 	"KosKita/features/user"
 	"KosKita/utils/encrypts"
+	"KosKita/utils/middlewares"
 	"errors"
 
 	"github.com/go-playground/validator"
@@ -59,5 +60,28 @@ func (service *userService) Delete(userId int) error {
 
 // Login implements user.UserServiceInterface.
 func (service *userService) Login(email string, password string) (data *user.Core, token string, err error) {
-	panic("unimplemented")
+	if email == "" && password == "" {
+		return nil, "", errors.New("email dan password wajib diisi.")
+	}
+	if email == "" {
+		return nil, "", errors.New("email wajib diisi.")
+	}
+	if password == "" {
+		return nil, "", errors.New("password wajib diisi.")
+	}
+
+	data, err = service.userData.Login(email, password)
+	if err != nil {
+		return nil, "", err
+	}
+	isValid := service.hashService.CheckPasswordHash(data.Password, password)
+	if !isValid {
+		return nil, "", errors.New("password tidak sesuai.")
+	}
+
+	token, errJwt := middlewares.CreateToken(int(data.ID))
+	if errJwt != nil {
+		return nil, "", errJwt
+	}
+	return data, token, err
 }
