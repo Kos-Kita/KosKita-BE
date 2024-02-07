@@ -3,6 +3,7 @@ package handler
 import (
 	"KosKita/features/user"
 	"KosKita/utils/cloudinary"
+	"KosKita/utils/middlewares"
 	"KosKita/utils/responses"
 	"net/http"
 
@@ -53,4 +54,58 @@ func (handler *UserHandler) Login(c echo.Context) error {
 		"role":  result.Role,
 	}
 	return c.JSON(http.StatusOK, responses.WebResponse("success login", responseData))
+}
+
+func (handler *UserHandler) GetUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	result, errSelect := handler.userService.GetById(userIdLogin)
+	if errSelect != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+	}
+
+	var userResult = CoreToResponse(result)
+	return c.JSON(http.StatusOK, responses.WebResponse("success read data", userResult))
+}
+
+func (handler *UserHandler) UpdateUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	var userData = UserRequest{}
+	errBind := c.Bind(&userData)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+	fileData, err := c.FormFile("photo_profile")
+	if err != nil && err != http.ErrMissingFile {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the file", nil))
+	}
+
+	var imageURL string
+	if fileData != nil {
+		imageURL, err = handler.cld.UploadImage(fileData)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error uploading the image "+err.Error(), nil))
+		}
+	}
+
+	userCore := UpdateRequestToCore(userData, imageURL)
+	errUpdate := handler.userService.Update(userIdLogin, userCore)
+	if errUpdate != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errUpdate.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success update data", nil))
+}
+
+func (handler *UserHandler) DeleteUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	errDelete := handler.userService.Delete(userIdLogin)
+	if errDelete != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete data. "+errDelete.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete data", nil))
 }
