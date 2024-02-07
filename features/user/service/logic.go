@@ -51,7 +51,20 @@ func (service *userService) GetById(userId int) (*user.Core, error) {
 
 // Update implements user.UserServiceInterface.
 func (service *userService) Update(userId int, input user.Core) error {
-	panic("unimplemented")
+	if userId <= 0 {
+		return errors.New("invalid id.")
+	}
+
+	if input.Password != "" {
+		hashedPass, errHash := service.hashService.HashPassword(input.Password)
+		if errHash != nil {
+			return errors.New("Error hash password.")
+		}
+		input.Password = hashedPass
+	}
+
+	err := service.userData.Update(userId, input)
+	return err
 }
 
 // Delete implements user.UserServiceInterface.
