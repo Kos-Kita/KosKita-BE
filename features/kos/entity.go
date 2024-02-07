@@ -26,9 +26,11 @@ type Core struct {
 
 type KosDataInterface interface {
 	Insert(userIdLogin int, input Core) error
+	Update(userIdLogin int, input Core) error
 }
 
 // interface untuk Service Layer
 type KosServiceInterface interface {
 	Create(userIdLogin int, input Core) error
+	Put(userIdLogin int, input Core) error
 }
