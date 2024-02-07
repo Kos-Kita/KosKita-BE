@@ -36,3 +36,21 @@ func (handler *UserHandler) RegisterUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("Successful Operation", nil))
 }
+
+func (handler *UserHandler) Login(c echo.Context) error {
+	var reqData = LoginRequest{}
+	errBind := c.Bind(&reqData)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data, data not valid", nil))
+	}
+	result, token, err := handler.userService.Login(reqData.Email, reqData.Password)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error login. "+err.Error(), nil))
+	}
+	responseData := map[string]any{
+		"token": token,
+		"nama":  result.Name,
+		"role":  result.Role,
+	}
+	return c.JSON(http.StatusOK, responses.WebResponse("success login", responseData))
+}

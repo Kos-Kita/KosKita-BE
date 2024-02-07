@@ -29,3 +29,18 @@ func CoreToModel(input user.Core) User {
 		PhotoProfile: input.PhotoProfile,
 	}
 }
+
+func (u User) ModelToCore() user.Core {
+	return user.Core{
+		ID:           u.ID,
+		Name:         u.Name,
+		UserName:     u.UserName,
+		Email:        u.Email,
+		Password:     u.Password,
+		Gender:       u.Gender,
+		Role:         u.Role,
+		PhotoProfile: u.PhotoProfile,
+		CreatedAt:    u.CreatedAt,
+		UpdatedAt:    u.UpdatedAt,
+	}
+}

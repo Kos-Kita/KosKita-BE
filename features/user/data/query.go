@@ -48,5 +48,11 @@ func (repo *userQuery) Delete(userId int) error {
 
 // Login implements user.UserDataInterface.
 func (repo *userQuery) Login(email string, password string) (data *user.Core, err error) {
-	panic("unimplemented")
+	var userGorm User
+	tx := repo.db.Where("email = ?", email).First(&userGorm)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	result := userGorm.ModelToCore()
+	return &result, nil
 }
