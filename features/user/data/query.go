@@ -59,7 +59,15 @@ func (repo *userQuery) Update(userId int, input user.Core) error {
 
 // Delete implements user.UserDataInterface.
 func (repo *userQuery) Delete(userId int) error {
-	panic("unimplemented")
+	tx := repo.db.Delete(&User{}, userId)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found")
+	}
+	return nil
 }
 
 // Login implements user.UserDataInterface.
