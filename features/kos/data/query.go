@@ -20,7 +20,7 @@ func New(db *gorm.DB) kos.KosDataInterface {
 func (repo *kosQuery) Insert(userIdLogin int, input kos.Core) error {
 	kosInput := CoreToModel(input)
 	kosInput.UserID = uint(userIdLogin)
-	
+
 	tx := repo.db.Create(&kosInput)
 	if tx.Error != nil {
 		return tx.Error
@@ -40,6 +40,20 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 	kosInput := CoreToModel(input)
 
 	tx = repo.db.Model(&kos).Updates(&kosInput)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
+}
+
+// InsertRating implements kos.KosDataInterface.
+func (repo *kosQuery) InsertRating(userIdLogin int, kosId int, score kos.RatingCore) error {
+	ratingInput := CoreToModelRating(score)
+	ratingInput.UserID = uint(userIdLogin)
+	ratingInput.BoardingHouseID = uint(kosId)
+
+	tx := repo.db.Create(&ratingInput)
 	if tx.Error != nil {
 		return tx.Error
 	}

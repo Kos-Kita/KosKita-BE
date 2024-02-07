@@ -22,6 +22,10 @@ type KosRequest struct {
 	UserID          uint
 }
 
+type RatingRequest struct {
+	Score int `json:"score" form:"score"`
+}
+
 func RequestToCore(input KosRequest, imageURLs []string, userIdLogin uint) kos.Core {
 	return kos.Core{
 		UserID:          userIdLogin,
@@ -40,3 +44,12 @@ func RequestToCore(input KosRequest, imageURLs []string, userIdLogin uint) kos.C
 		PhotoRoomInside: imageURLs[4],
 	}
 }
+
+func RequestToCoreRating(input RatingRequest, kosId uint, userIdLogin uint) kos.RatingCore {
+	return kos.RatingCore{
+		UserID:          userIdLogin,
+		BoardingHouseID: kosId,
+		Score: input.Score,
+	}
+}
+
