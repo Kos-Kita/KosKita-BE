@@ -41,6 +41,7 @@ type KosDataInterface interface {
 	Insert(userIdLogin int, input Core) error
 	Update(userIdLogin int, input Core) error
 	InsertRating(userIdLogin, kosId int, score RatingCore) error
+	SelectByRating() ([]RatingCore, error)
 }
 
 // interface untuk Service Layer
@@ -48,4 +49,5 @@ type KosServiceInterface interface {
 	Create(userIdLogin int, input Core) error
 	Put(userIdLogin int, input Core) error
 	CreateRating(userIdLogin, kosId int, score RatingCore) error
+	GetByRating() ([]RatingCore, error)
 }

@@ -135,3 +135,17 @@ func (handler *KosHandler) CreateRating(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert rating", nil))
 }
+
+func (handler *KosHandler) GetKosByRating(c echo.Context) error {
+	kos,  err := handler.kosService.GetByRating()
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
+
+	var kosResponse []interface{}
+	for _, k := range kos {
+		kosResponse = append(kosResponse, CoreToGetRating(k)) 
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success get data", kosResponse))
+}
