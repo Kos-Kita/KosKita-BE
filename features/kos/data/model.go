@@ -2,7 +2,8 @@ package data
 
 import (
 	"KosKita/features/kos"
-"KosKita/features/user/data"
+	"KosKita/features/user/data"
+
 	"gorm.io/gorm"
 )
 
@@ -22,7 +23,7 @@ type BoardingHouse struct {
 	PhotoRoomFront  string
 	PhotoRoomInside string
 	UserID          uint
-	User data.User
+	User            data.User
 }
 
 type Rating struct {
@@ -53,7 +54,15 @@ func CoreToModel(input kos.Core) BoardingHouse {
 	}
 }
 
-func (bh BoardingHouse) ModelToCore() kos.Core {
+func CoreToModelRating(input kos.RatingCore) Rating {
+	return Rating{
+		Score:           input.Score,
+		UserID:          input.UserID,
+		BoardingHouseID: input.BoardingHouseID,
+	}
+}
+
+func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 	return kos.Core{
 		UserID:          bh.UserID,
 		ID:              bh.ID,
@@ -73,15 +82,6 @@ func (bh BoardingHouse) ModelToCore() kos.Core {
 	}
 }
 
-func CoreToModelRating(input kos.RatingCore) Rating {
-	return Rating{
-		Score:           input.Score,
-		UserID:          input.UserID,
-		BoardingHouseID: input.BoardingHouseID,
-	}
-}
-
-// Fungsi untuk mengubah model Rating ke core
 func (r Rating) ModelToCoreRating() kos.RatingCore {
 	return kos.RatingCore{
 		ID:              r.ID,
@@ -90,5 +90,13 @@ func (r Rating) ModelToCoreRating() kos.RatingCore {
 		BoardingHouseID: r.BoardingHouseID,
 		CreatedAt:       r.CreatedAt,
 		UpdatedAt:       r.UpdatedAt,
+		BoardingHouse:   r.BoardingHouse.ModelToCoreKos(),
 	}
 }
+
+// func ModelToCoreKosRating(bh BoardingHouse, r Rating) kos.RatingCore {
+// 	return kos.RatingCore{
+// 		BoardingHouse: bh.ModelToCoreKos(),
+// 		Score: r.ModelToCoreRating().Score,
+// 	}
+// }

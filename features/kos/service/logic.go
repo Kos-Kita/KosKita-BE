@@ -95,7 +95,6 @@ func (ks *kosService) Put(userIdLogin int, input kos.Core) error {
 	return nil
 }
 
-
 // CreateRating implements kos.KosServiceInterface.
 func (ks *kosService) CreateRating(userIdLogin int, kosId int, input kos.RatingCore) error {
 	if input.Score < 1 || input.Score > 5 {
@@ -108,4 +107,10 @@ func (ks *kosService) CreateRating(userIdLogin int, kosId int, input kos.RatingC
 	}
 
 	return nil
+}
+
+// GetByRating implements kos.KosServiceInterface.
+func (ks *kosService) GetByRating() ([]kos.RatingCore, error) {
+	result, err := ks.kosData.SelectByRating()
+	return result, err
 }

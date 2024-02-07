@@ -60,3 +60,25 @@ func (repo *kosQuery) InsertRating(userIdLogin int, kosId int, score kos.RatingC
 
 	return nil
 }
+
+// SelectByRating implements kos.KosDataInterface.
+func (repo *kosQuery) SelectByRating() ([]kos.RatingCore, error) {
+	var kosData []Rating
+	var result []kos.RatingCore
+
+	// Menambahkan Preload untuk mengisi relasi User dan BoardingHouse
+	tx := repo.db.Preload("User").Preload("BoardingHouse").Table("ratings").Select("ratings.*, boarding_houses.*").
+		Joins("inner join boarding_houses on boarding_houses.id = ratings.boarding_house_id").
+		Order("ratings.score desc").
+		Find(&kosData)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	for _, r := range kosData {
+		result = append(result, r.ModelToCoreRating())
+	}
+
+	return result, nil
+}
