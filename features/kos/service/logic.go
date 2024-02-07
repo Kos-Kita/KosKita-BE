@@ -9,22 +9,22 @@ import (
 )
 
 type kosService struct {
-	kosData  kos.KosDataInterface
-	userService user.UserServiceInterface 
-	validate *validator.Validate
+	kosData     kos.KosDataInterface
+	userService user.UserServiceInterface
+	validate    *validator.Validate
 }
 
 func New(repo kos.KosDataInterface, us user.UserServiceInterface) kos.KosServiceInterface {
 	return &kosService{
-		kosData:  repo,
-		validate: validator.New(),
+		kosData:     repo,
+		validate:    validator.New(),
 		userService: us,
 	}
 }
 
 // Create implements kos.KosServiceInterface.
 func (ks *kosService) Create(userIdLogin int, input kos.Core) error {
-	user, err :=  ks.userService.GetById(userIdLogin)
+	user, err := ks.userService.GetById(userIdLogin)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (ks *kosService) Create(userIdLogin int, input kos.Core) error {
 	if input.PhotoRoomInside == "" {
 		return errors.New("photo room inside is required")
 	}
-	
+
 	errValidate := ks.validate.Struct(input)
 	if errValidate != nil {
 		return errValidate
@@ -83,5 +83,15 @@ func (ks *kosService) Create(userIdLogin int, input kos.Core) error {
 		return errInsert
 	}
 
+	return nil
+}
+
+
+// Put implements kos.KosServiceInterface.
+func (ks *kosService) Put(userIdLogin int, input kos.Core) error {
+	err := ks.kosData.Update(userIdLogin, input)
+	if err != nil {
+		return err
+	}
 	return nil
 }
