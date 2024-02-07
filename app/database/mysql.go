@@ -21,7 +21,7 @@ func InitDBMysql(cfg *config.AppConfig) *gorm.DB {
 		panic(err)
 	}
 
-	DB.AutoMigrate(&ud.User{}, &kd.BoardingHouse{})
+	DB.AutoMigrate(&ud.User{}, &kd.BoardingHouse{}, &kd.Rating{})
 
 	return DB
 }

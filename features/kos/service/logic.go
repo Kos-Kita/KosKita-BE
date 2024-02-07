@@ -86,12 +86,26 @@ func (ks *kosService) Create(userIdLogin int, input kos.Core) error {
 	return nil
 }
 
-
 // Put implements kos.KosServiceInterface.
 func (ks *kosService) Put(userIdLogin int, input kos.Core) error {
 	err := ks.kosData.Update(userIdLogin, input)
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+
+// CreateRating implements kos.KosServiceInterface.
+func (ks *kosService) CreateRating(userIdLogin int, kosId int, input kos.RatingCore) error {
+	if input.Score < 1 || input.Score > 5 {
+		return errors.New("skor rating harus antara 1 dan 5")
+	}
+
+	errInsert := ks.kosData.InsertRating(userIdLogin, kosId, input)
+	if errInsert != nil {
+		return errInsert
+	}
+
 	return nil
 }

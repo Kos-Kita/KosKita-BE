@@ -25,6 +25,15 @@ type BoardingHouse struct {
 	User data.User
 }
 
+type Rating struct {
+	gorm.Model
+	Score           int
+	UserID          uint
+	User            data.User
+	BoardingHouseID uint
+	BoardingHouse   BoardingHouse
+}
+
 func CoreToModel(input kos.Core) BoardingHouse {
 	return BoardingHouse{
 		UserID:          input.UserID,
@@ -61,5 +70,25 @@ func (bh BoardingHouse) ModelToCore() kos.Core {
 		PhotoRoomInside: bh.PhotoRoomInside,
 		CreatedAt:       bh.CreatedAt,
 		UpdatedAt:       bh.UpdatedAt,
+	}
+}
+
+func CoreToModelRating(input kos.RatingCore) Rating {
+	return Rating{
+		Score:           input.Score,
+		UserID:          input.UserID,
+		BoardingHouseID: input.BoardingHouseID,
+	}
+}
+
+// Fungsi untuk mengubah model Rating ke core
+func (r Rating) ModelToCoreRating() kos.RatingCore {
+	return kos.RatingCore{
+		ID:              r.ID,
+		Score:           r.Score,
+		UserID:          r.UserID,
+		BoardingHouseID: r.BoardingHouseID,
+		CreatedAt:       r.CreatedAt,
+		UpdatedAt:       r.UpdatedAt,
 	}
 }
