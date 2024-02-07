@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
@@ -46,7 +46,7 @@ func (cu *CloudinaryUploader) UploadImage(fileHeader *multipart.FileHeader) (str
 	}
 
 	uploadParams := uploader.UploadParams{
-		Folder: "BE20_MyEcommerce",
+		Folder: "Kos_kita",
 	}
 
 	resp, err := cld.Upload.Upload(ctx, file, uploadParams)
