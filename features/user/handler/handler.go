@@ -3,6 +3,7 @@ package handler
 import (
 	"KosKita/features/user"
 	"KosKita/utils/cloudinary"
+	"KosKita/utils/middlewares"
 	"KosKita/utils/responses"
 	"net/http"
 
@@ -53,4 +54,16 @@ func (handler *UserHandler) Login(c echo.Context) error {
 		"role":  result.Role,
 	}
 	return c.JSON(http.StatusOK, responses.WebResponse("success login", responseData))
+}
+
+func (handler *UserHandler) GetUser(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	result, errSelect := handler.userService.GetById(userIdLogin)
+	if errSelect != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error read data. "+errSelect.Error(), nil))
+	}
+
+	var userResult = CoreToResponse(result)
+	return c.JSON(http.StatusOK, responses.WebResponse("success read data", userResult))
 }

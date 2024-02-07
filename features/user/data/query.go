@@ -33,7 +33,14 @@ func (repo *userQuery) Insert(input user.Core) error {
 
 // SelectById implements user.UserDataInterface.
 func (repo *userQuery) SelectById(userId int) (*user.Core, error) {
-	panic("unimplemented")
+	var userDataGorm User
+	tx := repo.db.First(&userDataGorm, userId)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	result := userDataGorm.ModelToCore()
+	return &result, nil
 }
 
 // Update implements user.UserDataInterface.
