@@ -45,7 +45,8 @@ func (service *userService) Create(input user.Core) error {
 
 // GetById implements user.UserServiceInterface.
 func (service *userService) GetById(userId int) (*user.Core, error) {
-	panic("unimplemented")
+	result, err := service.userData.SelectById(userId)
+	return result, err
 }
 
 // Update implements user.UserServiceInterface.
