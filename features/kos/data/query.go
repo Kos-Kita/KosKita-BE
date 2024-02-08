@@ -2,7 +2,6 @@ package data
 
 import (
 	"KosKita/features/kos"
-	"errors"
 
 	"gorm.io/gorm"
 )
@@ -102,7 +101,6 @@ func (repo *kosQuery) SelectByRating() ([]kos.Core, error) {
 	return result, nil
 }
 
-
 // Delete implements kos.KosDataInterface.
 func (repo *kosQuery) Delete(userIdLogin int, kosId int) error {
 	tx := repo.db.Where("id = ? AND user_id = ?", kosId, userIdLogin).Delete(&BoardingHouse{})
@@ -136,5 +134,6 @@ func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.Core, error) {
 	for _, k := range kosData {
 		result = append(result, k.ModelToCoreKos())
 	}
+
 	return result, nil
 }

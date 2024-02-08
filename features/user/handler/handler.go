@@ -109,3 +109,20 @@ func (handler *UserHandler) DeleteUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success delete data", nil))
 }
+
+func (handler *UserHandler) ChangePassword(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+
+	var passwords = ChangePasswordRequest{}
+	errBind := c.Bind(&passwords)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+	errChange := handler.userService.ChangePassword(userIdLogin, passwords.OldPassword, passwords.NewPassword)
+	if errChange != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update data. "+errChange.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success update data", nil))
+}
