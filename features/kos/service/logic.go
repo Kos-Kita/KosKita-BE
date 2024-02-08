@@ -141,7 +141,7 @@ func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 }
 
 // GetById implements kos.KosServiceInterface.
-func (ks *kosService) GetById(kosId int) (*kos.RatingCore, error) {
+func (ks *kosService) GetById(kosId int) (*kos.Core, error) {
 	result, err := ks.kosData.SelectById(kosId)
 	return result, err
 }

@@ -169,20 +169,20 @@ func (handler *KosHandler) DeleteKos(c echo.Context) error {
 	return c.JSON(http.StatusOK, responses.WebResponse("success delete kos", nil))
 }
 
-// func (handler *KosHandler) GetKosById(c echo.Context) error {
-// 	kosId, err := strconv.Atoi(c.Param("id"))
-// 	if err != nil {
-// 		return c.JSON(http.StatusBadRequest, responses.WebResponse("id kos kosong", nil))
-// 	}
+func (handler *KosHandler) GetKosById(c echo.Context) error {
+	kosId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("id kos kosong", nil))
+	}
 
-// 	kos,  err := handler.kosService.GetById(kosId)
-// 	if err != nil {
-// 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
-// 	}
+	kos,  err := handler.kosService.GetById(kosId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
+	}
 
-// 	var kosResult = CoreToGetDetail(*kos)
-// 	return c.JSON(http.StatusOK, responses.WebResponse("success read data.", kosResult))
-// }
+	var kosResult = CoreToGetDetail(*kos)
+	return c.JSON(http.StatusOK, responses.WebResponse("success read data.", kosResult))
+}
 
 // func (handler *KosHandler) GetKosByUserId(c echo.Context) error {
 // 	userIdLogin := middlewares.ExtractTokenUserId(c)

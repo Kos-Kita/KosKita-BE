@@ -84,7 +84,6 @@ func (repo *kosQuery) SelectByRating() ([]kos.Core, error) {
 	var kosData []BoardingHouse
 	var result []kos.Core
 
-	// Menambahkan Preload untuk mengisi relasi User dan Ratings
 	tx := repo.db.Preload("User").Preload("Ratings").Table("boarding_houses").
 		Joins("left join ratings on boarding_houses.id = ratings.boarding_house_id").
 		Group("boarding_houses.id").
@@ -114,14 +113,14 @@ func (repo *kosQuery) Delete(userIdLogin int, kosId int) error {
 }
 
 // SelectById implements kos.KosDataInterface.
-func (repo *kosQuery) SelectById(kosId int) (*kos.RatingCore, error) {
-	var kosDataGorm Rating
-	tx := repo.db.Preload("User").Preload("BoardingHouse").Where("id = ?", kosId).First(&kosDataGorm)
+func (repo *kosQuery) SelectById(kosId int) (*kos.Core, error) {
+	var kosData BoardingHouse
+	tx := repo.db.Preload("User").Preload("Ratings").Where("id = ?", kosId).First(&kosData)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
-	result := kosDataGorm.ModelToCoreRating()
+	result := kosData.ModelToCoreKos()
 	return &result, nil
 }
 
