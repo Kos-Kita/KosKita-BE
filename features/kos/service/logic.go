@@ -101,10 +101,11 @@ func (ks *kosService) CreateRating(userIdLogin int, kosId int, input kos.RatingC
 		return errors.New("skor rating harus antara 1 dan 5")
 	}
 
-	existingRating, err :=  ks.kosData.CekRating(userIdLogin, kosId)
+	existingRating, err := ks.kosData.CekRating(userIdLogin, kosId)
 	if err != nil {
 		return err
 	}
+
 	if existingRating != nil {
 		return errors.New("anda sudah pernah memberikan rating untuk kos ini")
 	}
@@ -135,9 +136,9 @@ func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 	kos, err := ks.kosData.SelectById(kosId)
 	if err != nil {
 		if err.Error() == "record not found" {
-		return errors.New("kos id tidak ada")
-	}
-	return err
+			return errors.New("kos id tidak ada")
+		}
+		return err
 	}
 
 	if kos.User.ID != uint(userIdLogin) {
@@ -152,7 +153,6 @@ func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 	return nil
 }
 
-
 // GetById implements kos.KosServiceInterface.
 func (ks *kosService) GetById(kosId int) (*kos.Core, error) {
 	result, err := ks.kosData.SelectById(kosId)
@@ -164,6 +164,18 @@ func (ks *kosService) GetByUserId(userIdLogin int) ([]kos.Core, error) {
 	kos, err := ks.kosData.SelectByUserId(userIdLogin)
 	if err != nil {
 		return nil, err
+	}
+	return kos, nil
+}
+
+// SearchKos implements kos.KosServiceInterface.
+func (ks *kosService) SearchKos(query string, category string, minPrice int, maxPrice int) ([]kos.Core, error) {
+	kos, err := ks.kosData.SearchKos(query, category, minPrice, maxPrice)
+	if err != nil {
+		return nil, err
+	}
+	if len(kos) == 0 {
+		return nil, errors.New("tidak ada kos yang ditemukan dengan filter yang dipilih")
 	}
 	return kos, nil
 }

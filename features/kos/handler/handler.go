@@ -202,3 +202,22 @@ func (handler *KosHandler) GetKosByUserId(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get kos", kosResponse))
 }
+
+func (handler *KosHandler) SearchKos(c echo.Context) error {
+	query := c.QueryParam("address")
+	category := c.QueryParam("category")
+	minPrice, _ := strconv.Atoi(c.QueryParam("minPrice"))
+	maxPrice, _ := strconv.Atoi(c.QueryParam("maxPrice"))
+
+	kos, err := handler.kosService.SearchKos(query, category, minPrice, maxPrice)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse(err.Error(), nil))
+	}
+
+	var kosResponse []interface{}
+	for _, k := range kos {
+		kosResponse = append(kosResponse, CoreToGetRating(k)) 
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success get kos", kosResponse))
+}

@@ -8,7 +8,7 @@ import (
 type KosResponseRating struct {
 	ID            uint              `json:"id" form:"id"`
 	Name          string            `json:"kos_name" form:"kos_name"`
-	Rating        int               `json:"rating" form:"rating"`
+	Rating        float64            `json:"rating" form:"rating"`
 	Category      string            `json:"category" form:"category"`
 	Price         int               `json:"price" form:"price"`
 	Address       string            `json:"address" form:"address"`
@@ -19,7 +19,7 @@ type KosResponseRating struct {
 type KosResponseUser struct {
 	ID            uint              `json:"id" form:"id"`
 	Name          string            `json:"kos_name" form:"kos_name"`
-	Rating        int               `json:"rating" form:"rating"`
+	Rating        float64             `json:"rating" form:"rating"`
 	Address       string            `json:"address" form:"address"`
 	KosFacilities string            `json:"kos_facilities" form:"kos_facilities"`
 	PhotoKos      PhotoMainResponse `json:"photo_kos" form:"photo_kos"`
@@ -34,7 +34,7 @@ type KosResponseDetail struct {
 	Name          string                        `json:"kos_name" form:"kos_name"`
 	Description   string                        `json:"description" form:"description"`
 	Category      string                        `json:"category" form:"category"`
-	Rating        int                           `json:"rating" form:"rating"`
+	Rating        float64                          `json:"rating" form:"rating"`
 	Price         int                           `json:"price" form:"price"`
 	Rooms         int                           `json:"stock" form:"stock"`
 	Address       string                        `json:"address" form:"address"`
@@ -53,12 +53,14 @@ type PhotoDetailResponse struct {
 }
 
 func CoreToGetRating(kos kos.Core) KosResponseRating {
-	var averageRating int
+	var totalRating float64
 	for _, rating := range kos.Ratings {
-		averageRating += rating.Score
+		totalRating += float64(rating.Score)
 	}
+	
+	var averageRating float64
 	if len(kos.Ratings) > 0 {
-		averageRating /= len(kos.Ratings)
+		averageRating = totalRating / float64(len(kos.Ratings))
 	}
 
 	return KosResponseRating{
@@ -74,12 +76,14 @@ func CoreToGetRating(kos kos.Core) KosResponseRating {
 }
 
 func CoreToGetDetail(kos kos.Core) KosResponseDetail {
-	var averageRating int
+	var totalRating float64
 	for _, rating := range kos.Ratings {
-		averageRating += rating.Score
+		totalRating += float64(rating.Score)
 	}
+	
+	var averageRating float64
 	if len(kos.Ratings) > 0 {
-		averageRating /= len(kos.Ratings)
+		averageRating = totalRating / float64(len(kos.Ratings))
 	}
 
 	return KosResponseDetail{
@@ -109,13 +113,14 @@ func CoreToGetDetail(kos kos.Core) KosResponseDetail {
 }
 
 func CoreToGetUser(kos kos.Core) KosResponseUser {
-	var averageRating int
+	var totalRating float64
 	for _, rating := range kos.Ratings {
-		averageRating += rating.Score
+		totalRating += float64(rating.Score)
 	}
 	
+	var averageRating float64
 	if len(kos.Ratings) > 0 {
-		averageRating /= len(kos.Ratings)
+		averageRating = totalRating / float64(len(kos.Ratings))
 	}
 
 	return KosResponseUser{

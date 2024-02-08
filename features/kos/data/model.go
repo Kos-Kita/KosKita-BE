@@ -11,7 +11,7 @@ type BoardingHouse struct {
 	gorm.Model
 	Name            string
 	Description     string
-	Category        string `gorm:"column:status; type:enum('putra', 'putri', 'campur');"`
+	Category        string `gorm:"column:category; type:enum('putra', 'putri', 'campur');"`
 	Price           int
 	Rooms           int
 	Address         string

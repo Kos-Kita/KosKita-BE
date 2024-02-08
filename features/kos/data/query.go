@@ -130,6 +130,38 @@ func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.Core, error) {
 	for _, k := range kosData {
 		result = append(result, k.ModelToCoreKos())
 	}
-  
+
 	return result, nil
 }
+
+// SearchKos implements kos.KosDataInterface.
+func (repo *kosQuery) SearchKos(query, category string, minPrice, maxPrice int) ([]kos.Core, error) {
+	var kosDataGorms []BoardingHouse
+	tx := repo.db.Preload("User").Preload("Ratings")
+
+	if query != "" {
+		tx = tx.Where("address LIKE ?", "%"+query+"%")
+	}
+	if category != "" {
+		tx = tx.Where("category = ?", category)
+	}
+	if minPrice != 0 {
+		tx = tx.Where("price >= ?", minPrice)
+	}
+	if maxPrice != 0 {
+		tx = tx.Where("price <= ?", maxPrice)
+	}
+
+	tx = tx.Find(&kosDataGorms)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var result []kos.Core
+	for _, k := range kosDataGorms {
+		result = append(result, k.ModelToCoreKos())
+	}
+
+	return result, nil
+}
+
