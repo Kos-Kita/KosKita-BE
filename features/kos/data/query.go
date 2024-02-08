@@ -10,6 +10,7 @@ type kosQuery struct {
 	db *gorm.DB
 }
 
+
 func New(db *gorm.DB) kos.KosDataInterface {
 	return &kosQuery{
 		db: db,
@@ -81,4 +82,13 @@ func (repo *kosQuery) SelectByRating() ([]kos.RatingCore, error) {
 	}
 
 	return result, nil
+}
+
+// Delete implements kos.KosDataInterface.
+func (repo *kosQuery) Delete(userIdLogin int, kosId int) error {
+	tx := repo.db.Where("id = ? AND user_id = ?", kosId, userIdLogin).Delete(&BoardingHouse{})
+	if tx.Error != nil {
+		return tx.Error
+	}
+	return nil
 }
