@@ -101,6 +101,14 @@ func (ks *kosService) CreateRating(userIdLogin int, kosId int, input kos.RatingC
 		return errors.New("skor rating harus antara 1 dan 5")
 	}
 
+	existingRating, err :=  ks.kosData.CekRating(userIdLogin, kosId)
+	if err != nil {
+		return err
+	}
+	if existingRating != nil {
+		return errors.New("anda sudah pernah memberikan rating untuk kos ini")
+	}
+
 	errInsert := ks.kosData.InsertRating(userIdLogin, kosId, input)
 	if errInsert != nil {
 		return errInsert
@@ -137,7 +145,6 @@ func (ks *kosService) GetById(kosId int) (*kos.RatingCore, error) {
 	result, err := ks.kosData.SelectById(kosId)
 	return result, err
 }
-
 
 // GetByUserId implements kos.KosServiceInterface.
 func (ks *kosService) GetByUserId(userIdLogin int) ([]kos.RatingCore, error) {

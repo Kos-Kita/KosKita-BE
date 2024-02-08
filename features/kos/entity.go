@@ -39,6 +39,7 @@ type RatingCore struct {
 type KosDataInterface interface {
 	Insert(userIdLogin int, input Core) error
 	Update(userIdLogin int, input Core) error
+	CekRating(userId, kosId int) (*RatingCore, error)
 	InsertRating(userIdLogin, kosId int, score RatingCore) error
 	SelectByRating() ([]Core, error)
 	Delete(userIdLogin, kosId int) error
