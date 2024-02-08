@@ -45,4 +45,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/kos", kosHandlerAPI.GetKosByRating)
 	e.DELETE("/kos/:id", kosHandlerAPI.DeleteKos, middlewares.JWTMiddleware())
 	e.GET("/kos/:id", kosHandlerAPI.GetKosById)
+	e.GET("/users/kos", kosHandlerAPI.GetKosByUserId, middlewares.JWTMiddleware())
 }

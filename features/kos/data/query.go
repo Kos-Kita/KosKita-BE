@@ -103,3 +103,19 @@ func (repo *kosQuery) SelectById(kosId int) (*kos.RatingCore, error) {
 	result := kosDataGorm.ModelToCoreRating()
 	return &result, nil
 }
+
+// SelectByUserId implements kos.KosDataInterface.
+func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.RatingCore, error) {
+	var kosDataGorm []Rating
+	tx := repo.db.Preload("User").Preload("BoardingHouse").Where("user_id = ?", userIdLogin).Find(&kosDataGorm)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var results []kos.RatingCore
+	for _, kosData := range kosDataGorm {
+		result := kosData.ModelToCoreRating()
+		results = append(results, result)
+	}
+	return results, nil
+}
