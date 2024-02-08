@@ -147,5 +147,24 @@ func (handler *KosHandler) GetKosByRating(c echo.Context) error {
 		kosResponse = append(kosResponse, CoreToGetRating(k)) 
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success get data", kosResponse))
+	return c.JSON(http.StatusOK, responses.WebResponse("success get kos", kosResponse))
+}
+
+func (handler *KosHandler) DeleteKos(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+
+	kosId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("id kos kosong", nil))
+	}
+
+	errDelete := handler.kosService.Delete(userIdLogin, kosId)
+	if errDelete != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error delete kos - "+errDelete.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success delete kos", nil))
 }
