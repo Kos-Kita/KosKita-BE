@@ -1,6 +1,9 @@
 package router
 
 import (
+	bd "KosKita/features/booking/data"
+	bh "KosKita/features/booking/handler"
+	bs "KosKita/features/booking/service"
 	kd "KosKita/features/kos/data"
 	kh "KosKita/features/kos/handler"
 	ks "KosKita/features/kos/service"
@@ -9,6 +12,7 @@ import (
 	us "KosKita/features/user/service"
 	"KosKita/utils/cloudinary"
 	"KosKita/utils/encrypts"
+	"KosKita/utils/externalapi"
 	"KosKita/utils/middlewares"
 
 	"github.com/labstack/echo/v4"
@@ -18,7 +22,7 @@ import (
 func InitRouter(db *gorm.DB, e *echo.Echo) {
 	hash := encrypts.New()
 	cloudinaryUploader := cloudinary.New()
-	// midtrans := externalapi.New()
+	midtrans := externalapi.New()
 
 	userData := ud.New(db)
 	userService := us.New(userData, hash)
@@ -27,6 +31,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	kosData := kd.New(db)
 	kosService := ks.New(kosData, userService)
 	kosHandlerAPI := kh.New(kosService, cloudinaryUploader)
+
+	bookData := bd.New(db, midtrans)
+	bookService := bs.New(bookData)
+	bookHandlerAPI := bh.New(bookService)
 
 	// define routes/ endpoint RATING
 
@@ -47,4 +55,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/kos/:id", kosHandlerAPI.GetKosById)
 	e.GET("/users/kos", kosHandlerAPI.GetKosByUserId, middlewares.JWTMiddleware())
 	e.GET("/kos/search", kosHandlerAPI.SearchKos)
+
+	// define routes/ endpoint KOS
+	e.POST("/booking", bookHandlerAPI.CreateBook, middlewares.JWTMiddleware())
 }
