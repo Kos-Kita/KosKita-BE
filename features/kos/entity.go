@@ -43,7 +43,7 @@ type KosDataInterface interface {
 	InsertRating(userIdLogin, kosId int, score RatingCore) error
 	SelectByRating() ([]Core, error)
 	Delete(userIdLogin, kosId int) error
-	SelectById(kosId int)(*RatingCore, error)
+	SelectById(kosId int)(*Core, error)
 	SelectByUserId(userIdLogin int)([]RatingCore, error)
 }
 
@@ -54,6 +54,6 @@ type KosServiceInterface interface {
 	CreateRating(userIdLogin, kosId int, score RatingCore) error
 	GetByRating() ([]Core, error)
 	Delete(userIdLogin, kosId int) error
-	GetById(kosId int)(*RatingCore, error)
+	GetById(kosId int)(*Core, error)
 	GetByUserId(userIdLogin int)([]RatingCore, error)
 }
