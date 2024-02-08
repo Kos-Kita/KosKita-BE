@@ -84,21 +84,17 @@ func (handler *KosHandler) UpdateKos(c echo.Context) error {
 	photoFields := []string{"main_kos_photo", "front_kos_photo", "back_kos_photo", "front_room_photo", "inside_room_photo"}
 
 	for _, field := range photoFields {
-		fileHeader, err := c.FormFile(field)
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the file", nil))
+		fileHeader, _ := c.FormFile(field)
+		if fileHeader != nil {
+			imageURL, err := handler.cld.UploadImage(fileHeader)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, responses.WebResponse("error uploading the image", nil))
+			}
+			imageUrls = append(imageUrls, imageURL)
 		}
-
-		imageURL, err := handler.cld.UploadImage(fileHeader)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error uploading the image", nil))
-		}
-
-		// Menambahkan URL gambar ke slice
-		imageUrls = append(imageUrls, imageURL)
 	}
 
-	kosCore := RequestToCore(updateKos, imageUrls, uint(userIdLogin))
+	kosCore := RequestToCorePut(updateKos, imageUrls, uint(userIdLogin))
 	kosCore.ID = uint(kosID)
 
 	errUpdate := handler.kosService.Put(userIdLogin, kosCore)
@@ -108,6 +104,7 @@ func (handler *KosHandler) UpdateKos(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success update kos", nil))
 }
+
 
 func (handler *KosHandler) CreateRating(c echo.Context) error {
 	userIdLogin := middlewares.ExtractTokenUserId(c)
@@ -175,7 +172,7 @@ func (handler *KosHandler) GetKosById(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("id kos kosong", nil))
 	}
 
-	kos,  err := handler.kosService.GetById(kosId)
+	kos, err := handler.kosService.GetById(kosId)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
 	}
@@ -197,7 +194,7 @@ func (handler *KosHandler) GetKosByUserId(c echo.Context) error {
 
 	var kosResponse []interface{}
 	for _, k := range kos {
-		kosResponse = append(kosResponse, CoreToGetUser(k)) 
+		kosResponse = append(kosResponse, CoreToGetUser(k))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get kos", kosResponse))
@@ -216,7 +213,7 @@ func (handler *KosHandler) SearchKos(c echo.Context) error {
 
 	var kosResponse []interface{}
 	for _, k := range kos {
-		kosResponse = append(kosResponse, CoreToGetRating(k)) 
+		kosResponse = append(kosResponse, CoreToGetRating(k))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get kos", kosResponse))

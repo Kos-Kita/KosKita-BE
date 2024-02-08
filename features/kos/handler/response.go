@@ -20,6 +20,7 @@ type KosResponseUser struct {
 	ID            uint              `json:"id" form:"id"`
 	Name          string            `json:"kos_name" form:"kos_name"`
 	Rating        float64           `json:"rating" form:"rating"`
+	Price         int               `json:"price" form:"price"`
 	Address       string            `json:"address" form:"address"`
 	KosFacilities string            `json:"kos_facilities" form:"kos_facilities"`
 	PhotoKos      PhotoMainResponse `json:"photo_kos" form:"photo_kos"`
@@ -131,6 +132,7 @@ func CoreToGetUser(kos kos.Core) KosResponseUser {
 		ID:            kos.ID,
 		Name:          kos.Name,
 		Rating:        averageRating,
+		Price:         kos.Price,
 		Address:       kos.Address,
 		KosFacilities: kos.KosFacilities,
 		PhotoKos:      PhotoMainResponse{PhotoMain: kos.PhotoMain},
