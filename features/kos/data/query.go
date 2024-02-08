@@ -125,17 +125,16 @@ func (repo *kosQuery) SelectById(kosId int) (*kos.Core, error) {
 }
 
 // SelectByUserId implements kos.KosDataInterface.
-func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.RatingCore, error) {
-	var kosDataGorm []Rating
-	tx := repo.db.Preload("User").Preload("BoardingHouse").Where("user_id = ?", userIdLogin).Find(&kosDataGorm)
+func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.Core, error) {
+	var kosData []BoardingHouse
+	tx := repo.db.Preload("User").Preload("Ratings").Where("user_id = ?", userIdLogin).Find(&kosData)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
-	var results []kos.RatingCore
-	for _, kosData := range kosDataGorm {
-		result := kosData.ModelToCoreRating()
-		results = append(results, result)
+	var result []kos.Core
+	for _, k := range kosData {
+		result = append(result, k.ModelToCoreKos())
 	}
-	return results, nil
+	return result, nil
 }
