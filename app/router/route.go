@@ -29,7 +29,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	kosHandlerAPI := kh.New(kosService, cloudinaryUploader)
 
 	// define routes/ endpoint RATING
-	
 
 	// define routes/ endpoint USER
 	e.POST("/login", userHandlerAPI.Login)
@@ -37,6 +36,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/users", userHandlerAPI.GetUser, middlewares.JWTMiddleware())
 	e.PUT("/users", userHandlerAPI.UpdateUser, middlewares.JWTMiddleware())
 	e.DELETE("/users", userHandlerAPI.DeleteUser, middlewares.JWTMiddleware())
+	e.PUT("/change-password", userHandlerAPI.ChangePassword, middlewares.JWTMiddleware())
 
 	// define routes/ endpoint KOS
 	e.POST("/kos", kosHandlerAPI.CreateKos, middlewares.JWTMiddleware())

@@ -100,7 +100,7 @@ func (handler *KosHandler) UpdateKos(c echo.Context) error {
 
 	kosCore := RequestToCore(updateKos, imageUrls, uint(userIdLogin))
 	kosCore.ID = uint(kosID)
-	
+
 	errUpdate := handler.kosService.Put(userIdLogin, kosCore)
 	if errUpdate != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update kos - "+errUpdate.Error(), nil))
@@ -137,14 +137,14 @@ func (handler *KosHandler) CreateRating(c echo.Context) error {
 }
 
 func (handler *KosHandler) GetKosByRating(c echo.Context) error {
-	kos,  err := handler.kosService.GetByRating()
+	kos, err := handler.kosService.GetByRating()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error get data", nil))
 	}
 
 	var kosResponse []interface{}
 	for _, k := range kos {
-		kosResponse = append(kosResponse, CoreToGetRating(k)) 
+		kosResponse = append(kosResponse, CoreToGetRating(k))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get kos", kosResponse))
@@ -197,7 +197,7 @@ func (handler *KosHandler) DeleteKos(c echo.Context) error {
 
 // 	var kosResponse []interface{}
 // 	for _, k := range kos {
-// 		kosResponse = append(kosResponse, CoreToGetUser(k)) 
+// 		kosResponse = append(kosResponse, CoreToGetUser(k))
 // 	}
 
 // 	return c.JSON(http.StatusOK, responses.WebResponse("success get kos", kosResponse))

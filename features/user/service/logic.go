@@ -103,3 +103,33 @@ func (service *userService) Login(email string, password string) (data *user.Cor
 	}
 	return data, token, err
 }
+
+// ChangePassword implements user.UserServiceInterface.
+func (service *userService) ChangePassword(userId int, oldPassword, newPassword string) error {
+	user, errGet := service.GetById(userId)
+	if errGet != nil {
+		return errGet
+	}
+
+	if oldPassword == "" {
+		return errors.New("please input current password")
+	}
+
+	if newPassword == "" {
+		return errors.New("please input new password")
+	}
+
+	checkPassword := service.hashService.CheckPasswordHash(user.Password, oldPassword)
+	if !checkPassword {
+		return errors.New("current password not match")
+	}
+
+	hashedNewPass, errHash := service.hashService.HashPassword(newPassword)
+	if errHash != nil {
+		return errors.New("Error hash password.")
+	}
+
+	err := service.userData.ChangePassword(userId, oldPassword, hashedNewPass)
+	return err
+
+}

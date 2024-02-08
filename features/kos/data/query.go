@@ -2,7 +2,6 @@ package data
 
 import (
 	"KosKita/features/kos"
-	"errors"
 
 	"gorm.io/gorm"
 )
@@ -85,7 +84,6 @@ func (repo *kosQuery) SelectByRating() ([]kos.Core, error) {
 
 	return result, nil
 }
-
 
 // Delete implements kos.KosDataInterface.
 func (repo *kosQuery) Delete(userIdLogin int, kosId int) error {

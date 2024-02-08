@@ -4,11 +4,11 @@ import "time"
 
 type Core struct {
 	ID           uint
-	Name         string 
-	UserName     string 
-	Email        string 
-	Password     string 
-	Gender       string 
+	Name         string
+	UserName     string
+	Email        string
+	Password     string
+	Gender       string
 	Role         string
 	PhotoProfile string
 	CreatedAt    time.Time
@@ -22,6 +22,7 @@ type UserDataInterface interface {
 	Update(userId int, input Core) error
 	Delete(userId int) error
 	Login(email, password string) (data *Core, err error)
+	ChangePassword(userId int, oldPassword, newPassword string) error
 }
 
 // interface untuk Service Layer
@@ -31,4 +32,5 @@ type UserServiceInterface interface {
 	Update(userId int, input Core) error
 	Delete(userId int) error
 	Login(email, password string) (data *Core, token string, err error)
+	ChangePassword(userId int, oldPassword, newPassword string) error
 }
