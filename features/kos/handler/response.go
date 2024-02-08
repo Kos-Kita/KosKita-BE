@@ -52,53 +52,77 @@ type PhotoDetailResponse struct {
 	PhotoRoomInside string `json:"inside_room_photo" form:"inside_room_photo"`
 }
 
-func CoreToGetRating(rating kos.RatingCore) KosResponseRating {
+func CoreToGetRating(kos kos.Core) KosResponseRating {
+	var averageRating int
+	for _, rating := range kos.Ratings {
+		averageRating += rating.Score
+	}
+	if len(kos.Ratings) > 0 {
+		averageRating /= len(kos.Ratings)
+	}
+
 	return KosResponseRating{
-		ID:            rating.BoardingHouse.ID,
-		Name:          rating.BoardingHouse.Name,
-		Rating:        rating.Score,
-		Category:      rating.BoardingHouse.Category,
-		Price:         rating.BoardingHouse.Price,
-		Address:       rating.BoardingHouse.Address,
-		KosFacilities: rating.BoardingHouse.KosFacilities,
-		PhotoKos:      PhotoMainResponse{PhotoMain: rating.BoardingHouse.PhotoMain},
+		ID:            kos.ID,
+		Name:          kos.Name,
+		Rating:        averageRating,
+		Category:      kos.Category,
+		Price:         kos.Price,
+		Address:       kos.Address,
+		KosFacilities: kos.KosFacilities,
+		PhotoKos:      PhotoMainResponse{PhotoMain: kos.PhotoMain},
 	}
 }
 
-func CoreToGetDetail(rating kos.RatingCore) KosResponseDetail {
+func CoreToGetDetail(kos kos.Core) KosResponseDetail {
+	var averageRating int
+	for _, rating := range kos.Ratings {
+		averageRating += rating.Score
+	}
+	if len(kos.Ratings) > 0 {
+		averageRating /= len(kos.Ratings)
+	}
+
 	return KosResponseDetail{
-		ID:            rating.BoardingHouse.ID,
-		Name:          rating.BoardingHouse.Name,
-		Description:   rating.BoardingHouse.Description,
-		Rooms:         rating.BoardingHouse.Rooms,
-		Rating:        rating.Score,
-		Category:      rating.BoardingHouse.Category,
-		Price:         rating.BoardingHouse.Price,
-		Address:       rating.BoardingHouse.Address,
-		KosFacilities: rating.BoardingHouse.KosFacilities,
-		KosRules:      rating.BoardingHouse.KosRules,
+		ID:            kos.ID,
+		Name:          kos.Name,
+		Description:   kos.Description,
+		Rooms:         kos.Rooms,
+		Rating:        averageRating,
+		Category:      kos.Category,
+		Price:         kos.Price,
+		Address:       kos.Address,
+		KosFacilities: kos.KosFacilities,
+		KosRules:      kos.KosRules,
 		PhotoKos: PhotoDetailResponse{
-			PhotoMain:       rating.BoardingHouse.PhotoMain,
-			PhotoFront:      rating.BoardingHouse.PhotoFront,
-			PhotoBack:       rating.BoardingHouse.PhotoBack,
-			PhotoRoomFront:  rating.BoardingHouse.PhotoRoomFront,
-			PhotoRoomInside: rating.BoardingHouse.PhotoRoomInside,
+			PhotoMain:       kos.PhotoMain,
+			PhotoFront:      kos.PhotoFront,
+			PhotoBack:       kos.PhotoBack,
+			PhotoRoomFront:  kos.PhotoRoomFront,
+			PhotoRoomInside: kos.PhotoRoomInside,
 		},
 		User: handler.UserKosDetailResponse{
-			Name:         rating.User.Name,
-			UserName:     rating.User.UserName,
-			PhotoProfile: rating.User.PhotoProfile,
+			Name:         kos.User.Name,
+			UserName:     kos.User.UserName,
+			PhotoProfile: kos.User.PhotoProfile,
 		},
 	}
 }
 
-func CoreToGetUser(rating kos.RatingCore) KosResponseUser {
+func CoreToGetUser(kos kos.Core) KosResponseUser {
+	var averageRating int
+	for _, rating := range kos.Ratings {
+		averageRating += rating.Score
+	}
+	if len(kos.Ratings) > 0 {
+		averageRating /= len(kos.Ratings)
+	}
+
 	return KosResponseUser{
-		ID:            rating.BoardingHouse.ID,
-		Name:          rating.BoardingHouse.Name,
-		Rating:        rating.Score,
-		Address:       rating.BoardingHouse.Address,
-		KosFacilities: rating.BoardingHouse.KosFacilities,
-		PhotoKos:      PhotoMainResponse{PhotoMain: rating.BoardingHouse.PhotoMain},
+		ID:            kos.ID,
+		Name:          kos.Name,
+		Rating:        averageRating,
+		Address:       kos.Address,
+		KosFacilities: kos.KosFacilities,
+		PhotoKos:      PhotoMainResponse{PhotoMain: kos.PhotoMain},
 	}
 }
