@@ -15,6 +15,8 @@ type BoardingHouse struct {
 	Price           int
 	Rooms           int
 	Address         string
+	Longitude       string
+	Latitude        string
 	KosFacilities   string
 	KosRules        string
 	PhotoMain       string
@@ -78,6 +80,8 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 		Price:           bh.Price,
 		Rooms:           bh.Rooms,
 		Address:         bh.Address,
+		Longitude:       bh.Longitude,
+		Latitude:        bh.Latitude,
 		KosFacilities:   bh.KosFacilities,
 		KosRules:        bh.KosRules,
 		PhotoMain:       bh.PhotoMain,
@@ -92,7 +96,6 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 	}
 }
 
-
 func (r Rating) ModelToCoreRating() kos.RatingCore {
 	return kos.RatingCore{
 		ID:              r.ID,
@@ -103,10 +106,3 @@ func (r Rating) ModelToCoreRating() kos.RatingCore {
 		UpdatedAt:       r.UpdatedAt,
 	}
 }
-
-// func ModelToCoreKosRating(bh BoardingHouse, r Rating) kos.RatingCore {
-// 	return kos.RatingCore{
-// 		BoardingHouse: bh.ModelToCoreKos(),
-// 		Score: r.ModelToCoreRating().Score,
-// 	}
-// }
