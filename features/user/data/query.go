@@ -80,3 +80,18 @@ func (repo *userQuery) Login(email string, password string) (data *user.Core, er
 	result := userGorm.ModelToCore()
 	return &result, nil
 }
+
+// ChangePassword implements user.UserDataInterface.
+func (repo *userQuery) ChangePassword(userId int, oldPassword, newPassword string) error {
+	var userGorm User
+	userGorm.Password = newPassword
+	tx := repo.db.Model(&User{}).Where("id = ?", userId).Updates(&userGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
+	}
+	return nil
+}
