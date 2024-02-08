@@ -10,7 +10,6 @@ type kosQuery struct {
 	db *gorm.DB
 }
 
-
 func New(db *gorm.DB) kos.KosDataInterface {
 	return &kosQuery{
 		db: db,
@@ -91,4 +90,16 @@ func (repo *kosQuery) Delete(userIdLogin int, kosId int) error {
 		return tx.Error
 	}
 	return nil
+}
+
+// SelectById implements kos.KosDataInterface.
+func (repo *kosQuery) SelectById(kosId int) (*kos.RatingCore, error) {
+	var kosDataGorm Rating
+	tx := repo.db.Preload("User").Preload("BoardingHouse").Where("id = ?", kosId).First(&kosDataGorm)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	result := kosDataGorm.ModelToCoreRating()
+	return &result, nil
 }

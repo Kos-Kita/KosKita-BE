@@ -118,11 +118,11 @@ func (ks *kosService) GetByRating() ([]kos.RatingCore, error) {
 // Delete implements kos.KosServiceInterface.
 func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 	if userIdLogin <= 0 {
-        return errors.New("perlu login dahulu")
-    }
-    if kosId <= 0 {
-        return errors.New("kos id tidak valid")
-    }
+		return errors.New("perlu login dahulu")
+	}
+	if kosId <= 0 {
+		return errors.New("kos id tidak valid")
+	}
 
 	err := ks.kosData.Delete(userIdLogin, kosId)
 	if err != nil {
@@ -130,4 +130,11 @@ func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 	}
 
 	return nil
+}
+
+
+// GetById implements kos.KosServiceInterface.
+func (ks *kosService) GetById(kosId int) (*kos.RatingCore, error) {
+	result, err := ks.kosData.SelectById(kosId)
+	return result, err
 }
