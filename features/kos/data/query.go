@@ -53,10 +53,6 @@ func (repo *kosQuery) CekRating(userId, kosId int) (*kos.RatingCore, error) {
 	tx := repo.db.Where("user_id = ? AND boarding_house_id = ?", userId, kosId).First(&ratingData)
 
 	if tx.Error != nil {
-		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
-		
 		return nil, tx.Error
 	}
 
