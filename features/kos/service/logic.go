@@ -132,13 +132,26 @@ func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 		return errors.New("kos id tidak valid")
 	}
 
-	err := ks.kosData.Delete(userIdLogin, kosId)
+	kos, err := ks.kosData.SelectById(kosId)
+	if err != nil {
+		if err.Error() == "record not found" {
+		return errors.New("kos id tidak ada")
+	}
+	return err
+	}
+
+	if kos.User.ID != uint(userIdLogin) {
+		return errors.New("kos ini bukan milik Anda")
+	}
+
+	err = ks.kosData.Delete(userIdLogin, kosId)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
+
 
 // GetById implements kos.KosServiceInterface.
 func (ks *kosService) GetById(kosId int) (*kos.Core, error) {

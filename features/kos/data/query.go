@@ -134,6 +134,6 @@ func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.Core, error) {
 	for _, k := range kosData {
 		result = append(result, k.ModelToCoreKos())
 	}
-
+  
 	return result, nil
 }
