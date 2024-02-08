@@ -45,6 +45,7 @@ type KosDataInterface interface {
 	Delete(userIdLogin, kosId int) error
 	SelectById(kosId int)(*Core, error)
 	SelectByUserId(userIdLogin int)([]Core, error)
+	SearchKos(query, category string, minPrice, maxPrice int)([]Core, error)
 }
 
 // interface untuk Service Layer
@@ -56,4 +57,5 @@ type KosServiceInterface interface {
 	Delete(userIdLogin, kosId int) error
 	GetById(kosId int)(*Core, error)
 	GetByUserId(userIdLogin int)([]Core, error)
+	SearchKos(query, category string, minPrice, maxPrice int)([]Core, error)
 }
