@@ -147,7 +147,7 @@ func (ks *kosService) GetById(kosId int) (*kos.Core, error) {
 }
 
 // GetByUserId implements kos.KosServiceInterface.
-func (ks *kosService) GetByUserId(userIdLogin int) ([]kos.RatingCore, error) {
+func (ks *kosService) GetByUserId(userIdLogin int) ([]kos.Core, error) {
 	kos, err := ks.kosData.SelectByUserId(userIdLogin)
 	if err != nil {
 		return nil, err
