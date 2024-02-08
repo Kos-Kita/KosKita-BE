@@ -48,6 +48,23 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 	return nil
 }
 
+func (repo *kosQuery) CekRating(userId, kosId int) (*kos.RatingCore, error) {
+	var ratingData Rating
+
+	tx := repo.db.Where("user_id = ? AND boarding_house_id = ?", userId, kosId).First(&ratingData)
+
+	if tx.Error != nil {
+		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		
+		return nil, tx.Error
+	}
+
+	ratingCore := ratingData.ModelToCoreRating()
+	return &ratingCore, nil
+}
+
 // InsertRating implements kos.KosDataInterface.
 func (repo *kosQuery) InsertRating(userIdLogin int, kosId int, score kos.RatingCore) error {
 	ratingInput := CoreToModelRating(score)

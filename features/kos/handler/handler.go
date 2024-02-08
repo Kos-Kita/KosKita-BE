@@ -57,7 +57,7 @@ func (handler *KosHandler) CreateKos(c echo.Context) error {
 
 	errInsert := handler.kosService.Create(userIdLogin, kosCore)
 	if errInsert != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error create kos - "+errInsert.Error(), nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errInsert.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert kos", nil))
@@ -103,7 +103,7 @@ func (handler *KosHandler) UpdateKos(c echo.Context) error {
 	
 	errUpdate := handler.kosService.Put(userIdLogin, kosCore)
 	if errUpdate != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error update kos - "+errUpdate.Error(), nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errUpdate.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success update kos", nil))
@@ -130,10 +130,10 @@ func (handler *KosHandler) CreateRating(c echo.Context) error {
 
 	errInsert := handler.kosService.CreateRating(userIdLogin, kosId, ratingCore)
 	if errInsert != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error create rating - "+errInsert.Error(), nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errInsert.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success insert rating", nil))
+	return c.JSON(http.StatusOK, responses.WebResponse("success rating score", nil))
 }
 
 func (handler *KosHandler) GetKosByRating(c echo.Context) error {
