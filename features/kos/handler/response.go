@@ -113,6 +113,7 @@ func CoreToGetUser(kos kos.Core) KosResponseUser {
 	for _, rating := range kos.Ratings {
 		averageRating += rating.Score
 	}
+	
 	if len(kos.Ratings) > 0 {
 		averageRating /= len(kos.Ratings)
 	}
