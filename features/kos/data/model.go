@@ -72,6 +72,8 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 		Price:           bh.Price,
 		Rooms:           bh.Rooms,
 		Address:         bh.Address,
+		KosFacilities:   bh.KosFacilities,
+		KosRules:        bh.KosRules,
 		PhotoMain:       bh.PhotoMain,
 		PhotoFront:      bh.PhotoFront,
 		PhotoBack:       bh.PhotoBack,
@@ -91,6 +93,7 @@ func (r Rating) ModelToCoreRating() kos.RatingCore {
 		CreatedAt:       r.CreatedAt,
 		UpdatedAt:       r.UpdatedAt,
 		BoardingHouse:   r.BoardingHouse.ModelToCoreKos(),
+		User:            r.User.ModelToCore(),
 	}
 }
 

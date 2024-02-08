@@ -2,9 +2,8 @@ package kos
 
 import (
 	"time"
+	"KosKita/features/user"
 )
-
-// "KosKita/features/user")
 
 type Core struct {
 	ID              uint
@@ -24,7 +23,6 @@ type Core struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	UserID          uint
-	// User user.Core
 }
 
 type RatingCore struct {
@@ -35,6 +33,7 @@ type RatingCore struct {
 	BoardingHouse   Core
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+	User user.Core
 }
 
 type KosDataInterface interface {
@@ -43,6 +42,7 @@ type KosDataInterface interface {
 	InsertRating(userIdLogin, kosId int, score RatingCore) error
 	SelectByRating() ([]RatingCore, error)
 	Delete(userIdLogin, kosId int) error
+	SelectById(kosId int)(*RatingCore, error)
 }
 
 // interface untuk Service Layer
@@ -52,4 +52,5 @@ type KosServiceInterface interface {
 	CreateRating(userIdLogin, kosId int, score RatingCore) error
 	GetByRating() ([]RatingCore, error)
 	Delete(userIdLogin, kosId int) error
+	GetById(kosId int)(*RatingCore, error)
 }
