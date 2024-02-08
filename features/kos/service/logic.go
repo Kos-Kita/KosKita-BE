@@ -132,9 +132,18 @@ func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 	return nil
 }
 
-
 // GetById implements kos.KosServiceInterface.
 func (ks *kosService) GetById(kosId int) (*kos.RatingCore, error) {
 	result, err := ks.kosData.SelectById(kosId)
 	return result, err
+}
+
+
+// GetByUserId implements kos.KosServiceInterface.
+func (ks *kosService) GetByUserId(userIdLogin int) ([]kos.RatingCore, error) {
+	kos, err := ks.kosData.SelectByUserId(userIdLogin)
+	if err != nil {
+		return nil, err
+	}
+	return kos, nil
 }

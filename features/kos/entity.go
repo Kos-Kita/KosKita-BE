@@ -43,6 +43,7 @@ type KosDataInterface interface {
 	SelectByRating() ([]RatingCore, error)
 	Delete(userIdLogin, kosId int) error
 	SelectById(kosId int)(*RatingCore, error)
+	SelectByUserId(userIdLogin int)([]RatingCore, error)
 }
 
 // interface untuk Service Layer
@@ -53,4 +54,5 @@ type KosServiceInterface interface {
 	GetByRating() ([]RatingCore, error)
 	Delete(userIdLogin, kosId int) error
 	GetById(kosId int)(*RatingCore, error)
+	GetByUserId(userIdLogin int)([]RatingCore, error)
 }

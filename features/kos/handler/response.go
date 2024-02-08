@@ -16,6 +16,15 @@ type KosResponseRating struct {
 	PhotoKos      PhotoMainResponse `json:"photo_kos" form:"photo_kos"`
 }
 
+type KosResponseUser struct {
+	ID            uint              `json:"id" form:"id"`
+	Name          string            `json:"kos_name" form:"kos_name"`
+	Rating        int               `json:"rating" form:"rating"`
+	Address       string            `json:"address" form:"address"`
+	KosFacilities string            `json:"kos_facilities" form:"kos_facilities"`
+	PhotoKos      PhotoMainResponse `json:"photo_kos" form:"photo_kos"`
+}
+
 type PhotoMainResponse struct {
 	PhotoMain string `json:"main_kos_photo"`
 }
@@ -80,5 +89,16 @@ func CoreToGetDetail(rating kos.RatingCore) KosResponseDetail {
 			UserName:     rating.User.UserName,
 			PhotoProfile: rating.User.PhotoProfile,
 		},
+	}
+}
+
+func CoreToGetUser(rating kos.RatingCore) KosResponseUser {
+	return KosResponseUser{
+		ID:            rating.BoardingHouse.ID,
+		Name:          rating.BoardingHouse.Name,
+		Rating:        rating.Score,
+		Address:       rating.BoardingHouse.Address,
+		KosFacilities: rating.BoardingHouse.KosFacilities,
+		PhotoKos:      PhotoMainResponse{PhotoMain: rating.BoardingHouse.PhotoMain},
 	}
 }
