@@ -110,7 +110,7 @@ func (ks *kosService) CreateRating(userIdLogin int, kosId int, input kos.RatingC
 }
 
 // GetByRating implements kos.KosServiceInterface.
-func (ks *kosService) GetByRating() ([]kos.RatingCore, error) {
+func (ks *kosService) GetByRating() ([]kos.Core, error) {
 	result, err := ks.kosData.SelectByRating()
 	return result, err
 }

@@ -4,16 +4,15 @@ import "time"
 
 type Core struct {
 	ID           uint
-	Name         string `validate:"required"`
-	UserName     string `validate:"required"`
-	Email        string `validate:"required,email"`
-	Password     string `validate:"required"`
-	Gender       string `validate:"required"`
+	Name         string 
+	UserName     string 
+	Email        string 
+	Password     string 
+	Gender       string 
 	Role         string
 	PhotoProfile string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	DeletedAt    *time.Time
 }
 
 // interface untuk Data Layer

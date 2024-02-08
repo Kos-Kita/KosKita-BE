@@ -2,6 +2,7 @@ package data
 
 import (
 	"KosKita/features/kos"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -62,26 +63,29 @@ func (repo *kosQuery) InsertRating(userIdLogin int, kosId int, score kos.RatingC
 }
 
 // SelectByRating implements kos.KosDataInterface.
-func (repo *kosQuery) SelectByRating() ([]kos.RatingCore, error) {
-	var kosData []Rating
-	var result []kos.RatingCore
+func (repo *kosQuery) SelectByRating() ([]kos.Core, error) {
+	var kosData []BoardingHouse
+	var result []kos.Core
 
-	// Menambahkan Preload untuk mengisi relasi User dan BoardingHouse
-	tx := repo.db.Preload("User").Preload("BoardingHouse").Table("ratings").Select("ratings.*, boarding_houses.*").
-		Joins("inner join boarding_houses on boarding_houses.id = ratings.boarding_house_id").
-		Order("ratings.score desc").
+	// Menambahkan Preload untuk mengisi relasi User dan Ratings
+	tx := repo.db.Preload("User").Preload("Ratings").Table("boarding_houses").
+		Joins("left join ratings on boarding_houses.id = ratings.boarding_house_id").
+		Group("boarding_houses.id").
+		Select("boarding_houses.*, AVG(ratings.score) as average_rating").
+		Order("average_rating desc").
 		Find(&kosData)
 
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 
-	for _, r := range kosData {
-		result = append(result, r.ModelToCoreRating())
+	for _, k := range kosData {
+		result = append(result, k.ModelToCoreKos())
 	}
 
 	return result, nil
 }
+
 
 // Delete implements kos.KosDataInterface.
 func (repo *kosQuery) Delete(userIdLogin int, kosId int) error {

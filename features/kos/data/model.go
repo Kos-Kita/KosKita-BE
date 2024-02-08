@@ -24,6 +24,7 @@ type BoardingHouse struct {
 	PhotoRoomInside string
 	UserID          uint
 	User            data.User
+	Ratings         []Rating
 }
 
 type Rating struct {
@@ -63,6 +64,11 @@ func CoreToModelRating(input kos.RatingCore) Rating {
 }
 
 func (bh BoardingHouse) ModelToCoreKos() kos.Core {
+	var ratings []kos.RatingCore
+	for _, r := range bh.Ratings {
+		ratings = append(ratings, r.ModelToCoreRating())
+	}
+
 	return kos.Core{
 		UserID:          bh.UserID,
 		ID:              bh.ID,
@@ -81,8 +87,11 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 		PhotoRoomInside: bh.PhotoRoomInside,
 		CreatedAt:       bh.CreatedAt,
 		UpdatedAt:       bh.UpdatedAt,
+		Ratings:         ratings,
+		User:            bh.User.ModelToCore(),
 	}
 }
+
 
 func (r Rating) ModelToCoreRating() kos.RatingCore {
 	return kos.RatingCore{
@@ -92,8 +101,6 @@ func (r Rating) ModelToCoreRating() kos.RatingCore {
 		BoardingHouseID: r.BoardingHouseID,
 		CreatedAt:       r.CreatedAt,
 		UpdatedAt:       r.UpdatedAt,
-		BoardingHouse:   r.BoardingHouse.ModelToCoreKos(),
-		User:            r.User.ModelToCore(),
 	}
 }
 
