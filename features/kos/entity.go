@@ -13,6 +13,8 @@ type Core struct {
 	Price           int    `validate:"required"`
 	Rooms           int    `validate:"required"`
 	Address         string `validate:"required"`
+	Longitude       string
+	Latitude        string
 	KosFacilities   string
 	KosRules        string
 	PhotoMain       string

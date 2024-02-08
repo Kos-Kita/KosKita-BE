@@ -12,6 +12,8 @@ type KosRequest struct {
 	Price           int                   `json:"price" form:"price"`
 	Rooms           int                   `json:"rooms" form:"rooms"`
 	Address         string                `json:"address" form:"address"`
+	Longitude       string                `json:"longitude" form:"longitude"`
+	Latitude        string                `json:"latitude" form:"latitude"`
 	KosFacilities   string                `json:"kos_facilities" form:"kos_facilities"`
 	KosRules        string                `json:"kos_rules" form:"kos_rules"`
 	PhotoMain       *multipart.FileHeader `json:"main_kos_photo" form:"main_kos_photo"`
@@ -35,6 +37,8 @@ func RequestToCore(input KosRequest, imageURLs []string, userIdLogin uint) kos.C
 		Price:           input.Price,
 		Rooms:           input.Rooms,
 		Address:         input.Address,
+		Longitude:       input.Longitude,
+		Latitude:        input.Latitude,
 		KosFacilities:   input.KosFacilities,
 		KosRules:        input.KosRules,
 		PhotoMain:       imageURLs[0],
@@ -49,7 +53,6 @@ func RequestToCoreRating(input RatingRequest, kosId uint, userIdLogin uint) kos.
 	return kos.RatingCore{
 		UserID:          userIdLogin,
 		BoardingHouseID: kosId,
-		Score: input.Score,
+		Score:           input.Score,
 	}
 }
-

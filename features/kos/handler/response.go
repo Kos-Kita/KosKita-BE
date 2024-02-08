@@ -8,7 +8,7 @@ import (
 type KosResponseRating struct {
 	ID            uint              `json:"id" form:"id"`
 	Name          string            `json:"kos_name" form:"kos_name"`
-	Rating        float64            `json:"rating" form:"rating"`
+	Rating        float64           `json:"rating" form:"rating"`
 	Category      string            `json:"category" form:"category"`
 	Price         int               `json:"price" form:"price"`
 	Address       string            `json:"address" form:"address"`
@@ -19,7 +19,7 @@ type KosResponseRating struct {
 type KosResponseUser struct {
 	ID            uint              `json:"id" form:"id"`
 	Name          string            `json:"kos_name" form:"kos_name"`
-	Rating        float64             `json:"rating" form:"rating"`
+	Rating        float64           `json:"rating" form:"rating"`
 	Address       string            `json:"address" form:"address"`
 	KosFacilities string            `json:"kos_facilities" form:"kos_facilities"`
 	PhotoKos      PhotoMainResponse `json:"photo_kos" form:"photo_kos"`
@@ -34,10 +34,12 @@ type KosResponseDetail struct {
 	Name          string                        `json:"kos_name" form:"kos_name"`
 	Description   string                        `json:"description" form:"description"`
 	Category      string                        `json:"category" form:"category"`
-	Rating        float64                          `json:"rating" form:"rating"`
+	Rating        float64                       `json:"rating" form:"rating"`
 	Price         int                           `json:"price" form:"price"`
 	Rooms         int                           `json:"stock" form:"stock"`
 	Address       string                        `json:"address" form:"address"`
+	Longitude     string                        `json:"longitude" form:"longitude"`
+	Latitude      string                        `json:"latitude" form:"latitude"`
 	KosFacilities string                        `json:"kos_facilities" form:"kos_facilities"`
 	KosRules      string                        `json:"kos_rules" form:"kos_rules"`
 	PhotoKos      PhotoDetailResponse           `json:"photo_kos" form:"photo_kos"`
@@ -57,7 +59,7 @@ func CoreToGetRating(kos kos.Core) KosResponseRating {
 	for _, rating := range kos.Ratings {
 		totalRating += float64(rating.Score)
 	}
-	
+
 	var averageRating float64
 	if len(kos.Ratings) > 0 {
 		averageRating = totalRating / float64(len(kos.Ratings))
@@ -80,7 +82,7 @@ func CoreToGetDetail(kos kos.Core) KosResponseDetail {
 	for _, rating := range kos.Ratings {
 		totalRating += float64(rating.Score)
 	}
-	
+
 	var averageRating float64
 	if len(kos.Ratings) > 0 {
 		averageRating = totalRating / float64(len(kos.Ratings))
@@ -95,6 +97,8 @@ func CoreToGetDetail(kos kos.Core) KosResponseDetail {
 		Category:      kos.Category,
 		Price:         kos.Price,
 		Address:       kos.Address,
+		Longitude:     kos.Longitude,
+		Latitude:      kos.Latitude,
 		KosFacilities: kos.KosFacilities,
 		KosRules:      kos.KosRules,
 		PhotoKos: PhotoDetailResponse{
@@ -117,7 +121,7 @@ func CoreToGetUser(kos kos.Core) KosResponseUser {
 	for _, rating := range kos.Ratings {
 		totalRating += float64(rating.Score)
 	}
-	
+
 	var averageRating float64
 	if len(kos.Ratings) > 0 {
 		averageRating = totalRating / float64(len(kos.Ratings))
