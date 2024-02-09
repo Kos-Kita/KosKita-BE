@@ -72,6 +72,28 @@ func CoreToModelFoto(input kos.CoreFoto) BoardingHouse {
 		PhotoBack:       input.PhotoBack,
 		PhotoRoomFront:  input.PhotoRoomFront,
 		PhotoRoomInside: input.PhotoRoomInside,
+		Longitude:       input.Longitude,
+		Latitude:        input.Latitude,
+	}
+}
+func CoreToModelInput(input kos.CoreInput) BoardingHouse {
+	return BoardingHouse{
+		UserID:          input.UserID,
+		Name:            input.Name,
+		Description:     input.Description,
+		Category:        input.Category,
+		Price:           input.Price,
+		Rooms:           input.Rooms,
+		Address:         input.Address,
+		KosFacilities:   input.KosFacilities,
+		KosRules:        input.KosRules,
+		PhotoMain:       input.PhotoMain,
+		PhotoFront:      input.PhotoFront,
+		PhotoBack:       input.PhotoBack,
+		PhotoRoomFront:  input.PhotoRoomFront,
+		PhotoRoomInside: input.PhotoRoomInside,
+		Longitude:       input.Longitude,
+		Latitude:        input.Latitude,
 	}
 }
 
@@ -128,7 +150,19 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 		CreatedAt:       bh.CreatedAt,
 		UpdatedAt:       bh.UpdatedAt,
 		Ratings:         ratings,
-		User:            bh.User.ModelToCore(),
+		// User:            bh.User.ModelToCore(),
+		// User: kos.User{
+		// 	ID:           bh.User.ID,
+		// 	Name:         bh.User.Name,
+		// 	UserName:     bh.User.UserName,
+		// 	Email:        bh.User.Email,
+		// 	Password:     bh.User.Password,
+		// 	Gender:       bh.User.Gender,
+		// 	Role:         bh.User.Role,
+		// 	PhotoProfile: bh.User.PhotoProfile,
+		// 	CreatedAt:    bh.User.CreatedAt,
+		// 	UpdatedAt:    bh.User.UpdatedAt,
+		// },
 	}
 }
 

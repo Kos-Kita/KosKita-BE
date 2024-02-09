@@ -24,8 +24,8 @@ type Core struct {
 	UpdatedAt       time.Time
 	UserID          uint
 	Ratings         []RatingCore
-	KosFacilities     []KosFacilityCore
-	KosRules         []KosRuleCore
+	KosFacilities   []KosFacilityCore
+	KosRules        []KosRuleCore
 	User            user.Core
 }
 
