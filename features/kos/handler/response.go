@@ -5,25 +5,34 @@ import (
 	"KosKita/features/user/handler"
 )
 
+type KosFacilityResponse struct {
+	Facility        string `json:"facility"`
+}
+
+type KosRuleResponse struct {
+	ID              uint   `json:"id"`
+	Rule            string `json:"rule"`
+}
+
 type KosResponseRating struct {
-	ID            uint              `json:"id" form:"id"`
-	Name          string            `json:"kos_name" form:"kos_name"`
-	Rating        float64           `json:"rating" form:"rating"`
-	Category      string            `json:"category" form:"category"`
-	Price         int               `json:"price" form:"price"`
-	Address       string            `json:"address" form:"address"`
-	KosFacilities string            `json:"kos_facilities" form:"kos_facilities"`
-	PhotoKos      PhotoMainResponse `json:"photo_kos" form:"photo_kos"`
+	ID            uint              `json:"id"`
+	Name          string            `json:"kos_name"`
+	Rating        float64           `json:"rating"`
+	Category      string            `json:"category"`
+	Price         int               `json:"price"`
+	Address       string            `json:"address"`
+	KosFacilities []KosFacilityResponse `json:"kos_facilities"`
+	PhotoKos      PhotoMainResponse `json:"photo_kos"`
 }
 
 type KosResponseUser struct {
-	ID            uint              `json:"id" form:"id"`
-	Name          string            `json:"kos_name" form:"kos_name"`
-	Rating        float64           `json:"rating" form:"rating"`
-	Price         int               `json:"price" form:"price"`
-	Address       string            `json:"address" form:"address"`
-	KosFacilities string            `json:"kos_facilities" form:"kos_facilities"`
-	PhotoKos      PhotoMainResponse `json:"photo_kos" form:"photo_kos"`
+	ID            uint              `json:"id"`
+	Name          string            `json:"kos_name"`
+	Rating        float64           `json:"rating"`
+	Price         int               `json:"price"`
+	Address       string            `json:"address"`
+	KosFacilities []KosFacilityResponse `json:"kos_facilities"`
+	PhotoKos      PhotoMainResponse `json:"photo_kos"`
 }
 
 type PhotoMainResponse struct {
@@ -31,28 +40,28 @@ type PhotoMainResponse struct {
 }
 
 type KosResponseDetail struct {
-	ID            uint                          `json:"id" form:"id"`
-	Name          string                        `json:"kos_name" form:"kos_name"`
-	Description   string                        `json:"description" form:"description"`
-	Category      string                        `json:"category" form:"category"`
-	Rating        float64                       `json:"rating" form:"rating"`
-	Price         int                           `json:"price" form:"price"`
-	Rooms         int                           `json:"stock" form:"stock"`
-	Address       string                        `json:"address" form:"address"`
-	Longitude     string                        `json:"longitude" form:"longitude"`
-	Latitude      string                        `json:"latitude" form:"latitude"`
-	KosFacilities string                        `json:"kos_facilities" form:"kos_facilities"`
-	KosRules      string                        `json:"kos_rules" form:"kos_rules"`
-	PhotoKos      PhotoDetailResponse           `json:"photo_kos" form:"photo_kos"`
-	User          handler.UserKosDetailResponse `json:"user" form:"user"`
+	ID            uint                          `json:"id"`
+	Name          string                        `json:"kos_name"`
+	Description   string                        `json:"description"`
+	Rooms         int                           `json:"stock"`
+	Rating        float64                       `json:"rating"`
+	Category      string                        `json:"category"`
+	Price         int                           `json:"price"`
+	Address       string                        `json:"address"`
+	Longitude     string                        `json:"longitude"`
+	Latitude      string                        `json:"latitude"`
+	KosFacilities []KosFacilityResponse         `json:"kos_facilities"`
+	KosRules      []KosRuleResponse             `json:"kos_rules"`
+	PhotoKos      PhotoDetailResponse           `json:"photo_kos"`
+	User          handler.UserKosDetailResponse `json:"user"`
 }
 
 type PhotoDetailResponse struct {
-	PhotoMain       string `json:"main_kos_photo" form:"main_kos_photo"`
-	PhotoFront      string `json:"front_kos_photo" form:"front_kos_photo"`
-	PhotoBack       string `json:"back_kos_photo" form:"back_kos_photo"`
-	PhotoRoomFront  string `json:"front_room_photo" form:"front_room_photo"`
-	PhotoRoomInside string `json:"inside_room_photo" form:"inside_room_photo"`
+	PhotoMain       string `json:"main_kos_photo"`
+	PhotoFront      string `json:"front_kos_photo"`
+	PhotoBack       string `json:"back_kos_photo"`
+	PhotoRoomFront  string `json:"front_room_photo"`
+	PhotoRoomInside string `json:"inside_room_photo"`
 }
 
 func CoreToGetRating(kos kos.Core) KosResponseRating {
@@ -66,6 +75,14 @@ func CoreToGetRating(kos kos.Core) KosResponseRating {
 		averageRating = totalRating / float64(len(kos.Ratings))
 	}
 
+	var kosFacilities []KosFacilityResponse
+	for _, f := range kos.KosFacilities {
+		kosFacilities = append(kosFacilities, KosFacilityResponse{
+			ID:              f.ID,
+			Facility:        f.Facility,
+		})
+	}
+
 	return KosResponseRating{
 		ID:            kos.ID,
 		Name:          kos.Name,
@@ -73,7 +90,7 @@ func CoreToGetRating(kos kos.Core) KosResponseRating {
 		Category:      kos.Category,
 		Price:         kos.Price,
 		Address:       kos.Address,
-		KosFacilities: kos.KosFacilities,
+		KosFacilities: kosFacilities,
 		PhotoKos:      PhotoMainResponse{PhotoMain: kos.PhotoMain},
 	}
 }
@@ -89,6 +106,22 @@ func CoreToGetDetail(kos kos.Core) KosResponseDetail {
 		averageRating = totalRating / float64(len(kos.Ratings))
 	}
 
+	var kosFacilities []KosFacilityResponse
+	for _, f := range kos.KosFacilities {
+		kosFacilities = append(kosFacilities, KosFacilityResponse{
+			ID:              f.ID,
+			Facility:        f.Facility,
+		})
+	}
+
+	var kosRules []KosRuleResponse
+	for _, r := range kos.KosRules {
+		kosRules = append(kosRules, KosRuleResponse{
+			ID:              r.ID,
+			Rule:            r.Rule,
+		})
+	}
+
 	return KosResponseDetail{
 		ID:            kos.ID,
 		Name:          kos.Name,
@@ -100,8 +133,8 @@ func CoreToGetDetail(kos kos.Core) KosResponseDetail {
 		Address:       kos.Address,
 		Longitude:     kos.Longitude,
 		Latitude:      kos.Latitude,
-		KosFacilities: kos.KosFacilities,
-		KosRules:      kos.KosRules,
+		KosFacilities: kosFacilities,
+		KosRules:      kosRules,
 		PhotoKos: PhotoDetailResponse{
 			PhotoMain:       kos.PhotoMain,
 			PhotoFront:      kos.PhotoFront,
@@ -128,13 +161,21 @@ func CoreToGetUser(kos kos.Core) KosResponseUser {
 		averageRating = totalRating / float64(len(kos.Ratings))
 	}
 
+	var kosFacilities []KosFacilityResponse
+	for _, f := range kos.KosFacilities {
+		kosFacilities = append(kosFacilities, KosFacilityResponse{
+			ID:              f.ID,
+			Facility:        f.Facility,
+		})
+	}
+
 	return KosResponseUser{
 		ID:            kos.ID,
 		Name:          kos.Name,
 		Rating:        averageRating,
 		Price:         kos.Price,
 		Address:       kos.Address,
-		KosFacilities: kos.KosFacilities,
+		KosFacilities: kosFacilities,
 		PhotoKos:      PhotoMainResponse{PhotoMain: kos.PhotoMain},
 	}
 }

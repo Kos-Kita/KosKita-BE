@@ -11,14 +11,12 @@ type BoardingHouse struct {
 	gorm.Model
 	Name            string
 	Description     string
-	Category        string `gorm:"column:category; type:enum('putra', 'putri', 'campur');"`
+	Category        string 
 	Price           int
 	Rooms           int
 	Address         string
 	Longitude       string
 	Latitude        string
-	KosFacilities   string
-	KosRules        string
 	PhotoMain       string
 	PhotoFront      string
 	PhotoBack       string
@@ -27,6 +25,20 @@ type BoardingHouse struct {
 	UserID          uint
 	User            data.User
 	Ratings         []Rating
+	KosFacilities   []KosFacility `gorm:"foreignKey:BoardingHouseID"`
+	KosRules        []KosRule `gorm:"foreignKey:BoardingHouseID"`
+}
+
+type KosFacility struct {
+	gorm.Model
+	Facility        string
+	BoardingHouseID uint
+}
+
+type KosRule struct {
+	gorm.Model
+	Rule            string
+	BoardingHouseID uint
 }
 
 type Rating struct {
@@ -47,8 +59,14 @@ func CoreToModel(input kos.Core) BoardingHouse {
 		Price:           input.Price,
 		Rooms:           input.Rooms,
 		Address:         input.Address,
-		KosFacilities:   input.KosFacilities,
-		KosRules:        input.KosRules,
+		Longitude:       input.Longitude,
+		Latitude:        input.Latitude,
+	}
+}
+
+func CoreToModelFoto(input kos.CoreFoto) BoardingHouse {
+	return BoardingHouse{
+		UserID:          input.UserID,
 		PhotoMain:       input.PhotoMain,
 		PhotoFront:      input.PhotoFront,
 		PhotoBack:       input.PhotoBack,
@@ -79,11 +97,19 @@ func CoreToModelInput(input kos.CoreInput) BoardingHouse {
 	}
 }
 
-func CoreToModelRating(input kos.RatingCore) Rating {
-	return Rating{
-		Score:           input.Score,
-		UserID:          input.UserID,
-		BoardingHouseID: input.BoardingHouseID,
+func CoreToModelFacility(facility kos.KosFacilityCore) KosFacility {
+	return KosFacility{
+		Model:           gorm.Model{ID: facility.ID},
+		Facility:        facility.Facility,
+		BoardingHouseID: facility.BoardingHouseID,
+	}
+}
+
+func CoreToModelRule(rule kos.KosRuleCore) KosRule {
+	return KosRule{
+		Model:           gorm.Model{ID: rule.ID},
+		Rule:        rule.Rule,
+		BoardingHouseID: rule.BoardingHouseID,
 	}
 }
 
@@ -91,6 +117,16 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 	var ratings []kos.RatingCore
 	for _, r := range bh.Ratings {
 		ratings = append(ratings, r.ModelToCoreRating())
+	}
+
+	var kosFacilities []kos.KosFacilityCore
+	for _, f := range bh.KosFacilities {
+		kosFacilities = append(kosFacilities, f.ModelToCoreFacility())
+	}
+
+	var kosRules []kos.KosRuleCore
+	for _, r := range bh.KosRules {
+		kosRules = append(kosRules, r.ModelToCoreRule())
 	}
 
 	return kos.Core{
@@ -104,8 +140,8 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 		Address:         bh.Address,
 		Longitude:       bh.Longitude,
 		Latitude:        bh.Latitude,
-		KosFacilities:   bh.KosFacilities,
-		KosRules:        bh.KosRules,
+		KosFacilities:   kosFacilities,
+		KosRules:        kosRules,
 		PhotoMain:       bh.PhotoMain,
 		PhotoFront:      bh.PhotoFront,
 		PhotoBack:       bh.PhotoBack,
@@ -130,11 +166,40 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 	}
 }
 
+
+func CoreToModelRating(input kos.RatingCore) Rating {
+	return Rating{
+		Score:           input.Score,
+		UserID:          input.UserID,
+		BoardingHouseID: input.BoardingHouseID,
+	}
+}
+
 func (r Rating) ModelToCoreRating() kos.RatingCore {
 	return kos.RatingCore{
 		ID:              r.ID,
 		Score:           r.Score,
 		UserID:          r.UserID,
+		BoardingHouseID: r.BoardingHouseID,
+		CreatedAt:       r.CreatedAt,
+		UpdatedAt:       r.UpdatedAt,
+	}
+}
+
+func (f KosFacility) ModelToCoreFacility() kos.KosFacilityCore {
+	return kos.KosFacilityCore{
+		ID:              f.ID,
+		Facility:        f.Facility,
+		BoardingHouseID: f.BoardingHouseID,
+		CreatedAt:       f.CreatedAt,
+		UpdatedAt:       f.UpdatedAt,
+	}
+}
+
+func (r KosRule) ModelToCoreRule() kos.KosRuleCore {
+	return kos.KosRuleCore{
+		ID:              r.ID,
+		Rule:            r.Rule,
 		BoardingHouseID: r.BoardingHouseID,
 		CreatedAt:       r.CreatedAt,
 		UpdatedAt:       r.UpdatedAt,
