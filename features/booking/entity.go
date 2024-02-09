@@ -10,7 +10,7 @@ import (
 )
 
 type BookingCore struct {
-	Code            int
+	Code            string
 	Total           float64
 	BookedAt        time.Time
 	DeletedAt       gorm.DeletedAt
@@ -18,7 +18,7 @@ type BookingCore struct {
 	User            ud.Core
 	BoardingHouseId uint
 	BoardingHouse   kd.Core
-	Payment PaymentCore
+	Payment         PaymentCore
 }
 
 type PaymentCore struct {
@@ -37,9 +37,11 @@ type PaymentCore struct {
 
 type BookDataInterface interface {
 	Insert(userIdLogin int, input BookingCore) (*BookingCore, error)
+	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
 }
 
 // interface untuk Service Layer
 type BookServiceInterface interface {
 	Create(userIdLogin int, input BookingCore) (*BookingCore, error)
+	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
 }

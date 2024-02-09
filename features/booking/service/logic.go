@@ -24,3 +24,13 @@ func (bs *bookService) Create(userIdLogin int, input booking.BookingCore) (*book
 
 	return bookCore, nil
 }
+
+// CancelBooking implements booking.BookServiceInterface.
+func (bs *bookService) CancelBooking(userIdLogin int, bookingId string, bookingCore booking.BookingCore) error {
+	if bookingCore.Payment.Status == "" {
+		bookingCore.Payment.Status = "cancelled"
+	}
+
+	err := bs.bookData.CancelBooking(userIdLogin, bookingId, bookingCore)
+	return err
+}

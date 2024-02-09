@@ -14,6 +14,7 @@ import (
 
 type MidtransInterface interface {
 	NewOrderPayment(book booking.BookingCore) (*booking.PaymentCore, error)
+	CancelOrderPayment(bookingId string) error
 }
 
 type midtrans struct {
@@ -35,7 +36,8 @@ func New() MidtransInterface {
 func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.PaymentCore, error) {
 	req := new(coreapi.ChargeReq)
 	req.TransactionDetails = mid.TransactionDetails{
-		OrderID:  fmt.Sprintf("%d", book.Code),
+		// OrderID:  fmt.Sprintf("%d", book.Code),
+		OrderID:  book.Code,
 		GrossAmt: int64(book.Total),
 	}
 
@@ -112,4 +114,13 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Payment
 	book.Payment.BookingTotal = book.Total
 
 	return &book.Payment, nil
+}
+
+func (pay *midtrans) CancelOrderPayment(bookingId string) error {
+	res, _ := pay.client.CancelTransaction(bookingId)
+	if res.StatusCode != "200" && res.StatusCode != "412" {
+		return errors.New(res.StatusMessage)
+	}
+
+	return nil
 }

@@ -58,4 +58,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	// define routes/ endpoint KOS
 	e.POST("/booking", bookHandlerAPI.CreateBook, middlewares.JWTMiddleware())
+	e.PUT("/booking/:id", bookHandlerAPI.CancelBooking, middlewares.JWTMiddleware())
 }
