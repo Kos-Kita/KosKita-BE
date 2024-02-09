@@ -6,34 +6,36 @@ import (
 )
 
 type KosFacilityResponse struct {
-	ID              uint   `json:"id"`
-	Facility        string `json:"facility"`
+	ID       uint   `json:"id"`
+	Facility string `json:"facility"`
 }
 
 type KosRuleResponse struct {
-	ID              uint   `json:"id"`
-	Rule            string `json:"rule"`
+	ID   uint   `json:"id"`
+	Rule string `json:"rule"`
 }
 
 type KosResponseRating struct {
-	ID            uint              `json:"id"`
-	Name          string            `json:"kos_name"`
-	Rating        float64           `json:"rating"`
-	Category      string            `json:"category"`
-	Price         int               `json:"price"`
-	Address       string            `json:"address"`
+	ID            uint                  `json:"id"`
+	Name          string                `json:"kos_name"`
+	Rating        float64               `json:"rating"`
+	Category      string                `json:"category"`
+	Price         int                   `json:"price"`
+	Rooms         int                   `json:"rooms"`
+	Address       string                `json:"address"`
 	KosFacilities []KosFacilityResponse `json:"kos_facilities"`
-	PhotoKos      PhotoMainResponse `json:"photo_kos"`
+	PhotoKos      PhotoMainResponse     `json:"photo_kos"`
 }
 
 type KosResponseUser struct {
-	ID            uint              `json:"id"`
-	Name          string            `json:"kos_name"`
-	Rating        float64           `json:"rating"`
-	Price         int               `json:"price"`
-	Address       string            `json:"address"`
+	ID            uint                  `json:"id"`
+	Name          string                `json:"kos_name"`
+	Rating        float64               `json:"rating"`
+	Price         int                   `json:"price"`
+	Rooms         int                   `json:"rooms"`
+	Address       string                `json:"address"`
 	KosFacilities []KosFacilityResponse `json:"kos_facilities"`
-	PhotoKos      PhotoMainResponse `json:"photo_kos"`
+	PhotoKos      PhotoMainResponse     `json:"photo_kos"`
 }
 
 type PhotoMainResponse struct {
@@ -42,7 +44,7 @@ type PhotoMainResponse struct {
 
 type KosResponseDetail struct {
 	ID            uint                          `json:"id"`
-	Name          string                        `json:"kos_name"`
+	Name          string                         `json:"kos_name"`
 	Description   string                        `json:"description"`
 	Rooms         int                           `json:"stock"`
 	Rating        float64                       `json:"rating"`
@@ -79,8 +81,8 @@ func CoreToGetRating(kos kos.Core) KosResponseRating {
 	var kosFacilities []KosFacilityResponse
 	for _, f := range kos.KosFacilities {
 		kosFacilities = append(kosFacilities, KosFacilityResponse{
-			ID:              f.ID,
-			Facility:        f.Facility,
+			ID:       f.ID,
+			Facility: f.Facility,
 		})
 	}
 
@@ -89,6 +91,7 @@ func CoreToGetRating(kos kos.Core) KosResponseRating {
 		Name:          kos.Name,
 		Rating:        averageRating,
 		Category:      kos.Category,
+		Rooms:         kos.Rooms,
 		Price:         kos.Price,
 		Address:       kos.Address,
 		KosFacilities: kosFacilities,
@@ -110,16 +113,16 @@ func CoreToGetDetail(kos kos.Core) KosResponseDetail {
 	var kosFacilities []KosFacilityResponse
 	for _, f := range kos.KosFacilities {
 		kosFacilities = append(kosFacilities, KosFacilityResponse{
-			ID:              f.ID,
-			Facility:        f.Facility,
+			ID:       f.ID,
+			Facility: f.Facility,
 		})
 	}
 
 	var kosRules []KosRuleResponse
 	for _, r := range kos.KosRules {
 		kosRules = append(kosRules, KosRuleResponse{
-			ID:              r.ID,
-			Rule:            r.Rule,
+			ID:   r.ID,
+			Rule: r.Rule,
 		})
 	}
 
@@ -165,8 +168,8 @@ func CoreToGetUser(kos kos.Core) KosResponseUser {
 	var kosFacilities []KosFacilityResponse
 	for _, f := range kos.KosFacilities {
 		kosFacilities = append(kosFacilities, KosFacilityResponse{
-			ID:              f.ID,
-			Facility:        f.Facility,
+			ID:       f.ID,
+			Facility: f.Facility,
 		})
 	}
 
@@ -174,6 +177,7 @@ func CoreToGetUser(kos kos.Core) KosResponseUser {
 		ID:            kos.ID,
 		Name:          kos.Name,
 		Rating:        averageRating,
+		Rooms:         kos.Rooms,
 		Price:         kos.Price,
 		Address:       kos.Address,
 		KosFacilities: kosFacilities,

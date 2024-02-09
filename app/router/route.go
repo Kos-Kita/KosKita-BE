@@ -42,6 +42,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	// define routes/ endpoint IMAGE
 	e.POST("/upload-image/:kosid", kosHandlerAPI.UploadImages, middlewares.JWTMiddleware())
+	e.PUT("/upload-image/:kosid", kosHandlerAPI.UpdateImages, middlewares.JWTMiddleware())
 
 	// define routes/ endpoint USER
 	e.POST("/login", userHandlerAPI.Login)
