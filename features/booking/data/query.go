@@ -44,7 +44,7 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	input.Code = bookModel.Code
 
 	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
-	
+
 	if errPay != nil {
 		return nil, errPay
 	}

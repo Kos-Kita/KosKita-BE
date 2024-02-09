@@ -32,7 +32,7 @@ func (handler *KosHandler) CreateKos(c echo.Context) error {
 	newKos := KosRequest{}
 	errBind := c.Bind(&newKos)
 	if errBind != nil {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid "+errBind.Error(), nil))
 	}
 
 	var imageUrls []string
@@ -57,7 +57,7 @@ func (handler *KosHandler) CreateKos(c echo.Context) error {
 
 	errInsert := handler.kosService.Create(userIdLogin, kosCore)
 	if errInsert != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errInsert.Error(), nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error create kos "+errInsert.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success insert kos", nil))
@@ -104,7 +104,6 @@ func (handler *KosHandler) UpdateKos(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success update kos", nil))
 }
-
 
 func (handler *KosHandler) CreateRating(c echo.Context) error {
 	userIdLogin := middlewares.ExtractTokenUserId(c)
