@@ -73,7 +73,47 @@ func RequestToCoreFoto(imageURLs []string, userIdLogin uint) kos.CoreFoto {
 	}
 }
 
-func RequestToCorePut(input KosRequest, imageURLs []string, userIdLogin uint) kos.Core {
+func RequestToCoreFotoPut(imageURLs []string, userIdLogin uint) kos.CoreFoto {
+    coreFoto := kos.CoreFoto{
+        UserID: userIdLogin,
+    }
+
+    numImages := len(imageURLs)
+    if numImages > 0 {
+        coreFoto.PhotoMain = imageURLs[0]
+    }
+    if numImages > 1 {
+        coreFoto.PhotoFront = imageURLs[1]
+    }
+    if numImages > 2 {
+        coreFoto.PhotoBack = imageURLs[2]
+    }
+    if numImages > 3 {
+        coreFoto.PhotoRoomFront = imageURLs[3]
+    }
+    if numImages > 4 {
+        coreFoto.PhotoRoomInside = imageURLs[4]
+    }
+
+    return coreFoto
+}
+
+
+func RequestToCorePut(input KosRequest, userIdLogin uint) kos.Core {
+	var kosFacilities []kos.KosFacilityCore
+	for _, facility := range input.KosFacilities {
+		kosFacilities = append(kosFacilities, kos.KosFacilityCore{
+			Facility: facility,
+		})
+	}
+
+	var kosRules []kos.KosRuleCore
+	for _, rule := range input.KosRules {
+		kosRules = append(kosRules, kos.KosRuleCore{
+			Rule: rule,
+		})
+	}
+
 	kos := kos.Core{
 		UserID:      userIdLogin,
 		Name:        input.Name,
@@ -84,16 +124,8 @@ func RequestToCorePut(input KosRequest, imageURLs []string, userIdLogin uint) ko
 		Address:     input.Address,
 		Longitude:   input.Longitude,
 		Latitude:    input.Latitude,
-		// KosFacilities: input.KosFacilities,
-		// KosRules:      input.KosRules,
-	}
-
-	if len(imageURLs) >= 5 {
-		kos.PhotoMain = imageURLs[0]
-		kos.PhotoFront = imageURLs[1]
-		kos.PhotoBack = imageURLs[2]
-		kos.PhotoRoomFront = imageURLs[3]
-		kos.PhotoRoomInside = imageURLs[4]
+		KosFacilities: kosFacilities,
+		KosRules:      kosRules,
 	}
 
 	return kos
