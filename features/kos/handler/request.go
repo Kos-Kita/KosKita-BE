@@ -32,7 +32,7 @@ type RatingRequest struct {
 	Score int `json:"score" form:"score"`
 }
 
-func RequestToCore(input KosRequest, userIdLogin uint) kos.Core {
+func RequestToCore(input KosRequest, userIdLogin uint) kos.CoreInput {
 	var kosFacilities []kos.KosFacilityCore
 	for _, facility := range input.KosFacilities {
 		kosFacilities = append(kosFacilities, kos.KosFacilityCore{
@@ -47,7 +47,7 @@ func RequestToCore(input KosRequest, userIdLogin uint) kos.Core {
 		})
 	}
 
-	return kos.Core{
+	return kos.CoreInput{
 		UserID:        userIdLogin,
 		Name:          input.Name,
 		Description:   input.Description,

@@ -23,7 +23,7 @@ func New(repo kos.KosDataInterface, us user.UserServiceInterface) kos.KosService
 }
 
 // Create implements kos.KosServiceInterface.
-func (ks *kosService) Create(userIdLogin int, input kos.Core) error {
+func (ks *kosService) Create(userIdLogin int, input kos.CoreInput) error {
 	user, err := ks.userService.GetById(userIdLogin)
 	if err != nil {
 		return err

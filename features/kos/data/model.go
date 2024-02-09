@@ -50,7 +50,21 @@ type Rating struct {
 	BoardingHouse   BoardingHouse
 }
 
-func CoreToModel(input kos.Core) BoardingHouse {
+func CoreToModel(input kos.CoreInput) BoardingHouse {
+	return BoardingHouse{
+		UserID:          input.UserID,
+		Name:            input.Name,
+		Description:     input.Description,
+		Category:        input.Category,
+		Price:           input.Price,
+		Rooms:           input.Rooms,
+		Address:         input.Address,
+		Longitude:       input.Longitude,
+		Latitude:        input.Latitude,
+	}
+}
+
+func CoreToModelPut(input kos.Core) BoardingHouse {
 	return BoardingHouse{
 		UserID:          input.UserID,
 		Name:            input.Name,
