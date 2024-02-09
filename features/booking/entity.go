@@ -38,10 +38,12 @@ type PaymentCore struct {
 type BookDataInterface interface {
 	Insert(userIdLogin int, input BookingCore) (*BookingCore, error)
 	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
+	WebhoocksData(webhoocksReq BookingCore) error
 }
 
 // interface untuk Service Layer
 type BookServiceInterface interface {
 	Create(userIdLogin int, input BookingCore) (*BookingCore, error)
 	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
+	WebhoocksData(webhoocksReq BookingCore) error
 }

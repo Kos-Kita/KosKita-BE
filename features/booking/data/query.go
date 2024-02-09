@@ -109,3 +109,17 @@ func (repo *bookQuery) CancelBooking(userIdLogin int, bookingId string, bookingC
 	}
 	return nil
 }
+
+// WebhoocksData implements booking.BookDataInterface.
+func (repo *bookQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
+	bookingGorm := WebhoocksCoreToModel(webhoocksReq)
+	tx := repo.db.Model(&Booking{}).Where("code = ?", webhoocksReq.Code).Updates(bookingGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
+	}
+	return nil
+}
