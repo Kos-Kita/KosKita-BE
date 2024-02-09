@@ -86,28 +86,6 @@ func CoreToModelFoto(input kos.CoreFoto) BoardingHouse {
 		PhotoBack:       input.PhotoBack,
 		PhotoRoomFront:  input.PhotoRoomFront,
 		PhotoRoomInside: input.PhotoRoomInside,
-		Longitude:       input.Longitude,
-		Latitude:        input.Latitude,
-	}
-}
-func CoreToModelInput(input kos.CoreInput) BoardingHouse {
-	return BoardingHouse{
-		UserID:          input.UserID,
-		Name:            input.Name,
-		Description:     input.Description,
-		Category:        input.Category,
-		Price:           input.Price,
-		Rooms:           input.Rooms,
-		Address:         input.Address,
-		KosFacilities:   input.KosFacilities,
-		KosRules:        input.KosRules,
-		PhotoMain:       input.PhotoMain,
-		PhotoFront:      input.PhotoFront,
-		PhotoBack:       input.PhotoBack,
-		PhotoRoomFront:  input.PhotoRoomFront,
-		PhotoRoomInside: input.PhotoRoomInside,
-		Longitude:       input.Longitude,
-		Latitude:        input.Latitude,
 	}
 }
 
