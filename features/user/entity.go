@@ -4,12 +4,12 @@ import "time"
 
 type Core struct {
 	ID           uint
-	Name         string
-	UserName     string
-	Email        string
-	Password     string
-	Gender       string
-	Role         string
+	Name         string `validate:"required"`
+	UserName     string `validate:"required"`
+	Email        string `validate:"required,email"`
+	Password     string `validate:"required"`
+	Gender       string `validate:"required"`
+	Role         string `validate:"required"`
 	PhotoProfile string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
