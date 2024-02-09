@@ -2,6 +2,7 @@ package service
 
 import (
 	"KosKita/features/booking"
+	"errors"
 )
 
 type bookService struct {
@@ -33,4 +34,18 @@ func (bs *bookService) CancelBooking(userIdLogin int, bookingId string, bookingC
 
 	err := bs.bookData.CancelBooking(userIdLogin, bookingId, bookingCore)
 	return err
+}
+
+// WebhoocksData implements booking.BookServiceInterface.
+func (bs *bookService) WebhoocksData(webhoocksReq booking.BookingCore) error {
+	if webhoocksReq.Code == "" {
+		return errors.New("invalid order id")
+	}
+
+	err := bs.WebhoocksData(webhoocksReq)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

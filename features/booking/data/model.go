@@ -88,3 +88,11 @@ func (mod *Booking) GenerateCode() (err error) {
 
 	return
 }
+
+func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
+	return Booking{
+		Payment: Payment{
+			Status: reqNotif.Payment.Status,
+		},
+	}
+}
