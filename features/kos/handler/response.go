@@ -6,6 +6,7 @@ import (
 )
 
 type KosFacilityResponse struct {
+	ID              uint   `json:"id"`
 	Facility        string `json:"facility"`
 }
 
