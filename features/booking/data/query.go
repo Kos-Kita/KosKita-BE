@@ -4,6 +4,7 @@ import (
 	"KosKita/features/booking"
 	kd "KosKita/features/kos/data"
 	"KosKita/utils/externalapi"
+	"errors"
 
 	"gorm.io/gorm"
 )
@@ -81,4 +82,30 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	}
 
 	return &bookCore, nil
+}
+
+// CancelBooking implements booking.BookDataInterface.
+func (repo *bookQuery) CancelBooking(userIdLogin int, bookingId string, bookingCore booking.BookingCore) error {
+	if bookingCore.Payment.Status == "cancelled" {
+		repo.paymentMidtrans.CancelOrderPayment(bookingId)
+	}
+
+	booking := Booking{}
+	tx := repo.db.Where("code = ? AND user_id = ?", bookingId, userIdLogin).First(&booking)
+	if tx.Error != nil {
+		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+			return errors.New("you do not have permission to edit this product")
+		}
+		return tx.Error
+	}
+	bookingInputGorm := CoreToModelBookCancel(bookingCore)
+
+	tx = repo.db.Model(&booking).Updates(&bookingInputGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found WHYYYYYYYYYYYYYY")
+	}
+	return nil
 }

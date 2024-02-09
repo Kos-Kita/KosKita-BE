@@ -12,7 +12,7 @@ import (
 )
 
 type Booking struct {
-	Code            int     `gorm:"column:code; primaryKey;"`
+	Code            string  `gorm:"column:code; primaryKey;"`
 	Total           float64 `gorm:"column:total;"`
 	UserId          uint
 	BoardingHouseId uint
@@ -43,6 +43,14 @@ func CoreToModelBook(input booking.BookingCore) Booking {
 	}
 }
 
+func CoreToModelBookCancel(input booking.BookingCore) Booking {
+	return Booking{
+		Payment: Payment{
+			Status: input.Payment.Status,
+		},
+	}
+}
+
 func ModelToCoreBook(model Booking) booking.BookingCore {
 	return booking.BookingCore{
 		Code:          model.Code,
@@ -68,10 +76,15 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 }
 
 func (mod *Booking) GenerateCode() (err error) {
-	mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
+	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
+	var bookCode int
+	bookCode, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 	if err != nil {
 		return err
 	}
+	// var stringCode string
+	stringCode := strconv.Itoa(bookCode)
+	mod.Code = stringCode
 
 	return
 }
