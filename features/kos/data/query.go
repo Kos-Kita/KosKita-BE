@@ -26,6 +26,46 @@ func (repo *kosQuery) Insert(userIdLogin int, input kos.Core) error {
 		return tx.Error
 	}
 
+	for _, facility := range input.KosFacilities {
+		facilityModel := KosFacility{
+			Facility:        facility.Facility,
+			BoardingHouseID: kosInput.ID,
+		}
+		tx = repo.db.Create(&facilityModel)
+		if tx.Error != nil {
+			return tx.Error
+		}
+	}
+
+	for _, rule := range input.KosRules {
+		ruleModel := KosRule{
+			Rule:            rule.Rule,
+			BoardingHouseID: kosInput.ID,
+		}
+		tx = repo.db.Create(&ruleModel)
+		if tx.Error != nil {
+			return tx.Error
+		}
+	}
+
+	return nil
+}
+
+// InsertImage implements kos.KosDataInterface.
+func (repo *kosQuery) InsertImage(userIdLogin int, kosId int, input kos.CoreFoto) error {
+	kos := BoardingHouse{}
+	tx := repo.db.Where("id = ? AND user_id = ?", kosId, userIdLogin).First(&kos)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	kosInput := CoreToModelFoto(input)
+
+	tx = repo.db.Model(&kos).Updates(&kosInput)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
 	return nil
 }
 
@@ -79,7 +119,7 @@ func (repo *kosQuery) SelectByRating() ([]kos.Core, error) {
 	var kosData []BoardingHouse
 	var result []kos.Core
 
-	tx := repo.db.Preload("User").Preload("Ratings").Table("boarding_houses").
+	tx := repo.db.Preload("User").Preload("Ratings").Preload("KosFacilities").Preload("KosRules").Table("boarding_houses").
 		Joins("left join ratings on boarding_houses.id = ratings.boarding_house_id").
 		Group("boarding_houses.id").
 		Select("boarding_houses.*, AVG(ratings.score) as average_rating").
@@ -109,7 +149,7 @@ func (repo *kosQuery) Delete(userIdLogin int, kosId int) error {
 // SelectById implements kos.KosDataInterface.
 func (repo *kosQuery) SelectById(kosId int) (*kos.Core, error) {
 	var kosData BoardingHouse
-	tx := repo.db.Preload("User").Preload("Ratings").Where("id = ?", kosId).First(&kosData)
+	tx := repo.db.Preload("User").Preload("Ratings").Preload("KosFacilities").Preload("KosRules").Where("id = ?", kosId).First(&kosData)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -121,7 +161,7 @@ func (repo *kosQuery) SelectById(kosId int) (*kos.Core, error) {
 // SelectByUserId implements kos.KosDataInterface.
 func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.Core, error) {
 	var kosData []BoardingHouse
-	tx := repo.db.Preload("User").Preload("Ratings").Where("user_id = ?", userIdLogin).Find(&kosData)
+	tx := repo.db.Preload("User").Preload("Ratings").Preload("KosFacilities").Preload("KosRules").Where("user_id = ?", userIdLogin).Find(&kosData)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
@@ -137,7 +177,7 @@ func (repo *kosQuery) SelectByUserId(userIdLogin int) ([]kos.Core, error) {
 // SearchKos implements kos.KosDataInterface.
 func (repo *kosQuery) SearchKos(query, category string, minPrice, maxPrice int) ([]kos.Core, error) {
 	var kosDataGorms []BoardingHouse
-	tx := repo.db.Preload("User").Preload("Ratings")
+	tx := repo.db.Preload("User").Preload("Ratings").Preload("KosFacilities").Preload("KosRules")
 
 	if query != "" {
 		tx = tx.Where("address LIKE ?", "%"+query+"%")
@@ -164,4 +204,3 @@ func (repo *kosQuery) SearchKos(query, category string, minPrice, maxPrice int) 
 
 	return result, nil
 }
-

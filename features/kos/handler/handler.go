@@ -35,6 +35,34 @@ func (handler *KosHandler) CreateKos(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
 	}
 
+	kosCore := RequestToCore(newKos, uint(userIdLogin))
+
+	errInsert := handler.kosService.Create(userIdLogin, kosCore)
+	if errInsert != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errInsert.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success insert kos", nil))
+}
+
+func (handler *KosHandler) UploadImages(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+
+	kosID, err := strconv.Atoi(c.Param("kosid"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error parsing kos id", nil))
+	}
+
+	newFoto := KosFotoRequest{}
+	errBind := c.Bind(&newFoto)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+
 	var imageUrls []string
 	photoFields := []string{"main_kos_photo", "front_kos_photo", "back_kos_photo", "front_room_photo", "inside_room_photo"}
 
@@ -49,18 +77,17 @@ func (handler *KosHandler) CreateKos(c echo.Context) error {
 			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error uploading the image", nil))
 		}
 
-		// Menambahkan URL gambar ke slice
 		imageUrls = append(imageUrls, imageURL)
 	}
 
-	kosCore := RequestToCore(newKos, imageUrls, uint(userIdLogin))
+	kosCore := RequestToCoreFoto(imageUrls, uint(userIdLogin))
 
-	errInsert := handler.kosService.Create(userIdLogin, kosCore)
+	errInsert := handler.kosService.CreateImage(userIdLogin, kosID, kosCore)
 	if errInsert != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errInsert.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success insert kos", nil))
+	return c.JSON(http.StatusOK, responses.WebResponse("success upload image", nil))
 }
 
 func (handler *KosHandler) UpdateKos(c echo.Context) error {
@@ -104,7 +131,6 @@ func (handler *KosHandler) UpdateKos(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success update kos", nil))
 }
-
 
 func (handler *KosHandler) CreateRating(c echo.Context) error {
 	userIdLogin := middlewares.ExtractTokenUserId(c)
