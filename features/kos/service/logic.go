@@ -160,7 +160,6 @@ func (ks *kosService) SearchKos(query string, category string, minPrice int, max
 	return kos, nil
 }
 
-
 // CreateImage implements kos.KosServiceInterface.
 func (ks *kosService) CreateImage(userIdLogin int, kosId int, input kos.CoreFoto) error {
 	user, err := ks.userService.GetById(userIdLogin)
@@ -172,11 +171,10 @@ func (ks *kosService) CreateImage(userIdLogin int, kosId int, input kos.CoreFoto
 		return errors.New("lu bukan owner")
 	}
 
-		if input.PhotoMain == "" {
+	if input.PhotoMain == "" {
 		return errors.New("photo main is required")
 	}
 
-	
 	if input.PhotoFront == "" {
 		return errors.New("photo front is required")
 	}

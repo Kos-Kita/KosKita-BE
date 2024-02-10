@@ -30,7 +30,7 @@ func (handler *BookHandler) CreateBook(c echo.Context) error {
 	newBook := BookRequest{}
 	errBind := c.Bind(&newBook)
 	if errBind != nil {
-		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data order not valid", nil))
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data booking not valid", nil))
 	}
 
 	bookCore := RequestToCoreBook(newBook, uint(userIdLogin))
@@ -66,6 +66,23 @@ func (handler *BookHandler) CancelBooking(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success cancel booking", nil))
+}
+
+func (handler *BookHandler) GetBooking(c echo.Context) error {
+	idJWT := middlewares.ExtractTokenUserId(c)
+	if idJWT == 0 {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("unauthorized or jwt expired", nil))
+	}
+
+	results, err := handler.bookService.GetBooking(uint(idJWT))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error booking. "+err.Error(), nil))
+	}
+	var bookingResults []BookingHistoryResponse
+	for _, result := range results {
+		bookingResults = append(bookingResults, CoreToResponseBookHistory(&result))
+	}
+	return c.JSON(http.StatusOK, responses.WebResponse("Success get booking.", bookingResults))
 }
 
 func (handler *BookHandler) WebhoocksNotification(c echo.Context) error {

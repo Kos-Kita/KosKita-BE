@@ -2,6 +2,8 @@ package data
 
 import (
 	"KosKita/features/booking"
+	"KosKita/features/kos"
+	"KosKita/features/kos/data"
 	kd "KosKita/features/kos/data"
 	"KosKita/utils/externalapi"
 	"errors"
@@ -105,9 +107,27 @@ func (repo *bookQuery) CancelBooking(userIdLogin int, bookingId string, bookingC
 		return tx.Error
 	}
 	if tx.RowsAffected == 0 {
-		return errors.New("error record not found WHYYYYYYYYYYYYYY")
+		return errors.New("error record not found")
 	}
 	return nil
+}
+
+// GetBooking implements booking.BookDataInterface.
+func (repo *bookQuery) GetBooking(userId uint) ([]booking.BookingCore, error) {
+	var bookingGorm []Booking
+	tx := repo.db.Preload("BoardingHouse").Preload("User").Find(&bookingGorm, "user_id = ?", userId)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return nil, errors.New("find booking failed, row affected = 0")
+	}
+	var bookingCores []booking.BookingCore
+	for _, v := range bookingGorm {
+		bookingCores = append(bookingCores, ModelToCoreBook(v))
+	}
+
+	return bookingCores, nil
 }
 
 // WebhoocksData implements booking.BookDataInterface.
@@ -122,4 +142,24 @@ func (repo *bookQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
 		return errors.New("error record not found ")
 	}
 	return nil
+}
+
+func (repo *bookQuery) GetRatingAndFacility(userId uint) ([]kos.Core, error) {
+	var kosData []data.BoardingHouse
+	var result []kos.Core
+
+	tx := repo.db.Preload("Ratings").Preload("KosFacilities").Table("boarding_houses").Find(&kosData)
+
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	for _, k := range kosData {
+		result = append(result, k.ModelToCoreKos())
+	}
+	// for _, v := range kosData {
+	// 	fmt.Println(v.Ratings)
+
+	// }
+	return result, nil
 }

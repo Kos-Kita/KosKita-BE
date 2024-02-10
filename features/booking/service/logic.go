@@ -36,6 +36,15 @@ func (bs *bookService) CancelBooking(userIdLogin int, bookingId string, bookingC
 	return err
 }
 
+// GetBooking implements booking.BookServiceInterface.
+func (bs *bookService) GetBooking(userId uint) ([]booking.BookingCore, error) {
+	results, err := bs.bookData.GetBooking(userId)
+	if err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
 // WebhoocksData implements booking.BookServiceInterface.
 func (bs *bookService) WebhoocksData(webhoocksReq booking.BookingCore) error {
 	if webhoocksReq.Code == "" {

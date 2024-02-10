@@ -70,7 +70,7 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 		BillCode:      model.BillCode,
 		Status:        model.Status,
 		CreatedAt:     model.CreatedAt,
-		ExpiredAt:     *model.ExpiredAt,
+		// ExpiredAt:     *model.ExpiredAt,
 		// PaidAt:        *model.PaidAt,
 	}
 }

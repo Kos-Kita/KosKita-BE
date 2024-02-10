@@ -65,4 +65,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/booking", bookHandlerAPI.CreateBook, middlewares.JWTMiddleware())
 	e.PUT("/booking/:id", bookHandlerAPI.CancelBooking, middlewares.JWTMiddleware())
 	e.POST("/notification", bookHandlerAPI.WebhoocksNotification)
+	e.GET("/booking", bookHandlerAPI.GetBooking, middlewares.JWTMiddleware())
 }
