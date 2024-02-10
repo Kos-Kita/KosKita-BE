@@ -160,7 +160,6 @@ func (ks *kosService) SearchKos(query string, category string, minPrice int, max
 	return kos, nil
 }
 
-
 // CreateImage implements kos.KosServiceInterface.
 func (ks *kosService) CreateImage(userIdLogin int, kosId int, input kos.CoreFoto) error {
 	user, err := ks.userService.GetById(userIdLogin)
