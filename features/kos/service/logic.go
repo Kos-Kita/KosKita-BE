@@ -171,31 +171,6 @@ func (ks *kosService) CreateImage(userIdLogin int, kosId int, input kos.CoreFoto
 		return errors.New("lu bukan owner")
 	}
 
-	if input.PhotoMain == "" {
-		return errors.New("photo main is required")
-	}
-
-	if input.PhotoFront == "" {
-		return errors.New("photo front is required")
-	}
-
-	if input.PhotoBack == "" {
-		return errors.New("photo back is required")
-	}
-
-	if input.PhotoRoomFront == "" {
-		return errors.New("photo room front is required")
-	}
-
-	if input.PhotoRoomInside == "" {
-		return errors.New("photo room inside is required")
-	}
-
-	errValidate := ks.validate.Struct(input)
-	if errValidate != nil {
-		return errValidate
-	}
-
 	errInsert := ks.kosData.InsertImage(userIdLogin, kosId, input)
 	if errInsert != nil {
 		return errInsert

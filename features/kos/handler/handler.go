@@ -68,7 +68,7 @@ func (handler *KosHandler) UploadImages(c echo.Context) error {
 	for _, field := range photoFields {
 		fileHeader, err := c.FormFile(field)
 		if err != nil {
-			return c.JSON(http.StatusBadRequest, responses.WebResponse("error retrieving the file", nil))
+			return c.JSON(http.StatusBadRequest, responses.WebResponse("masukan semua foto", nil))
 		}
 
 		imageURL, err := handler.cld.UploadImage(fileHeader)
@@ -83,7 +83,51 @@ func (handler *KosHandler) UploadImages(c echo.Context) error {
 
 	errInsert := handler.kosService.CreateImage(userIdLogin, kosID, kosCore)
 	if errInsert != nil {
-		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error create kos "+errInsert.Error(), nil))
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error upload image -> "+errInsert.Error(), nil))
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success upload image", nil))
+}
+
+func (handler *KosHandler) UpdateImages(c echo.Context) error {
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
+	}
+
+	kosID, err := strconv.Atoi(c.Param("kosid"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error parsing kos id", nil))
+	}
+
+	newFoto := KosFotoRequest{}
+	errBind := c.Bind(&newFoto)
+	if errBind != nil {
+		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
+	}
+
+	var imageUrls []string
+	photoFields := []string{"main_kos_photo", "front_kos_photo", "back_kos_photo", "front_room_photo", "inside_room_photo"}
+
+	for _, field := range photoFields {
+		fileHeader, err := c.FormFile(field)
+		if err != nil {
+			continue
+		}
+
+		imageURL, err := handler.cld.UploadImage(fileHeader)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, responses.WebResponse("error uploading the image", nil))
+		}
+
+		imageUrls = append(imageUrls, imageURL)
+	}
+
+	kosCore := RequestToCoreFotoPut(imageUrls, uint(userIdLogin))
+
+	errInsert := handler.kosService.CreateImage(userIdLogin, kosID, kosCore)
+	if errInsert != nil {
+		return c.JSON(http.StatusInternalServerError, responses.WebResponse("error upload image"+errInsert.Error(), nil))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success upload image", nil))
@@ -106,21 +150,7 @@ func (handler *KosHandler) UpdateKos(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, responses.WebResponse("error bind data. data not valid", nil))
 	}
 
-	var imageUrls []string
-	photoFields := []string{"main_kos_photo", "front_kos_photo", "back_kos_photo", "front_room_photo", "inside_room_photo"}
-
-	for _, field := range photoFields {
-		fileHeader, _ := c.FormFile(field)
-		if fileHeader != nil {
-			imageURL, err := handler.cld.UploadImage(fileHeader)
-			if err != nil {
-				return c.JSON(http.StatusInternalServerError, responses.WebResponse("error uploading the image", nil))
-			}
-			imageUrls = append(imageUrls, imageURL)
-		}
-	}
-
-	kosCore := RequestToCorePut(updateKos, imageUrls, uint(userIdLogin))
+	kosCore := RequestToCorePut(updateKos, uint(userIdLogin))
 	kosCore.ID = uint(kosID)
 
 	errUpdate := handler.kosService.Put(userIdLogin, kosCore)
