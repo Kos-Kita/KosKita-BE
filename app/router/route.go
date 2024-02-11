@@ -10,6 +10,7 @@ import (
 	ud "KosKita/features/user/data"
 	uh "KosKita/features/user/handler"
 	us "KosKita/features/user/service"
+	s "KosKita/features/message"
 
 	"KosKita/utils/cloudinary"
 	"KosKita/utils/encrypts"
@@ -21,6 +22,9 @@ import (
 )
 
 func InitRouter(db *gorm.DB, e *echo.Echo) {
+	hub := s.NewHub()
+	wsHandler := s.NewHandler(hub)
+	go hub.Run()
 
 	hash := encrypts.New()
 	cloudinaryUploader := cloudinary.New()
@@ -39,6 +43,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	bookHandlerAPI := bh.New(bookService)
 
 	// define routes/ endpoint MESSAGE
+	e.POST("/ws/createRoom", wsHandler.CreateRoom)
+	e.GET("/ws/joinRoom/:roomId", wsHandler.JoinRoom)
+	e.GET("/ws/getRooms", wsHandler.GetRooms)
+	e.GET("/ws/getClients/:roomId", wsHandler.GetClients)
 
 	// define routes/ endpoint IMAGE
 	e.POST("/upload-image/:kosid", kosHandlerAPI.UploadImages, middlewares.JWTMiddleware())
