@@ -74,7 +74,7 @@ func (ch *ChatHandler) JoinRoom(c echo.Context) error {
 	}
 
 	m := &cd.Chat{
-		Message:  "A new user has joined the room",
+		Message:  "",
 		RoomID:   roomID,
 	}
 
@@ -85,4 +85,15 @@ func (ch *ChatHandler) JoinRoom(c echo.Context) error {
 	cl.ReadMessage(ch.hub, ch.chatService) 
 
 	return nil
+}
+
+func (ch *ChatHandler) GetMessages(c echo.Context) error {
+	roomID := c.Param("roomId")
+
+	chats, errGet := ch.chatService.GetMessage(roomID)
+	if errGet != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": errGet.Error()})
+	}
+
+	return c.JSON(http.StatusOK, chats)
 }

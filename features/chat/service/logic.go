@@ -21,3 +21,14 @@ func (cs *chatService) CreateChat(userIdLogin int, input chat.Core) (chat.Core, 
 
 	return chatOutput, nil
 }
+
+
+// GetMessage implements chat.ChatServiceInterface.
+func (cs *chatService) GetMessage(roomId string) ([]chat.Core, error) {
+	chats, errGet := cs.chatData.GetMessage(roomId)
+	if errGet != nil {
+		return nil, errGet
+	}
+
+	return chats, nil
+}

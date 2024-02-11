@@ -34,12 +34,8 @@ func CoreToModelChat(input chat.Core) Chat {
 
 func (m Chat) ModelToCoreChat() chat.Core {
 	return chat.Core{
-		ID:        m.ID,
 		Message:   m.Message,
 		RoomID:    m.RoomID,
 		UserID:    m.UserID,
-		CreatedAt: m.CreatedAt,
-		UpdatedAt: m.UpdatedAt,
-		User:      m.User.ModelToCore(),
 	}
 }

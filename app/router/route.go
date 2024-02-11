@@ -50,7 +50,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/create-room", wsHandler.CreateRoom)
 	e.GET("/get-room", wsHandler.GetRooms)
 	e.GET("/join-room/:roomId", wsHandler.JoinRoom)
-	// e.GET("/get-client/:roomId", wsHandler.GetClients)
+	e.GET("/room/:roomId/messages", wsHandler.GetMessages)
 
 	// define routes/ endpoint IMAGE
 	e.POST("/upload-image/:kosid", kosHandlerAPI.UploadImages, middlewares.JWTMiddleware())
