@@ -52,23 +52,17 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface) {
 		}
 
 		coreMsg := cc.Core{
-			ID:        msg.ID,
 			Message:   msg.Message,
 			RoomID:    msg.RoomID,
 			UserID:    msg.UserID,
-			CreatedAt: msg.CreatedAt,
-			UpdatedAt: msg.UpdatedAt,
-			User:      msg.User.ModelToCore(),
 		}
 
-		// Ubah c.ID menjadi integer
 		userID, err := strconv.Atoi(c.ID)
 		if err != nil {
 			log.Printf("Error converting ID to integer: %v", err)
 			continue
 		}
 
-		// Simpan pesan ke database
 		_, err = chatService.CreateChat(userID, coreMsg)
 		if err != nil {
 			log.Printf("Error saving message: %v", err)

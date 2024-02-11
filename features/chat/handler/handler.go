@@ -4,6 +4,7 @@ import (
 	ch "KosKita/features/chat"
 	cd "KosKita/features/chat/data"
 	hub "KosKita/features/chat/service"
+	"KosKita/utils/responses"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -67,22 +68,22 @@ func (ch *ChatHandler) JoinRoom(c echo.Context) error {
 	clientID := c.QueryParam("userId")
 
 	cl := &hub.Client{
-		Conn:     conn,
-		Message:  make(chan *cd.Chat, 10),
-		ID:       clientID,
-		RoomID:   roomID,
+		Conn:    conn,
+		Message: make(chan *cd.Chat, 10),
+		ID:      clientID,
+		RoomID:  roomID,
 	}
 
 	m := &cd.Chat{
-		Message:  "",
-		RoomID:   roomID,
+		Message: "",
+		RoomID:  roomID,
 	}
 
 	ch.hub.Register <- cl
 	ch.hub.Broadcast <- m
 
 	go cl.WriteMessage()
-	cl.ReadMessage(ch.hub, ch.chatService) 
+	cl.ReadMessage(ch.hub, ch.chatService)
 
 	return nil
 }
@@ -95,5 +96,8 @@ func (ch *ChatHandler) GetMessages(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": errGet.Error()})
 	}
 
-	return c.JSON(http.StatusOK, chats)
+	chatResult := CoreToGetChats(chats)
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success get message.", chatResult))
+
 }

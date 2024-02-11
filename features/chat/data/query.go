@@ -27,13 +27,9 @@ func (repo *chatQuery) CreateMessage(userIdLogin int, input chat.Core) (chat.Cor
 	}
 
 	return chat.Core{
-		// ID:        chatInput.ID,
 		Message: chatInput.Message,
 		RoomID:  chatInput.RoomID,
 		UserID:  chatInput.UserID,
-		// CreatedAt: chatInput.CreatedAt,
-		// UpdatedAt: chatInput.UpdatedAt,
-		// User:      chatInput.User.ModelToCore(),
 	}, nil
 }
 

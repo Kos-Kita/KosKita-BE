@@ -4,7 +4,6 @@ import (
 	"KosKita/features/chat"
 	"KosKita/features/user/data"
 
-	"github.com/gorilla/websocket"
 	"gorm.io/gorm"
 )
 
@@ -14,14 +13,6 @@ type Chat struct {
 	RoomID  string
 	UserID  uint
 	User    data.User
-}
-
-type Client struct {
-	Conn     *websocket.Conn
-	Message  chan *Chat
-	ID       string
-	RoomID   string
-	Username string
 }
 
 func CoreToModelChat(input chat.Core) Chat {

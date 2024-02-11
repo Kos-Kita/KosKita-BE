@@ -2,7 +2,6 @@ package data
 
 import (
 	"KosKita/features/user"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -17,8 +16,6 @@ type User struct {
 	Gender       string `gorm:"not null"`
 	Role         string `gorm:"not null"`
 	PhotoProfile string
-	OnlineStatus bool
-	LastOnlineAt *time.Time
 }
 
 func CoreToModel(input user.Core) User {
