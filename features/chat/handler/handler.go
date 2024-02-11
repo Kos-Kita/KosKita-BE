@@ -50,7 +50,6 @@ func (ch *ChatHandler) GetRooms(c echo.Context) error {
 }
 
 func (ch *ChatHandler) JoinRoom(c echo.Context) error {
-
 	var upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
