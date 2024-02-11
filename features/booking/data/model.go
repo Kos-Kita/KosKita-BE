@@ -70,7 +70,7 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 		BillCode:      model.BillCode,
 		Status:        model.Status,
 		CreatedAt:     model.CreatedAt,
-		ExpiredAt:     *model.ExpiredAt,
+		// ExpiredAt:     *model.ExpiredAt,
 		// PaidAt:        *model.PaidAt,
 	}
 }
@@ -87,4 +87,12 @@ func (mod *Booking) GenerateCode() (err error) {
 	mod.Code = stringCode
 
 	return
+}
+
+func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
+	return Booking{
+		Payment: Payment{
+			Status: reqNotif.Payment.Status,
+		},
+	}
 }
