@@ -37,12 +37,16 @@ func (handler *KosHandler) CreateKos(c echo.Context) error {
 
 	kosCore := RequestToCore(newKos, uint(userIdLogin))
 
-	errInsert := handler.kosService.Create(userIdLogin, kosCore)
+	kosId, errInsert := handler.kosService.Create(userIdLogin, kosCore)
 	if errInsert != nil {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errInsert.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success insert kos", nil))
+	response := KosIdResponse{
+		ID: strconv.Itoa(int(kosId)),
+	}
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success create kos", response))
 }
 
 func (handler *KosHandler) UploadImages(c echo.Context) error {

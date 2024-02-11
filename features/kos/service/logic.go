@@ -23,47 +23,47 @@ func New(repo kos.KosDataInterface, us user.UserServiceInterface) kos.KosService
 }
 
 // Create implements kos.KosServiceInterface.
-func (ks *kosService) Create(userIdLogin int, input kos.CoreInput) error {
+func (ks *kosService) Create(userIdLogin int, input kos.CoreInput) (uint, error) {
 	user, err := ks.userService.GetById(userIdLogin)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if user.Role != "owner" {
-		return errors.New("lu bukan owner")
+		return 0, errors.New("anda bukan owner")
 	}
 
 	if input.Name == "" {
-		return errors.New("lu belum buat name")
+		return 0, errors.New("name anda kosong")
 	}
 
 	if input.Category == "" {
-		return errors.New("category nya mana bos")
+		return 0, errors.New("category anda kosong")
 	}
 
 	if input.Price <= 0 {
-		return errors.New("harga nya lu belum isi")
+		return 0, errors.New("harga anda kosong")
 	}
 
 	if input.Rooms <= 0 {
-		return errors.New("isi rooms nya")
+		return 0, errors.New("rooms anda kosong")
 	}
 
 	if input.Address == "" {
-		return errors.New("alamat lu dimana")
+		return 0, errors.New("alamat anda kosong")
 	}
 
 	errValidate := ks.validate.Struct(input)
 	if errValidate != nil {
-		return errValidate
+		return 0, errValidate
 	}
 
-	errInsert := ks.kosData.Insert(userIdLogin, input)
+	kosId, errInsert := ks.kosData.Insert(userIdLogin, input)
 	if errInsert != nil {
-		return errInsert
+		return 0, errInsert
 	}
 
-	return nil
+	return kosId, nil
 }
 
 // Put implements kos.KosServiceInterface.
@@ -78,7 +78,7 @@ func (ks *kosService) Put(userIdLogin int, input kos.Core) error {
 // CreateRating implements kos.KosServiceInterface.
 func (ks *kosService) CreateRating(userIdLogin int, kosId int, input kos.RatingCore) error {
 	if input.Score < 1 || input.Score > 5 {
-		return errors.New("skor nya kelebihan boy")
+		return errors.New("skor hanya bisa 1 sampai 5")
 	}
 
 	existingRating, err := ks.kosData.CekRating(userIdLogin, kosId)
@@ -107,7 +107,7 @@ func (ks *kosService) GetByRating() ([]kos.Core, error) {
 // Delete implements kos.KosServiceInterface.
 func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 	if userIdLogin <= 0 {
-		return errors.New("perlu login dahulu")
+		return errors.New("perlu login dulu")
 	}
 	if kosId <= 0 {
 		return errors.New("kos id tidak valid")
@@ -169,7 +169,7 @@ func (ks *kosService) CreateImage(userIdLogin int, kosId int, input kos.CoreFoto
 	}
 
 	if user.Role != "owner" {
-		return errors.New("lu bukan owner")
+		return errors.New("anda bukan owner")
 	}
 
 	errInsert := ks.kosData.InsertImage(userIdLogin, kosId, input)

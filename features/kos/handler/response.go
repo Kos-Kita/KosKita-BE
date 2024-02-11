@@ -42,6 +42,10 @@ type PhotoMainResponse struct {
 	PhotoMain string `json:"main_kos_photo"`
 }
 
+type KosIdResponse struct {
+	ID string `json:"kos_id"`
+}
+
 type KosResponseDetail struct {
 	ID            uint                          `json:"id"`
 	Name          string                         `json:"kos_name"`

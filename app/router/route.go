@@ -35,7 +35,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	kosHandlerAPI := kh.New(kosService, cloudinaryUploader)
 
 	bookData := bd.New(db, midtrans)
-	bookService := bs.New(bookData)
+	bookService := bs.New(bookData, userService)
 	bookHandlerAPI := bh.New(bookService)
 
 	// define routes/ endpoint MESSAGE
@@ -62,7 +62,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/users/kos", kosHandlerAPI.GetKosByUserId, middlewares.JWTMiddleware())
 	e.GET("/kos/search", kosHandlerAPI.SearchKos)
 
-	// define routes/ endpoint KOS
+	// define routes/ endpoint BOOKING
 	e.POST("/booking", bookHandlerAPI.CreateBook, middlewares.JWTMiddleware())
 	e.PUT("/booking/:id", bookHandlerAPI.CancelBooking, middlewares.JWTMiddleware())
 }
