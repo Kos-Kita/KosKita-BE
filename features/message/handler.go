@@ -71,7 +71,7 @@ func (h *Handler) JoinRoom(c echo.Context) error {
 	}
 
 	m := &Message{
-		Content:  "A new user has joined the room",
+		Message:  "A new user has joined the room",
 		RoomID:   roomID,
 		Username: username,
 	}
