@@ -13,8 +13,6 @@ type Core struct {
 	PhotoProfile string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	OnlineStatus  bool
-	LastOnlineAt  *time.Time
 }
 
 // interface untuk Data Layer
