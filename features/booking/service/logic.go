@@ -2,22 +2,33 @@ package service
 
 import (
 	"KosKita/features/booking"
+	"KosKita/features/user"
 	"errors"
 )
 
 type bookService struct {
-	bookData booking.BookDataInterface
+	bookData    booking.BookDataInterface
+	userService user.UserServiceInterface
 }
 
-func New(repo booking.BookDataInterface) booking.BookServiceInterface {
+func New(repo booking.BookDataInterface, us user.UserServiceInterface) booking.BookServiceInterface {
 	return &bookService{
-		bookData: repo,
+		bookData:    repo,
+		userService: us,
 	}
 }
 
 // Create implements booking.BookServiceInterface.
 func (bs *bookService) Create(userIdLogin int, input booking.BookingCore) (*booking.BookingCore, error) {
-	// Insert booking into database
+	user, err := bs.userService.GetById(userIdLogin)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.Role != "renter" {
+		return nil, errors.New("anda bukan renter")
+	}
+
 	bookCore, err := bs.bookData.Insert(userIdLogin, input)
 	if err != nil {
 		return nil, err

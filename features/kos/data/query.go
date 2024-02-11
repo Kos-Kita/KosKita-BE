@@ -17,13 +17,13 @@ func New(db *gorm.DB) kos.KosDataInterface {
 }
 
 // Insert implements kos.KosDataInterface.
-func (repo *kosQuery) Insert(userIdLogin int, input kos.CoreInput) error {
+func (repo *kosQuery) Insert(userIdLogin int, input kos.CoreInput) (uint, error) {
 	kosInput := CoreToModel(input)
 	kosInput.UserID = uint(userIdLogin)
 
 	tx := repo.db.Create(&kosInput)
 	if tx.Error != nil {
-		return tx.Error
+		return 0, tx.Error
 	}
 
 	for _, facility := range input.KosFacilities {
@@ -33,7 +33,7 @@ func (repo *kosQuery) Insert(userIdLogin int, input kos.CoreInput) error {
 		}
 		tx = repo.db.Create(&facilityModel)
 		if tx.Error != nil {
-			return tx.Error
+			return 0, tx.Error
 		}
 	}
 
@@ -44,11 +44,11 @@ func (repo *kosQuery) Insert(userIdLogin int, input kos.CoreInput) error {
 		}
 		tx = repo.db.Create(&ruleModel)
 		if tx.Error != nil {
-			return tx.Error
+			return 0, tx.Error
 		}
 	}
 
-	return nil
+	return kosInput.ID, nil
 }
 
 // InsertImage implements kos.KosDataInterface.
