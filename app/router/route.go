@@ -10,7 +10,9 @@ import (
 	ud "KosKita/features/user/data"
 	uh "KosKita/features/user/handler"
 	us "KosKita/features/user/service"
-	mh "KosKita/features/message"
+	cs "KosKita/features/chat/service"
+	ch "KosKita/features/chat/handler"
+	cd "KosKita/features/chat/data"
 
 	"KosKita/utils/cloudinary"
 	"KosKita/utils/encrypts"
@@ -22,8 +24,10 @@ import (
 )
 
 func InitRouter(db *gorm.DB, e *echo.Echo) {
-	hub := mh.NewHub()
-	wsHandler := mh.NewHandler(hub)
+	chatData := cd.New(db)
+	chatService := cs.New(chatData)
+	hub := cs.NewHub()
+	wsHandler := ch.New(chatService, hub)
 	go hub.Run()
 
 	hash := encrypts.New()
@@ -44,9 +48,9 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	// define routes/ endpoint MESSAGE
 	e.POST("/create-room", wsHandler.CreateRoom)
-	e.GET("/join-room/:roomId", wsHandler.JoinRoom)
 	e.GET("/get-room", wsHandler.GetRooms)
-	e.GET("/get-client/:roomId", wsHandler.GetClients)
+	e.GET("/join-room/:roomId", wsHandler.JoinRoom)
+	// e.GET("/get-client/:roomId", wsHandler.GetClients)
 
 	// define routes/ endpoint IMAGE
 	e.POST("/upload-image/:kosid", kosHandlerAPI.UploadImages, middlewares.JWTMiddleware())

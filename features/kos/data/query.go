@@ -84,6 +84,28 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 		return tx.Error
 	}
 
+	for _, facility := range input.KosFacilities {
+		facilityModel := KosFacility{
+			Facility:        facility.Facility,
+			BoardingHouseID: kosInput.ID,
+		}
+		tx = repo.db.Create(&facilityModel)
+		if tx.Error != nil {
+			return tx.Error
+		}
+	}
+
+	for _, rule := range input.KosRules {
+		ruleModel := KosRule{
+			Rule:            rule.Rule,
+			BoardingHouseID: kosInput.ID,
+		}
+		tx = repo.db.Create(&ruleModel)
+		if tx.Error != nil {
+			return tx.Error
+		}
+	}
+
 	return nil
 }
 
