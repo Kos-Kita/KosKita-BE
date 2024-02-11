@@ -1,9 +1,11 @@
 package message
 
 import (
+	"KosKita/features/user/data"
 	"log"
 
 	"github.com/gorilla/websocket"
+	"gorm.io/gorm"
 )
 
 type Client struct {
@@ -15,10 +17,15 @@ type Client struct {
 }
 
 type Message struct {
-	Content  string `json:"content"`
+	gorm.Model
+	Message  string `json:"content"`
 	RoomID   string `json:"roomId"`
 	Username string `json:"username"`
+	UserID   uint
+	User     data.User
 }
+
+var db *gorm.DB
 
 func (c *Client) writeMessage() {
 	defer func() {
@@ -51,9 +58,15 @@ func (c *Client) readMessage(hub *Hub) {
 		}
 
 		msg := &Message{
-			Content:  string(m),
+			Message:  string(m),
 			RoomID:   c.RoomID,
 			Username: c.Username,
+		}
+
+		tx := db.Create(&msg)
+		if tx.Error != nil {
+			log.Printf("error: %v", err)
+			break
 		}
 
 		hub.Broadcast <- msg
