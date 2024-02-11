@@ -142,19 +142,7 @@ func (bh BoardingHouse) ModelToCoreKos() kos.Core {
 		CreatedAt:       bh.CreatedAt,
 		UpdatedAt:       bh.UpdatedAt,
 		Ratings:         ratings,
-		// User:            bh.User.ModelToCore(),
-		// User: kos.User{
-		// 	ID:           bh.User.ID,
-		// 	Name:         bh.User.Name,
-		// 	UserName:     bh.User.UserName,
-		// 	Email:        bh.User.Email,
-		// 	Password:     bh.User.Password,
-		// 	Gender:       bh.User.Gender,
-		// 	Role:         bh.User.Role,
-		// 	PhotoProfile: bh.User.PhotoProfile,
-		// 	CreatedAt:    bh.User.CreatedAt,
-		// 	UpdatedAt:    bh.User.UpdatedAt,
-		// },
+		User:            bh.User.ModelToCore(),
 	}
 }
 

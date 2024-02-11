@@ -72,6 +72,7 @@ func (ks *kosService) Put(userIdLogin int, input kos.Core) error {
 	if err != nil {
 		return err
 	}
+	
 	return nil
 }
 
@@ -118,6 +119,7 @@ func (ks *kosService) Delete(userIdLogin int, kosId int) error {
 		if err.Error() == "record not found" {
 			return errors.New("kos id tidak ada")
 		}
+
 		return err
 	}
 
