@@ -226,3 +226,12 @@ func (repo *kosQuery) SearchKos(query, category string, minPrice, maxPrice int) 
 
 	return result, nil
 }
+
+func (repo *kosQuery) GetTotalKos() (int, error) {
+	var count int64
+	tx := repo.db.Model(&BoardingHouse{}).Count(&count)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(count), nil
+}

@@ -163,3 +163,12 @@ func (repo *bookQuery) GetRatingAndFacility(userId uint) ([]kos.Core, error) {
 	// }
 	return result, nil
 }
+
+func (repo *bookQuery) GetTotalBooking() (int, error) {
+	var count int64
+	tx := repo.db.Model(&Booking{}).Count(&count)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+	return int(count), nil
+}

@@ -98,6 +98,7 @@ type KosDataInterface interface {
 	SelectByUserId(userIdLogin int) ([]Core, error)
 	SearchKos(query, category string, minPrice, maxPrice int) ([]Core, error)
 	InsertImage(userIdLogin, kosId int, input CoreFoto) error
+	GetTotalKos() (int, error) 
 }
 
 // interface untuk Service Layer

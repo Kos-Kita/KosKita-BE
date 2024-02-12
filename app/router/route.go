@@ -13,6 +13,9 @@ import (
 	cs "KosKita/features/chat/service"
 	ch "KosKita/features/chat/handler"
 	cd "KosKita/features/chat/data"
+	as "KosKita/features/admin/service"
+	ah "KosKita/features/admin/handler"
+
 
 	"KosKita/utils/cloudinary"
 	"KosKita/utils/encrypts"
@@ -46,11 +49,17 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	bookService := bs.New(bookData, userService)
 	bookHandlerAPI := bh.New(bookService)
 
+	adminService := as.New(userData, kosData, bookData, userService)
+	adminHandlerAPI := ah.New(adminService)
+
 	// define routes/ endpoint MESSAGE
 	e.POST("/create-room", wsHandler.CreateRoom)
 	e.GET("/get-room", wsHandler.GetRooms)
 	e.GET("/join-room/:roomId", wsHandler.JoinRoom)
 	e.GET("/room/:roomId", wsHandler.GetMessages)
+
+	// define routes/ endpoint ADMIN
+	e.GET("/admin", adminHandlerAPI.GetAllData, middlewares.JWTMiddleware())
 
 	// define routes/ endpoint IMAGE
 	e.POST("/upload-image/:kosid", kosHandlerAPI.UploadImages, middlewares.JWTMiddleware())
