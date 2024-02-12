@@ -19,6 +19,7 @@ type BookingCore struct {
 	BoardingHouseId uint
 	BoardingHouse   kd.Core
 	Payment         PaymentCore
+	Status        string
 }
 
 type PaymentCore struct {
