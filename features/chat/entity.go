@@ -6,29 +6,30 @@ import (
 )
 
 type Core struct {
-	ID        uint
-	Message   string
-	RoomID    string
-	UserID    uint
-	User      user.Core
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         uint
+	Message    string
+	RoomID     string
+	ReceiverID uint
+	SenderID   uint
+	User       user.Core
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
-type CoreRoom struct {
-	Message   string
-	RoomID    string
-	UserID    uint
-}
+// type CoreRoom struct {
+// 	Message string
+// 	RoomID  string
+// 	UserID  uint
+// }
 
 // interface untuk Data Layer
 type ChatDataInterface interface {
-	CreateMessage(userIdLogin int, input Core) (CoreRoom, error)
-	GetMessage(roomId string) ([]CoreRoom, error)
+	CreateMessage(userIdLogin int, input Core) (Core, error)
+	GetMessage(roomId string) ([]Core, error)
 }
 
 // interface untuk Service Layer
 type ChatServiceInterface interface {
-	CreateChat(userIdLogin int, input Core) (CoreRoom, error)
-	GetMessage(roomId string) ([]CoreRoom, error)
+	CreateChat(userIdLogin int, input Core) (Core, error)
+	GetMessage(roomId string) ([]Core, error)
 }
