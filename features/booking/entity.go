@@ -10,7 +10,7 @@ import (
 )
 
 type BookingCore struct {
-	Code            string
+	Code            int
 	Total           float64
 	BookedAt        time.Time
 	DeletedAt       gorm.DeletedAt
