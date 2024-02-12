@@ -77,7 +77,6 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 
 func (mod *Booking) GenerateCode() (err error) {
 	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
-	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 	var bookCode int
 	bookCode, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 	if err != nil {
@@ -90,20 +89,22 @@ func (mod *Booking) GenerateCode() (err error) {
 	return
 }
 
-// func WebhoocksCoreToModel(reqNotif booking.BookingCore) (Booking, error) {
-
-//		return Booking{
-//			Code:    reqNotif.Code,
-//			Payment: payment,
-//		}, nil
-//	}
 func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
 	return Booking{
+		Code: reqNotif.Code,
 		Payment: Payment{
 			Status: reqNotif.Payment.Status,
 		},
 	}
 }
+
+// func WebhoocksCoreToModel(reqNotif booking.BookingCore) (Booking, error) {
+
+// return Booking{
+// 	Code:    reqNotif.Code,
+// 	Payment: payment,
+// }, nil
+//	}
 
 // func Notif(reqNotif booking.PaymentCore) (Payment, error) {
 // 	switch reqNotif.Status {
