@@ -34,13 +34,13 @@ func CancelRequestToCoreBooking(input CancelBookingRequest) booking.BookingCore 
 }
 
 type WebhoocksRequest struct {
-	OrderID           int `json:"order_id"`
-	TransactionStatus string `json:"transaction_status"`
+	Code   string `json:"order_id"`
+	Status string `json:"transaction_status"`
 }
 
-func WebhoocksRequestToCore(input WebhoocksRequest) booking.BookingCore {
-	return booking.BookingCore{
-		Code:   input.OrderID,
-		Status: input.TransactionStatus,
+func WebhoocksRequestToCore(input WebhoocksRequest) booking.WebhoocksRequesCore {
+	return booking.WebhoocksRequesCore{
+		Code:   input.Code,
+		Status: input.Status,
 	}
 }

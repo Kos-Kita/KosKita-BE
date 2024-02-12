@@ -84,16 +84,35 @@ func (mod *Booking) GenerateCode() (err error) {
 	return
 }
 
-func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
-	return Booking{
-		Code: reqNotif.Code,
-
-		Payment: Notif(reqNotif.Payment),
+func WebhoocksCoreToModel(reqNotif booking.WebhoocksRequesCore) (Booking, error) {
+	codeInt, err := strconv.Atoi(reqNotif.Code)
+	if err != nil {
+		return Booking{}, err
 	}
+
+	paymentCore := booking.PaymentCore{
+		Status: reqNotif.Payment.Status,
+	}
+
+	payment, err := Notif(paymentCore)
+	if err != nil {
+		return Booking{}, err
+	}
+
+	return Booking{
+		Code:   codeInt,
+		Payment: payment,
+	}, nil
 }
 
-func Notif(reqNotif booking.PaymentCore) Payment {
-	return Payment{
-		Status: reqNotif.Status,
+func Notif(reqNotif booking.PaymentCore) (Payment, error) {
+	// memvalidasi status pembayaran
+	switch reqNotif.Status {
+	case "pending", "success", "failed", "expired":
+		return Payment{
+			Status: reqNotif.Status,
+		}, nil
+	default:
+		return Payment{}, fmt.Errorf("invalid payment status: %s", reqNotif.Status) // mengembalikan kesalahan jika status tidak valid
 	}
 }

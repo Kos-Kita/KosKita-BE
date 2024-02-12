@@ -22,6 +22,12 @@ type BookingCore struct {
 	Status        string
 }
 
+type WebhoocksRequesCore struct {
+	Code   string 
+	Status string 
+	Payment         PaymentCore
+}
+
 type PaymentCore struct {
 	Method        string
 	Bank          string
@@ -40,7 +46,7 @@ type BookDataInterface interface {
 	Insert(userIdLogin int, input BookingCore) (*BookingCore, error)
 	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
 	GetBooking(userId uint) ([]BookingCore, error)
-	WebhoocksData(webhoocksReq BookingCore) error
+	WebhoocksData(webhoocksReq WebhoocksRequesCore) error
 	GetTotalBooking() (int, error)
 }
 
@@ -49,5 +55,5 @@ type BookServiceInterface interface {
 	Create(userIdLogin int, input BookingCore) (*BookingCore, error)
 	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
 	GetBooking(userId uint) ([]BookingCore, error)
-	WebhoocksData(webhoocksReq BookingCore) error
+	WebhoocksData(webhoocksReq WebhoocksRequesCore) error
 }
