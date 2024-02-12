@@ -40,6 +40,7 @@ type BookDataInterface interface {
 	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
 	GetBooking(userId uint) ([]BookingCore, error)
 	WebhoocksData(webhoocksReq BookingCore) error
+	GetTotalBooking() (int, error)
 }
 
 // interface untuk Service Layer
