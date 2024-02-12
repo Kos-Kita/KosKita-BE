@@ -98,7 +98,7 @@ func RequestToCoreFotoPut(imageURLs []string, userIdLogin uint) kos.CoreFoto {
 	return coreFoto
 }
 
-func RequestToCorePut(input KosRequest, userIdLogin uint) kos.Core {
+func RequestToCorePut(input KosRequest, userIdLogin uint) kos.CoreInput {
 	var kosFacilities []kos.KosFacilityCore
 	for _, facility := range input.KosFacilities {
 		kosFacilities = append(kosFacilities, kos.KosFacilityCore{
@@ -113,7 +113,7 @@ func RequestToCorePut(input KosRequest, userIdLogin uint) kos.Core {
 		})
 	}
 
-	kos := kos.Core{
+	kos := kos.CoreInput{
 		UserID:        userIdLogin,
 		Name:          input.Name,
 		Description:   input.Description,
