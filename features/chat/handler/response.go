@@ -12,7 +12,7 @@ type ChatRes struct {
 	UserID  uint   `json:"user_id"`
 }
 
-func CoreToGetChat(chat chat.Core) ChatRes {
+func CoreToGetChat(chat chat.CoreRoom) ChatRes {
 	return ChatRes{
 		ID:      chat.RoomID,
 		Message: chat.Message,
@@ -20,7 +20,7 @@ func CoreToGetChat(chat chat.Core) ChatRes {
 	}
 }
 
-func CoreToGetChats(chats []chat.Core) []ChatRes {
+func CoreToGetChats(chats []chat.CoreRoom) []ChatRes {
 	res := make([]ChatRes, 0)
 	for _, chat := range chats {
 		res = append(res, ChatRes{

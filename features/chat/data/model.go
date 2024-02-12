@@ -23,8 +23,8 @@ func CoreToModelChat(input chat.Core) Chat {
 	}
 }
 
-func (m Chat) ModelToCoreChat() chat.Core {
-	return chat.Core{
+func (m Chat) ModelToCoreChat() chat.CoreRoom {
+	return chat.CoreRoom{
 		Message:   m.Message,
 		RoomID:    m.RoomID,
 		UserID:    m.UserID,
