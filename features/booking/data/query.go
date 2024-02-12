@@ -43,10 +43,7 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	if err := repo.db.Create(&bookModel).Error; err != nil {
 		return nil, err
 	}
-	// tx := repo.db.Preload("User").Where("user_id = ?", userIdLogin).First(&bookModel)
-	// if tx.Error != nil {
-	// 	return nil, tx.Error
-	// }
+
 	input.Code = bookModel.Code
 
 	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
@@ -122,10 +119,12 @@ func (repo *bookQuery) GetBooking(userId uint) ([]booking.BookingCore, error) {
 }
 
 // WebhoocksData implements booking.BookDataInterface.
-func (repo *bookQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
-
-	bookingGorm := WebhoocksCoreToModel(webhoocksReq)
-	tx := repo.db.Model(&Booking{}).Where("code = ?", webhoocksReq.Code).Updates(bookingGorm)
+func (repo *bookQuery) WebhoocksData(webhoocksReq booking.WebhoocksRequesCore) error {
+	bookingGorm, err := WebhoocksCoreToModel(webhoocksReq)
+	if err != nil {
+		return err
+	}
+	tx := repo.db.Model(&Booking{}).Where("code = ?", bookingGorm.Code).Updates(bookingGorm)
 	if tx.Error != nil {
 		return tx.Error
 	}
