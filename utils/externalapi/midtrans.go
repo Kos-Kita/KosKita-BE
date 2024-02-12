@@ -66,7 +66,7 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Payment
 		req.EChannel = &coreapi.EChannelDetail{
 			BillInfo1: "KosKita Booking",
 			BillInfo2: fmt.Sprintf("%d BookedAt", len(book.BookedAt.Format(time.RFC3339))),
-			BillKey:   fmt.Sprintf("%d", book.Code),
+			BillKey:   book.Code,
 		}
 	default:
 		return nil, errors.New("unsupported payment")
