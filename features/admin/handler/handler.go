@@ -27,8 +27,13 @@ func (handler *AdminHandler) GetAllData(c echo.Context) error {
 
 	dashboardData, errGet := handler.adminService.GetTotalData(userIdLogin)
 	if errGet != nil {
+		if errGet.Error() == "anda bukan admin" {
+			return c.JSON(http.StatusUnauthorized, responses.WebResponse(errGet.Error(), nil))
+		}
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errGet.Error(), nil))
 	}
 
-	return c.JSON(http.StatusOK, responses.WebResponse("success get dashboard data", dashboardData))
+	dashboardResult := CoreToResponseDashboard(&dashboardData)
+
+	return c.JSON(http.StatusOK, responses.WebResponse("success get dashboard data", dashboardResult))
 }

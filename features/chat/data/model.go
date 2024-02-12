@@ -9,24 +9,28 @@ import (
 
 type Chat struct {
 	gorm.Model
-	Message string
-	RoomID  string
-	UserID  uint
-	User    data.User
+	Message      string
+	RoomID       string
+	ReceiverID   uint
+	SenderID     uint
+	UserReceiver data.User `gorm:"foreignKey:ReceiverID,references:ID"`
+	UserSender   data.User `gorm:"foreignKey:SenderID,references:ID"`
 }
 
 func CoreToModelChat(input chat.Core) Chat {
 	return Chat{
-		Message: input.Message,
-		RoomID:  input.RoomID,
-		UserID:  input.UserID,
+		Message:    input.Message,
+		RoomID:     input.RoomID,
+		ReceiverID: input.ReceiverID,
+		SenderID:   input.SenderID,
 	}
 }
 
-func (m Chat) ModelToCoreChat() chat.CoreRoom {
-	return chat.CoreRoom{
-		Message:   m.Message,
-		RoomID:    m.RoomID,
-		UserID:    m.UserID,
+func (m Chat) ModelToCoreChat() chat.Core {
+	return chat.Core{
+		Message:    m.Message,
+		RoomID:     m.RoomID,
+		SenderID:   m.SenderID,
+		ReceiverID: m.ReceiverID,
 	}
 }

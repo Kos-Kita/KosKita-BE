@@ -7,28 +7,30 @@ type RoomRes struct {
 }
 
 type ChatRes struct {
-	ID      string `json:"room_id"`
-	Message string `json:"message"`
-	UserID  uint   `json:"user_id"`
+	ID         string `json:"room_id"`
+	Message    string `json:"message"`
+	SenderID   uint   `json:"sender_id"`
+	ReceiverID uint   `json:"receiver_id"`
 }
 
-func CoreToGetChat(chat chat.CoreRoom) ChatRes {
+func CoreToGetChat(chat chat.Core) ChatRes {
 	return ChatRes{
-		ID:      chat.RoomID,
-		Message: chat.Message,
-		UserID:  chat.UserID,
+		ID:         chat.RoomID,
+		Message:    chat.Message,
+		SenderID:   chat.SenderID,
+		ReceiverID: chat.ReceiverID,
 	}
 }
 
-func CoreToGetChats(chats []chat.CoreRoom) []ChatRes {
+func CoreToGetChats(chats []chat.Core) []ChatRes {
 	res := make([]ChatRes, 0)
 	for _, chat := range chats {
 		res = append(res, ChatRes{
-			ID:      chat.RoomID,
-			Message: chat.Message,
-			UserID:  chat.UserID,
+			ID:         chat.RoomID,
+			Message:    chat.Message,
+			SenderID:   chat.SenderID,
+			ReceiverID: chat.ReceiverID,
 		})
 	}
 	return res
 }
-
