@@ -76,13 +76,11 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 }
 
 func (mod *Booking) GenerateCode() (err error) {
-	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 	var bookCode int
 	bookCode, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 	if err != nil {
 		return err
 	}
-	// var stringCode string
 	stringCode := strconv.Itoa(bookCode)
 	mod.Code = stringCode
 

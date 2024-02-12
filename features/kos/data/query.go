@@ -89,7 +89,7 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 			Facility:        facility.Facility,
 			BoardingHouseID: kosInput.ID,
 		}
-		tx = repo.db.Create(&facilityModel)
+		tx = repo.db.Updates(&facilityModel)
 		if tx.Error != nil {
 			return tx.Error
 		}
@@ -100,7 +100,7 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 			Rule:            rule.Rule,
 			BoardingHouseID: kosInput.ID,
 		}
-		tx = repo.db.Create(&ruleModel)
+		tx = repo.db.Updates(&ruleModel)
 		if tx.Error != nil {
 			return tx.Error
 		}

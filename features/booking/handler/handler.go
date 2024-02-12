@@ -86,7 +86,6 @@ func (handler *BookHandler) GetBooking(c echo.Context) error {
 }
 
 func (handler *BookHandler) WebhoocksNotification(c echo.Context) error {
-
 	var webhoocksReq = WebhoocksRequest{}
 	errBind := c.Bind(&webhoocksReq)
 	if errBind != nil {

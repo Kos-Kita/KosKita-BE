@@ -28,10 +28,10 @@ func (repo *chatQuery) CreateMessage(userIdLogin int, input chat.Core) (chat.Cor
 	}
 
 	return chat.Core{
-		Message: chatInput.Message,
-		RoomID:  chatInput.RoomID,
-		ReceiverID:  chatInput.ReceiverID,
-		SenderID: chatInput.SenderID,
+		Message:    chatInput.Message,
+		RoomID:     chatInput.RoomID,
+		ReceiverID: chatInput.ReceiverID,
+		SenderID:   chatInput.SenderID,
 	}, nil
 }
 

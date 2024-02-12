@@ -13,8 +13,8 @@ type Chat struct {
 	RoomID       string
 	ReceiverID   uint
 	SenderID     uint
-	UserReceiver data.User `gorm:"foreignKey:ReceiverID,references:ID"`
-	UserSender   data.User `gorm:"foreignKey:SenderID,references:ID"`
+	UserReceiver data.User `gorm:"foreignKey:ReceiverID;references:ID"`
+	UserSender   data.User `gorm:"foreignKey:SenderID;references:ID"`
 }
 
 func CoreToModelChat(input chat.Core) Chat {
