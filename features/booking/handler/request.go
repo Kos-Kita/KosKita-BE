@@ -2,7 +2,6 @@ package handler
 
 import (
 	"KosKita/features/booking"
-	"strconv"
 )
 
 type BookRequest struct {
@@ -39,9 +38,8 @@ type WebhoocksRequest struct {
 }
 
 func WebhoocksRequestToCore(input WebhoocksRequest) booking.BookingCore {
-	code, _ := strconv.Atoi(input.Code)
 	return booking.BookingCore{
-		Code: code,
+		Code: input.Code,
 		Status: input.Status,
 	}
 }

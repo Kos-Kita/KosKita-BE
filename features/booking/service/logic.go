@@ -58,7 +58,7 @@ func (bs *bookService) GetBooking(userId uint) ([]booking.BookingCore, error) {
 
 // WebhoocksData implements booking.BookServiceInterface.
 func (bs *bookService) WebhoocksData(webhoocksReq booking.BookingCore) error {
-	if webhoocksReq.Code == 0  {
+	if webhoocksReq.Code == ""  {
 		return errors.New("invalid order id")
 	}
 
