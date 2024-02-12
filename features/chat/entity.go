@@ -15,14 +15,20 @@ type Core struct {
 	UpdatedAt time.Time
 }
 
+type CoreRoom struct {
+	Message   string
+	RoomID    string
+	UserID    uint
+}
+
 // interface untuk Data Layer
 type ChatDataInterface interface {
-	CreateMessage(userIdLogin int, input Core) (Core, error)
-	GetMessage(roomId string) ([]Core, error)
+	CreateMessage(userIdLogin int, input Core) (CoreRoom, error)
+	GetMessage(roomId string) ([]CoreRoom, error)
 }
 
 // interface untuk Service Layer
 type ChatServiceInterface interface {
-	CreateChat(userIdLogin int, input Core) (Core, error)
-	GetMessage(roomId string) ([]Core, error)
+	CreateChat(userIdLogin int, input Core) (CoreRoom, error)
+	GetMessage(roomId string) ([]CoreRoom, error)
 }
