@@ -106,13 +106,12 @@ func WebhoocksCoreToModel(reqNotif booking.WebhoocksRequesCore) (Booking, error)
 }
 
 func Notif(reqNotif booking.PaymentCore) (Payment, error) {
-	// memvalidasi status pembayaran
 	switch reqNotif.Status {
 	case "pending", "success", "failed", "expired":
 		return Payment{
 			Status: reqNotif.Status,
 		}, nil
 	default:
-		return Payment{}, fmt.Errorf("invalid payment status: %s", reqNotif.Status) // mengembalikan kesalahan jika status tidak valid
+		return Payment{}, fmt.Errorf("invalid payment status: %s", reqNotif.Status)
 	}
 }

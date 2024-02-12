@@ -37,7 +37,6 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Payment
 	req := new(coreapi.ChargeReq)
 	req.TransactionDetails = mid.TransactionDetails{
 		OrderID:  fmt.Sprintf("%d", book.Code),
-		// OrderID:  book.Code,
 		GrossAmt: int64(book.Total),
 	}
 
