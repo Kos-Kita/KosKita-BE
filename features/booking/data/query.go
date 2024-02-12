@@ -71,13 +71,6 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 		return nil, err
 	}
 
-	if payment.Status == "settlement" {
-		boardingHouse.Rooms -= 1
-		if err := repo.db.Save(&boardingHouse).Error; err != nil {
-			return nil, err
-		}
-	}
-
 	bookCore := ModelToCoreBook(bookModel)
 	if payment != nil {
 		bookCore.Payment = *payment
@@ -132,6 +125,7 @@ func (repo *bookQuery) GetBooking(userId uint) ([]booking.BookingCore, error) {
 
 // WebhoocksData implements booking.BookDataInterface.
 func (repo *bookQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
+
 	bookingGorm := WebhoocksCoreToModel(webhoocksReq)
 	tx := repo.db.Model(&Booking{}).Where("code = ?", webhoocksReq.Code).Updates(bookingGorm)
 	if tx.Error != nil {
