@@ -67,7 +67,7 @@ func (ks *kosService) Create(userIdLogin int, input kos.CoreInput) (uint, error)
 }
 
 // Put implements kos.KosServiceInterface.
-func (ks *kosService) Put(userIdLogin int, input kos.Core) error {
+func (ks *kosService) Put(userIdLogin int, input kos.CoreInput) error {
 	user, err := ks.userService.GetById(userIdLogin)
 	if err != nil {
 		return err

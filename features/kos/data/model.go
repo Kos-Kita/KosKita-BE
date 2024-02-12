@@ -64,7 +64,7 @@ func CoreToModel(input kos.CoreInput) BoardingHouse {
 	}
 }
 
-func CoreToModelPut(input kos.Core) BoardingHouse {
+func CoreToModelPut(input kos.CoreInput) BoardingHouse {
 	return BoardingHouse{
 		UserID:          input.UserID,
 		Name:            input.Name,

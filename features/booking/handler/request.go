@@ -38,8 +38,8 @@ type WebhoocksRequest struct {
 	Status string `json:"transaction_status"`
 }
 
-func WebhoocksRequestToCore(input WebhoocksRequest) booking.WebhoocksRequesCore {
-	return booking.WebhoocksRequesCore{
+func WebhoocksRequestToCore(input WebhoocksRequest) booking.BookingCore {
+	return booking.BookingCore{
 		Code:   input.Code,
 		Status: input.Status,
 	}

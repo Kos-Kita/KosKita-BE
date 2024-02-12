@@ -70,7 +70,7 @@ func (repo *kosQuery) InsertImage(userIdLogin int, kosId int, input kos.CoreFoto
 }
 
 // Update implements kos.KosDataInterface.
-func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
+func (repo *kosQuery) Update(userIdLogin int, input kos.CoreInput) error {
 	kos := BoardingHouse{}
 	tx := repo.db.Where("id = ? AND user_id = ?", input.ID, userIdLogin).First(&kos)
 	if tx.Error != nil {
@@ -78,7 +78,6 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 	}
 
 	kosInput := CoreToModelPut(input)
-
 	tx = repo.db.Model(&kos).Updates(&kosInput)
 	if tx.Error != nil {
 		return tx.Error
@@ -89,7 +88,11 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 			Facility:        facility.Facility,
 			BoardingHouseID: kosInput.ID,
 		}
-		tx = repo.db.Updates(&facilityModel)
+		if tx := repo.db.Where("facility = ? AND boarding_house_id = ?", facilityModel.Facility, facilityModel.BoardingHouseID).First(&KosFacility{}); tx.Error == gorm.ErrRecordNotFound {
+			tx = repo.db.Create(&facilityModel)
+		} else {
+			tx = repo.db.Updates(&facilityModel)
+		}
 		if tx.Error != nil {
 			return tx.Error
 		}
@@ -100,7 +103,11 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 			Rule:            rule.Rule,
 			BoardingHouseID: kosInput.ID,
 		}
-		tx = repo.db.Updates(&ruleModel)
+		if tx := repo.db.Where("rule = ? AND boarding_house_id = ?", ruleModel.Rule, ruleModel.BoardingHouseID).First(&KosRule{}); tx.Error == gorm.ErrRecordNotFound {
+			tx = repo.db.Create(&ruleModel)
+		} else {
+			tx = repo.db.Updates(&ruleModel)
+		}
 		if tx.Error != nil {
 			return tx.Error
 		}
@@ -108,6 +115,7 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.Core) error {
 
 	return nil
 }
+
 
 func (repo *kosQuery) CekRating(userId, kosId int) (*kos.RatingCore, error) {
 	var ratingData Rating

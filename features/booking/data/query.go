@@ -119,11 +119,9 @@ func (repo *bookQuery) GetBooking(userId uint) ([]booking.BookingCore, error) {
 }
 
 // WebhoocksData implements booking.BookDataInterface.
-func (repo *bookQuery) WebhoocksData(webhoocksReq booking.WebhoocksRequesCore) error {
-	bookingGorm, err := WebhoocksCoreToModel(webhoocksReq)
-	if err != nil {
-		return err
-	}
+func (repo *bookQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
+	bookingGorm := WebhoocksCoreToModel(webhoocksReq)
+
 	tx := repo.db.Model(&Booking{}).Where("code = ?", bookingGorm.Code).Updates(bookingGorm)
 	if tx.Error != nil {
 		return tx.Error

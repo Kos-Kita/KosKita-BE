@@ -89,7 +89,7 @@ type RatingCore struct {
 
 type KosDataInterface interface {
 	Insert(userIdLogin int, input CoreInput) (uint, error)
-	Update(userIdLogin int, input Core) error
+	Update(userIdLogin int, input CoreInput) error
 	CekRating(userId, kosId int) (*RatingCore, error)
 	InsertRating(userIdLogin, kosId int, score RatingCore) error
 	SelectByRating() ([]Core, error)
@@ -104,7 +104,7 @@ type KosDataInterface interface {
 // interface untuk Service Layer
 type KosServiceInterface interface {
 	Create(userIdLogin int, input CoreInput) (uint, error)
-	Put(userIdLogin int, input Core) error
+	Put(userIdLogin int, input CoreInput) error
 	CreateRating(userIdLogin, kosId int, score RatingCore) error
 	GetByRating() ([]Core, error)
 	Delete(userIdLogin, kosId int) error

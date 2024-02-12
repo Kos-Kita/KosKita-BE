@@ -12,7 +12,7 @@ import (
 )
 
 type Booking struct {
-	Code            int     `gorm:"column:code; primaryKey;"`
+	Code            string  `gorm:"column:code; primaryKey;"`
 	Total           float64 `gorm:"column:total;"`
 	UserId          uint
 	BoardingHouseId uint
@@ -76,42 +76,42 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 }
 
 func (mod *Booking) GenerateCode() (err error) {
-	mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
+	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
+	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
+	var bookCode int
+	bookCode, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 	if err != nil {
 		return err
 	}
+	// var stringCode string
+	stringCode := strconv.Itoa(bookCode)
+	mod.Code = stringCode
 
 	return
 }
 
-func WebhoocksCoreToModel(reqNotif booking.WebhoocksRequesCore) (Booking, error) {
-	codeInt, err := strconv.Atoi(reqNotif.Code)
-	if err != nil {
-		return Booking{}, err
-	}
+// func WebhoocksCoreToModel(reqNotif booking.BookingCore) (Booking, error) {
 
-	paymentCore := booking.PaymentCore{
-		Status: reqNotif.Payment.Status,
-	}
-
-	payment, err := Notif(paymentCore)
-	if err != nil {
-		return Booking{}, err
-	}
-
+//		return Booking{
+//			Code:    reqNotif.Code,
+//			Payment: payment,
+//		}, nil
+//	}
+func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
 	return Booking{
-		Code:   codeInt,
-		Payment: payment,
-	}, nil
-}
-
-func Notif(reqNotif booking.PaymentCore) (Payment, error) {
-	switch reqNotif.Status {
-	case "pending", "success", "failed", "expired":
-		return Payment{
-			Status: reqNotif.Status,
-		}, nil
-	default:
-		return Payment{}, fmt.Errorf("invalid payment status: %s", reqNotif.Status)
+		Payment: Payment{
+			Status: reqNotif.Payment.Status,
+		},
 	}
 }
+
+// func Notif(reqNotif booking.PaymentCore) (Payment, error) {
+// 	switch reqNotif.Status {
+// 	case "pending", "success", "failed", "expired":
+// 		return Payment{
+// 			Status: reqNotif.Status,
+// 		}, nil
+// 	default:
+// 		return Payment{}, fmt.Errorf("invalid payment status: %s", reqNotif.Status)
+// 	}
+// }
