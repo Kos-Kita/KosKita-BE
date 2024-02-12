@@ -29,7 +29,7 @@ type Payment struct {
 	VirtualNumber string     `gorm:"column:virtual_number; type:varchar(50);"`
 	BillKey       string     `gorm:"column:bill_key; type:varchar(50);"`
 	BillCode      string     `gorm:"column:bill_code; type:varchar(50);"`
-	Status        string     `gorm:"column:status; type:varchar(20);"`
+	Status        string     `gorm:"column:status; type:varchar(50);"`
 	CreatedAt     time.Time  `gorm:"index"`
 	ExpiredAt     *time.Time `gorm:"nullable"`
 	PaidAt        *time.Time `gorm:"default:null;"`
@@ -88,8 +88,13 @@ func (mod *Booking) GenerateCode() (err error) {
 func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
 	return Booking{
 		Code: reqNotif.Code,
-		Payment: Payment{
-			Status: reqNotif.Status,
-		},
+
+		Payment: Notif(reqNotif.Payment),
+	}
+}
+
+func Notif(reqNotif booking.PaymentCore) Payment {
+	return Payment{
+		Status: reqNotif.Status,
 	}
 }

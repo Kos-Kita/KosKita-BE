@@ -65,7 +65,7 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	bookModel.Payment.Status = payment.Status
 	bookModel.Payment.ExpiredAt = &payment.ExpiredAt
 	// bookModel.Payment.PaidAt = &payment.PaidAt
-	bookModel.Payment.PaidAt = nil
+	// bookModel.Payment.PaidAt = nil
 
 	if err := repo.db.Save(&bookModel).Error; err != nil {
 		return nil, err
