@@ -101,7 +101,7 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Payment
 	}
 
 	if res.TransactionStatus != "" {
-		book.Payment.Status = res.TransactionStatus
+		book.Status = res.TransactionStatus
 	}
 
 	if expiredAt, err := time.Parse("2006-01-02 15:04:05", res.ExpiryTime); err != nil {
