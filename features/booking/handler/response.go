@@ -45,7 +45,6 @@ func CoreToResponseBookHistory(core *booking.BookingCore) BookingHistoryResponse
 	return BookingHistoryResponse{
 		KosId:   core.BoardingHouse.ID,
 		KosName: core.BoardingHouse.Name,
-		// KosFasilitas: KosFasilitasList(core.BoardingHouse.KosFacilities),
 		KosLokasi:     core.BoardingHouse.Address,
 		KosRating:     KosRatingResult(core.BoardingHouse.Ratings),
 		KosMainFoto:   core.BoardingHouse.PhotoMain,
@@ -64,12 +63,10 @@ func KosFasilitasList(kf []kos.KosFacilityCore) []string {
 
 func KosRatingResult(numbers []kos.RatingCore) float64 {
 	var results float64
-	// menjumlahkan semua angka dalam slice
 	if len(numbers) > 0 {
 		for _, num := range numbers {
 			results += float64(num.Score)
 		}
-		// mengembalikan rata-rata
 		return float64(results) / float64(len(numbers))
 	}
 	return 0

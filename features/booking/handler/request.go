@@ -40,7 +40,6 @@ type WebhoocksRequest struct {
 }
 
 func WebhoocksRequestToCore(input WebhoocksRequest) booking.BookingCore {
-	// orderId, _ := strconv.Atoi(input.OrderID)
 	return booking.BookingCore{
 		Code: input.OrderID,
 		Payment: booking.PaymentCore{
