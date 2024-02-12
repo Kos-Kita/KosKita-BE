@@ -57,7 +57,7 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	bookModel.Payment.VirtualNumber = payment.VirtualNumber
 	bookModel.Payment.BillKey = payment.BillKey
 	bookModel.Payment.BillCode = payment.BillCode
-	bookModel.Payment.Status = payment.Status
+	bookModel.Status = bookModel.Status
 	bookModel.Payment.ExpiredAt = &payment.ExpiredAt
 	bookModel.Payment.PaidAt = &payment.PaidAt
 	bookModel.Payment.PaidAt = &payment.PaidAt
@@ -76,7 +76,7 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 
 // CancelBooking implements booking.BookDataInterface.
 func (repo *bookQuery) CancelBooking(userIdLogin int, bookingId string, bookingCore booking.BookingCore) error {
-	if bookingCore.Payment.Status == "cancelled" {
+	if bookingCore.Status == "cancelled" {
 		repo.paymentMidtrans.CancelOrderPayment(bookingId)
 	}
 
@@ -130,7 +130,7 @@ func (repo *bookQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
 	if tx.RowsAffected == 0 {
 		return errors.New("error record not found ")
 	}
-	
+
 	return nil
 }
 

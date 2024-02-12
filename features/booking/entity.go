@@ -14,12 +14,12 @@ type BookingCore struct {
 	Total           float64
 	BookedAt        time.Time
 	DeletedAt       gorm.DeletedAt
+	Status        string
 	UserId          uint
 	User            ud.Core
 	BoardingHouseId uint
 	BoardingHouse   kd.Core
 	Payment         PaymentCore
-	Status        string
 }
 
 // type WebhoocksRequesCore struct {
@@ -34,7 +34,6 @@ type PaymentCore struct {
 	VirtualNumber string
 	BillKey       string
 	BillCode      string
-	Status        string
 	BookingCode   int
 	BookingTotal  float64
 	CreatedAt     time.Time

@@ -28,9 +28,8 @@ func RequestToCoreBook(input BookRequest, userIdLogin uint) booking.BookingCore 
 
 func CancelRequestToCoreBooking(input CancelBookingRequest) booking.BookingCore {
 	return booking.BookingCore{
-		Payment: booking.PaymentCore{
-			Status: input.Status,
-		},
+
+		Status: input.Status,
 	}
 }
 
@@ -43,8 +42,6 @@ func WebhoocksRequestToCore(input WebhoocksRequest) booking.BookingCore {
 	code, _ := strconv.Atoi(input.Code)
 	return booking.BookingCore{
 		Code: code,
-		Payment: booking.PaymentCore{
-			Status: input.Status,
-		},
+		Status: input.Status,
 	}
 }

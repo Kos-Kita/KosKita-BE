@@ -7,7 +7,7 @@ import (
 )
 
 type BookingResponse struct {
-	Code                 int    `json:"booking_code,omitempty"`
+	Code                 int        `json:"booking_code,omitempty"`
 	Status               string     `json:"status,omitempty"`
 	Total                float64    `json:"total,omitempty"`
 	PaymentBank          string     `json:"payment_method,omitempty"`
@@ -31,7 +31,7 @@ type BookingHistoryResponse struct {
 func CoreToResponseBook(core *booking.BookingCore) BookingResponse {
 	return BookingResponse{
 		Code:                 core.Code,
-		Status:               core.Payment.Status,
+		Status:               core.Status,
 		Total:                core.Total,
 		PaymentBank:          core.Payment.Bank,
 		PaymentVirtualNumber: core.Payment.VirtualNumber,
@@ -43,12 +43,12 @@ func CoreToResponseBook(core *booking.BookingCore) BookingResponse {
 
 func CoreToResponseBookHistory(core *booking.BookingCore) BookingHistoryResponse {
 	return BookingHistoryResponse{
-		KosId:   core.BoardingHouse.ID,
-		KosName: core.BoardingHouse.Name,
+		KosId:         core.BoardingHouse.ID,
+		KosName:       core.BoardingHouse.Name,
 		KosLokasi:     core.BoardingHouse.Address,
 		KosRating:     KosRatingResult(core.BoardingHouse.Ratings),
 		KosMainFoto:   core.BoardingHouse.PhotoMain,
-		PaymentStatus: core.Payment.Status,
+		PaymentStatus: core.Status,
 		TotalHarga:    core.Total,
 	}
 }
