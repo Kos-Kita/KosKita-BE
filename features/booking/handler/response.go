@@ -7,7 +7,7 @@ import (
 )
 
 type BookingResponse struct {
-	Code                 string    `json:"booking_code,omitempty"`
+	Code                 int    `json:"booking_code,omitempty"`
 	Status               string     `json:"status,omitempty"`
 	Total                float64    `json:"total,omitempty"`
 	PaymentBank          string     `json:"payment_method,omitempty"`
