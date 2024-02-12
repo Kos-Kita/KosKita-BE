@@ -16,12 +16,6 @@ type Core struct {
 	UpdatedAt  time.Time
 }
 
-// type CoreRoom struct {
-// 	Message string
-// 	RoomID  string
-// 	UserID  uint
-// }
-
 // interface untuk Data Layer
 type ChatDataInterface interface {
 	CreateMessage(userIdLogin int, input Core) (Core, error)

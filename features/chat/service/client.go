@@ -72,14 +72,12 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface) {
 			SenderID:   msg.SenderID,
 		}
 
-		
-
 		userID, err := strconv.Atoi(c.ID)
 		if err != nil {
 			log.Printf("Error converting ID to integer: %v", err)
 			continue
 		}
-
+		
 		_, err = chatService.CreateChat(userID, coreMsg)
 		if err != nil {
 			log.Printf("Error saving message: %v", err)

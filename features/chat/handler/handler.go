@@ -28,25 +28,18 @@ func (ch *ChatHandler) CreateRoom(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
+	
+	roomID, err := generateRoomID()
+	if err != nil {
+		return err
+	}
 
 	ch.hub.Rooms[req.ID] = &hub.Room{
-		ID:      req.ID,
+		ID:      roomID,
 		Clients: make(map[string]*hub.Client),
 	}
 
 	return c.JSON(http.StatusOK, req)
-}
-
-func (ch *ChatHandler) GetRooms(c echo.Context) error {
-	rooms := make([]RoomRes, 0)
-
-	for _, r := range ch.hub.Rooms {
-		rooms = append(rooms, RoomRes{
-			ID: r.ID,
-		})
-	}
-
-	return c.JSON(http.StatusOK, rooms)
 }
 
 func (ch *ChatHandler) JoinRoom(c echo.Context) error {
@@ -99,4 +92,16 @@ func (ch *ChatHandler) GetMessages(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get message.", chatResult))
 
+}
+
+func (ch *ChatHandler) GetRooms(c echo.Context) error {
+	rooms := make([]RoomRes, 0)
+
+	for _, r := range ch.hub.Rooms {
+		rooms = append(rooms, RoomRes{
+			ID: r.ID,
+		})
+	}
+
+	return c.JSON(http.StatusOK, rooms)
 }
