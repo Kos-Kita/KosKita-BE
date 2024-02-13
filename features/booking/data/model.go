@@ -4,14 +4,13 @@ import (
 	"KosKita/features/booking"
 	kd "KosKita/features/kos/data"
 	ud "KosKita/features/user/data"
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
 )
 
 type Booking struct {
-	Code            string     `gorm:"column:code; primaryKey;"`
+	Code            string  `gorm:"column:code; type:varchar(36);primary_key" json:"id"`
 	Total           float64 `gorm:"column:total;"`
 	UserId          uint
 	BoardingHouseId uint
@@ -24,15 +23,14 @@ type Booking struct {
 }
 
 type Payment struct {
-	Method        string `gorm:"column:method; type:varchar(20);"`
-	Bank          string `gorm:"column:bank; type:varchar(20);"`
-	VirtualNumber string `gorm:"column:virtual_number; type:varchar(50);"`
-	BillKey       string `gorm:"column:bill_key; type:varchar(50);"`
-	BillCode      string `gorm:"column:bill_code; type:varchar(50);"`
-	// Status        string     `gorm:"column:status; type:varchar(50);"`
-	CreatedAt time.Time  `gorm:"index"`
-	ExpiredAt *time.Time `gorm:"nullable"`
-	PaidAt    *time.Time `gorm:"default:null;"`
+	Method        string     `gorm:"column:method; type:varchar(20);"`
+	Bank          string     `gorm:"column:bank; type:varchar(20);"`
+	VirtualNumber string     `gorm:"column:virtual_number; type:varchar(50);"`
+	BillKey       string     `gorm:"column:bill_key; type:varchar(50);"`
+	BillCode      string     `gorm:"column:bill_code; type:varchar(50);"`
+	CreatedAt     time.Time  `gorm:"index"`
+	ExpiredAt     *time.Time `gorm:"nullable"`
+	PaidAt        *time.Time `gorm:"default:null;"`
 }
 
 func CoreToModelBook(input booking.BookingCore) Booking {
@@ -40,12 +38,27 @@ func CoreToModelBook(input booking.BookingCore) Booking {
 		Code:            input.Code,
 		UserId:          input.UserId,
 		BoardingHouseId: input.BoardingHouseId,
+		Total:           input.Total,
+		BookedAt:        input.BookedAt,
+		Status:          input.Status,
+		Payment:         CoreToModelPay(input.Payment),
+	}
+}
+
+func CoreToModelPay(input booking.PaymentCore) Payment {
+	return Payment{
+		Method:        input.Method,
+		Bank:          input.Bank,
+		VirtualNumber: input.VirtualNumber,
+		BillKey:       input.BillKey,
+		BillCode:      input.BillCode,
+		ExpiredAt:     &input.ExpiredAt,
+		PaidAt:        &input.PaidAt,
 	}
 }
 
 func CoreToModelBookCancel(input booking.BookingCore) Booking {
 	return Booking{
-
 		Status: input.Status,
 	}
 }
@@ -74,9 +87,17 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 	}
 }
 
+func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
+	return Booking{
+		Code:   reqNotif.Code,
+		Status: reqNotif.Status,
+	}
+}
+
 // func (mod *Booking) GenerateCode() (err error) {
+// 	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 // 	var bookCode int
-// 	bookCode, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
+// 	mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
 // 	if err != nil {
 // 		return err
 // 	}
@@ -85,35 +106,4 @@ func PaymentModelToCore(model Payment) booking.PaymentCore {
 // 	mod.Code = stringCode
 
 // 	return
-// }
-
-func (mod *Booking) GenerateCode() (err error) {
-	mod.Code = fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix())
-	return
-}
-
-func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
-	return Booking{
-		Code:   reqNotif.Code,
-		Status: reqNotif.Status,
-	}
-}
-
-// func WebhoocksCoreToModel(reqNotif booking.BookingCore) (Booking, error) {
-
-// return Booking{
-// 	Code:    reqNotif.Code,
-// 	Payment: payment,
-// }, nil
-//	}
-
-// func Notif(reqNotif booking.PaymentCore) (Payment, error) {
-// 	switch reqNotif.Status {
-// 	case "pending", "success", "failed", "expired":
-// 		return Payment{
-// 			Status: reqNotif.Status,
-// 		}, nil
-// 	default:
-// 		return Payment{}, fmt.Errorf("invalid payment status: %s", reqNotif.Status)
-// 	}
 // }

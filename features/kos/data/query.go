@@ -116,14 +116,13 @@ func (repo *kosQuery) Update(userIdLogin int, input kos.CoreInput) error {
 	return nil
 }
 
-
 func (repo *kosQuery) CekRating(userId, kosId int) (*kos.RatingCore, error) {
 	var ratingData Rating
 
 	tx := repo.db.Where("user_id = ? AND boarding_house_id = ?", userId, kosId).First(&ratingData)
 
 	if tx.Error != nil {
-		return nil, tx.Error
+		return nil, nil
 	}
 
 	ratingCore := ratingData.ModelToCoreRating()
