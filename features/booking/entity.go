@@ -55,7 +55,7 @@ type BookDataInterface interface {
 	GetBooking(userId uint) ([]BookingCore, error)
 	WebhoocksData(webhoocksReq BookingCore) error
 	GetTotalBooking() (int, error)
-	GetTotalBookingPerYear(year int) ([]int, error)
+	GetTotalBookingPerMonth(year int, month int) (int, error)
 }
 
 // interface untuk Service Layer

@@ -4,7 +4,6 @@ import (
 	"KosKita/features/booking"
 	"KosKita/features/kos"
 	"KosKita/features/kos/data"
-	kd "KosKita/features/kos/data"
 	"KosKita/utils/externalapi"
 	"errors"
 	"log"
@@ -26,29 +25,25 @@ func New(db *gorm.DB, mid externalapi.MidtransInterface) booking.BookDataInterfa
 
 // Insert implements booking.BookDataInterface.
 func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*booking.BookingCore, error) {
-	boardingHouse := kd.BoardingHouse{}
+	boardingHouse := data.BoardingHouse{}
 	if err := repo.db.First(&boardingHouse, input.BoardingHouseId).Error; err != nil {
 		return nil, err
 	}
 
 	input.Total = float64(boardingHouse.Price)
-
 	bookModel := CoreToModelBook(input)
-	bookModel.UserId = uint(userIdLogin)
-	bookModel.Total = input.Total
 
-	if err := repo.db.Create(&bookModel).Error; err != nil {
-		return nil, err
-	}
-
-	input.Code = bookModel.Code
-
+	
 	log.Println("input book", input)
 	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
-
-	log.Println("input payment", payment)
 	if errPay != nil {
 		return nil, errPay
+	}
+	
+	log.Println("input payment", payment)
+	
+	if err := repo.db.Create(&bookModel).Error; err != nil {
+		return nil, err
 	}
 
 	bookModel.Method = payment.Method
@@ -59,9 +54,9 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 
 	log.Println("input bookmodel", bookModel)
 
-	if err := repo.db.Updates(&bookModel).Error; err != nil {
-		return nil, err
-	}
+	// if err := repo.db.Updates(&bookModel).Error; err != nil {
+	// 	return nil, err
+	// }
 
 	bookCore := ModelToCoreBook(bookModel)
 	// if payment != nil {
@@ -156,17 +151,12 @@ func (repo *bookQuery) GetTotalBooking() (int, error) {
 	return int(count), nil
 }
 
-func (repo *bookQuery) GetTotalBookingPerYear(year int) ([]int, error) {
-	var counts []int
-	rows, err := repo.db.Raw("SELECT COUNT(*) as count FROM bookings WHERE YEAR(created_at) = ? GROUP BY MONTH(created_at) ORDER BY MONTH(created_at)", year).Rows()
+func (repo *bookQuery) GetTotalBookingPerMonth(year int, month int) (int, error) {
+	var count int
+	row := repo.db.Raw("SELECT COUNT(*) as count FROM bookings WHERE YEAR(created_at) = ? AND MONTH(created_at) = ?", year, month).Row()
+	err := row.Scan(&count)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	defer rows.Close()
-	for rows.Next() {
-		var count int
-		rows.Scan(&count)
-		counts = append(counts, count)
-	}
-	return counts, nil
+	return count, nil
 }

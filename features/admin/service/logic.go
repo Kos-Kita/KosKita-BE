@@ -26,7 +26,7 @@ func New(repoUser user.UserDataInterface, repoKos kos.KosDataInterface, repoBook
 }
 
 // GetTotalData implements admin.AdminServiceInterface.
-func (as *adminService) GetTotalData(userIdLogin int) (admin.DashboardData, error) {
+func (as *adminService) GetTotalData(userIdLogin int, year int) (admin.DashboardData, error) {
 	user, err := as.userService.GetById(userIdLogin)
 	if err != nil {
 		return admin.DashboardData{}, err
@@ -55,6 +55,15 @@ func (as *adminService) GetTotalData(userIdLogin int) (admin.DashboardData, erro
 		return dashboardData, err
 	}
 	dashboardData.TotalBooking = totalBooking
+
+	for month := 1; month <= 12; month++ {
+		totalBookingPerMonth, err := as.bookingData.GetTotalBookingPerMonth(year, month)
+		if err != nil {
+			return dashboardData, err
+		}
+		dashboardData.TotalBookingPerMonth = append(dashboardData.TotalBookingPerMonth, totalBookingPerMonth)
+	}
+
 
 	return dashboardData, nil
 }
