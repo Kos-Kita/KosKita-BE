@@ -12,7 +12,7 @@ import (
 )
 
 type MidtransInterface interface {
-	NewOrderPayment(book booking.BookingCore) (*booking.PaymentCore, error)
+	NewOrderPayment(book booking.BookingCore) (*booking.BookingCore, error)
 	CancelOrderPayment(bookingId string) error
 }
 
@@ -32,14 +32,14 @@ func New() MidtransInterface {
 }
 
 // NewOrderPayment implements Midtrans.
-func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.PaymentCore, error) {
+func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.BookingCore, error) {
 	req := new(coreapi.ChargeReq)
 	req.TransactionDetails = mid.TransactionDetails{
 		OrderID:  book.Code,
 		GrossAmt: int64(book.Total),
 	}
 
-	switch book.Payment.Bank {
+	switch book.Bank {
 	case "bca":
 		req.PaymentType = coreapi.PaymentTypeBankTransfer
 		req.BankTransfer = &coreapi.BankTransferDetails{
@@ -72,24 +72,16 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Payment
 		return nil, errors.New(res.StatusMessage)
 	}
 
-	if res.BillKey != "" {
-		book.Payment.BillKey = res.BillKey
-	}
-
-	if res.BillerCode != "" {
-		book.Payment.BillCode = res.BillerCode
-	}
-
 	if len(res.VaNumbers) == 1 {
-		book.Payment.VirtualNumber = res.VaNumbers[0].VANumber
+		book.VirtualNumber = res.VaNumbers[0].VANumber
 	}
 
 	if res.PermataVaNumber != "" {
-		book.Payment.VirtualNumber = res.PermataVaNumber
+		book.VirtualNumber = res.PermataVaNumber
 	}
 
 	if res.PaymentType != "" {
-		book.Payment.Method = res.PaymentType
+		book.Method = res.PaymentType
 	}
 
 	if res.TransactionStatus != "" {
@@ -99,12 +91,12 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Payment
 	if expiredAt, err := time.Parse("2006-01-02 15:04:05", res.ExpiryTime); err != nil {
 		return nil, err
 	} else {
-		book.Payment.ExpiredAt = expiredAt
+		book.ExpiredAt = expiredAt
 	}
 
-	book.Payment.BookingTotal = book.Total
+	book.BookingTotal = book.Total
 
-	return &book.Payment, nil
+	return &book, nil
 }
 
 func (pay *midtrans) CancelOrderPayment(bookingId string) error {

@@ -33,11 +33,9 @@ func CoreToResponseBook(core *booking.BookingCore) BookingResponse {
 		Code:                 core.Code,
 		Status:               core.Status,
 		Total:                core.Total,
-		PaymentBank:          core.Payment.Bank,
-		PaymentVirtualNumber: core.Payment.VirtualNumber,
-		PaymentBillKey:       core.Payment.BillKey,
-		PaymentBillCode:      core.Payment.BillCode,
-		PaymentExpiredAt:     &core.Payment.ExpiredAt,
+		PaymentBank:          core.Bank,
+		PaymentVirtualNumber: core.VirtualNumber,
+		PaymentExpiredAt:     &core.ExpiredAt,
 	}
 }
 

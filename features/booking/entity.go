@@ -14,12 +14,20 @@ type BookingCore struct {
 	Total           float64
 	BookedAt        time.Time
 	DeletedAt       gorm.DeletedAt
-	Status        string
 	UserId          uint
 	User            ud.Core
 	BoardingHouseId uint
 	BoardingHouse   kd.Core
-	Payment         PaymentCore
+	Method          string
+	Bank            string
+	VirtualNumber   string
+	BookingCode     int
+	BookingTotal    float64
+	Status          string
+	CreatedAt       time.Time
+	ExpiredAt       time.Time
+	PaidAt          time.Time
+	// Payment         PaymentCore
 }
 
 type MonthCount struct {
@@ -27,19 +35,19 @@ type MonthCount struct {
 	Count int
 }
 
-
-type PaymentCore struct {
-	Method        string
-	Bank          string
-	VirtualNumber string
-	BillKey       string
-	BillCode      string
-	BookingCode   int
-	BookingTotal  float64
-	CreatedAt     time.Time
-	ExpiredAt     time.Time
-	PaidAt        time.Time
-}
+// type PaymentCore struct {
+// 	Method        string
+// 	Bank          string
+// 	VirtualNumber string
+// 	BillKey       string
+// 	BillCode      string
+// 	BookingCode   int
+// 	BookingTotal  float64
+// 	Status        string
+// 	CreatedAt     time.Time
+// 	ExpiredAt     time.Time
+// 	PaidAt        time.Time
+// }
 
 type BookDataInterface interface {
 	Insert(userIdLogin int, input BookingCore) (*BookingCore, error)

@@ -21,10 +21,12 @@ func RequestToCoreBook(input BookRequest, userIdLogin uint) booking.BookingCore 
 		Code:            uuid.New().String(),
 		UserId:          userIdLogin,
 		BoardingHouseId: input.BoardingHouseId,
-		Payment: booking.PaymentCore{
-			Method: input.Method,
+		Method: input.Method,
 			Bank:   input.Bank,
-		},
+		// Payment: booking.PaymentCore{
+		// 	Method: input.Method,
+		// 	Bank:   input.Bank,
+		// },
 	}
 }
 

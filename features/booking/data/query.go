@@ -51,13 +51,12 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 		return nil, errPay
 	}
 
-	bookModel.Payment.Method = payment.Method
-	bookModel.Payment.Bank = payment.Bank
-	bookModel.Payment.VirtualNumber = payment.VirtualNumber
-	bookModel.Payment.BillKey = payment.BillKey
-	bookModel.Payment.BillCode = payment.BillCode
-	bookModel.Payment.ExpiredAt = &payment.ExpiredAt
-	bookModel.Payment.PaidAt = &payment.PaidAt
+	bookModel.Method = payment.Method
+	bookModel.Bank = payment.Bank
+	bookModel.VirtualNumber = payment.VirtualNumber
+	bookModel.Status= payment.Status
+	bookModel.ExpiredAt = &payment.ExpiredAt
+	bookModel.PaidAt = &payment.PaidAt
 
 	log.Println("input bookmodel", bookModel)
 
@@ -66,9 +65,9 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	}
 
 	bookCore := ModelToCoreBook(bookModel)
-	if payment != nil {
-		bookCore.Payment = *payment
-	}
+	// if payment != nil {
+	// 	bookCore = *payment
+	// }
 
 	return &bookCore, nil
 }
