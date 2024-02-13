@@ -142,10 +142,6 @@ func (repo *bookQuery) GetRatingAndFacility(userId uint) ([]kos.Core, error) {
 	for _, k := range kosData {
 		result = append(result, k.ModelToCoreKos())
 	}
-	// for _, v := range kosData {
-	// 	fmt.Println(v.Ratings)
-
-	// }
 	return result, nil
 }
 
@@ -156,4 +152,19 @@ func (repo *bookQuery) GetTotalBooking() (int, error) {
 		return 0, tx.Error
 	}
 	return int(count), nil
+}
+
+func (repo *bookQuery) GetTotalBookingPerYear(year int) ([]int, error) {
+	var counts []int
+	rows, err := repo.db.Raw("SELECT COUNT(*) as count FROM bookings WHERE YEAR(created_at) = ? GROUP BY MONTH(created_at) ORDER BY MONTH(created_at)", year).Rows()
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var count int
+		rows.Scan(&count)
+		counts = append(counts, count)
+	}
+	return counts, nil
 }

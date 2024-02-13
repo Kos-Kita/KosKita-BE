@@ -22,11 +22,11 @@ type BookingCore struct {
 	Payment         PaymentCore
 }
 
-// type WebhoocksRequesCore struct {
-// 	Code   string 
-// 	Status string 
-// 	Payment         PaymentCore
-// }
+type MonthCount struct {
+	Month int
+	Count int
+}
+
 
 type PaymentCore struct {
 	Method        string
@@ -47,6 +47,7 @@ type BookDataInterface interface {
 	GetBooking(userId uint) ([]BookingCore, error)
 	WebhoocksData(webhoocksReq BookingCore) error
 	GetTotalBooking() (int, error)
+	GetTotalBookingPerYear(year int) ([]int, error)
 }
 
 // interface untuk Service Layer

@@ -38,7 +38,11 @@ func (handler *BookHandler) CreateBook(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse(errInsert.Error(), nil))
 	}
 
-	result := CoreToResponseBook(payment)
+	// result := CoreToResponseBook(payment)
+	result := BookingResponse{}
+	if payment != nil {
+		result = CoreToResponseBook(payment)
+	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success booking kos", result))
 }

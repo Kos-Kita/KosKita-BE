@@ -29,12 +29,14 @@ func (bs *bookService) Create(userIdLogin int, input booking.BookingCore) (*book
 		return nil, errors.New("anda bukan renter")
 	}
 
-	bookCore, err := bs.bookData.Insert(userIdLogin, input)
-	if err != nil {
-		return nil, err
-	}
+	// bookCore, err := bs.bookData.Insert(userIdLogin, input)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	return bookCore, nil
+
+
+	return nil, nil
 }
 
 // CancelBooking implements booking.BookServiceInterface.
