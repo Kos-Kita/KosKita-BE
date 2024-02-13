@@ -40,11 +40,11 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 		return nil, errPay
 	}
 	
-	log.Println("input payment", payment)
-	
 	if err := repo.db.Create(&bookModel).Error; err != nil {
 		return nil, err
 	}
+	
+	log.Println("input payment", payment)
 
 	bookModel.Method = payment.Method
 	bookModel.Bank = payment.Bank
@@ -54,9 +54,9 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 
 	log.Println("input bookmodel", bookModel)
 
-	// if err := repo.db.Updates(&bookModel).Error; err != nil {
-	// 	return nil, err
-	// }
+	if err := repo.db.Updates(&bookModel).Error; err != nil {
+		return nil, err
+	}
 
 	bookCore := ModelToCoreBook(bookModel)
 	// if payment != nil {
