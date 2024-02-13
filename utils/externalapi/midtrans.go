@@ -4,7 +4,6 @@ import (
 	"KosKita/app/config"
 	"KosKita/features/booking"
 	"errors"
-	"fmt"
 	"time"
 
 	mid "github.com/midtrans/midtrans-go"
@@ -36,7 +35,7 @@ func New() MidtransInterface {
 func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.PaymentCore, error) {
 	req := new(coreapi.ChargeReq)
 	req.TransactionDetails = mid.TransactionDetails{
-		OrderID: book.Code,
+		OrderID:  book.Code,
 		GrossAmt: int64(book.Total),
 	}
 
@@ -60,13 +59,6 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Payment
 		req.PaymentType = coreapi.PaymentTypeBankTransfer
 		req.BankTransfer = &coreapi.BankTransferDetails{
 			Bank: mid.BankPermata,
-		}
-	case "mandiri":
-		req.PaymentType = coreapi.PaymentTypeEChannel
-		req.EChannel = &coreapi.EChannelDetail{
-			BillInfo1: "KosKita Booking",
-			BillInfo2: fmt.Sprintf("%d BookedAt", len(book.BookedAt.Format(time.RFC3339))),
-			BillKey:   fmt.Sprintf("%d", book.Code),
 		}
 	default:
 		return nil, errors.New("unsupported payment")
