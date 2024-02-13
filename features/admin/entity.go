@@ -4,6 +4,7 @@ type DashboardData struct {
 	TotalUser int 
 	TotalBooking int 
 	TotalKos int
+	TotalBookingPerMonth int
 }
 
 

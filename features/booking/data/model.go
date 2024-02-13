@@ -33,6 +33,11 @@ type Payment struct {
 	PaidAt        *time.Time `gorm:"default:null;"`
 }
 
+// type MonthCount struct {
+// 	Month int
+// 	Count int
+// }
+
 func CoreToModelBook(input booking.BookingCore) Booking {
 	return Booking{
 		Code:            input.Code,
@@ -93,17 +98,3 @@ func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
 		Status: reqNotif.Status,
 	}
 }
-
-// func (mod *Booking) GenerateCode() (err error) {
-// 	// mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
-// 	var bookCode int
-// 	mod.Code, err = strconv.Atoi(fmt.Sprintf("%d%d%d", mod.UserId, mod.BoardingHouseId, time.Now().Unix()))
-// 	if err != nil {
-// 		return err
-// 	}
-// 	// var stringCode string
-// 	stringCode := strconv.Itoa(bookCode)
-// 	mod.Code = stringCode
-
-// 	return
-// }
