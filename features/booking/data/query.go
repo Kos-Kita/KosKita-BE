@@ -43,20 +43,20 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 
 	input.Code = bookModel.Code
 
-	log.Println("input book", input)
-	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
+	// log.Println("input book", input)
+	// payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
 
-	log.Println("input payment", payment)
-	if errPay != nil {
-		return nil, errPay
-	}
+	// log.Println("input payment", payment)
+	// if errPay != nil {
+	// 	return nil, errPay
+	// }
 
-	bookModel.Method = payment.Method
-	bookModel.Bank = payment.Bank
-	bookModel.VirtualNumber = payment.VirtualNumber
-	bookModel.Status= payment.Status
-	bookModel.ExpiredAt = &payment.ExpiredAt
-	bookModel.PaidAt = &payment.PaidAt
+	// bookModel.Method = payment.Method
+	// bookModel.Bank = payment.Bank
+	// bookModel.VirtualNumber = payment.VirtualNumber
+	// bookModel.Status= payment.Status
+	// bookModel.ExpiredAt = &payment.ExpiredAt
+	// bookModel.PaidAt = &payment.PaidAt
 
 	log.Println("input bookmodel", bookModel)
 
