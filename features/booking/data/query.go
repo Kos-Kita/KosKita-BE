@@ -51,12 +51,11 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 		return nil, errPay
 	}
 
-	// bookModel.Method = payment.Method
-	// bookModel.Bank = payment.Bank
-	// bookModel.VirtualNumber = payment.VirtualNumber
-	// bookModel.Status= payment.Status
-	// bookModel.ExpiredAt = &payment.ExpiredAt
-	// bookModel.PaidAt = &payment.PaidAt
+	bookModel.Method = payment.Method
+	bookModel.Bank = payment.Bank
+	bookModel.VirtualNumber = payment.VirtualNumber
+	bookModel.Status= payment.Status
+	bookModel.ExpiredAt = payment.ExpiredAt
 
 	log.Println("input bookmodel", bookModel)
 

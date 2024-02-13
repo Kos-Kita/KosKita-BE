@@ -10,23 +10,20 @@ import (
 )
 
 type Booking struct {
-	Code            string  `gorm:"column:code; type:varchar(36);primary_key" json:"id"`
-	Total           float64 `gorm:"column:total;"`
+	Code            string  `gorm:"type:varchar(36);primary_key" json:"id"`
+	Total           float64 
 	UserId          uint
 	BoardingHouseId uint
+	Status          string           
 	BookedAt        time.Time        `gorm:"autoCreateTime"`
-	Status          string           `gorm:"column:status; type:varchar(50);"`
 	DeletedAt       gorm.DeletedAt   `gorm:"index"`
+	CreatedAt       time.Time   `gorm:"index"`
 	User            ud.User          `gorm:"foreignKey:UserId"`
 	BoardingHouse   kd.BoardingHouse `gorm:"foreignKey:BoardingHouseId"`
 	Method          string           `gorm:"column:method; type:varchar(20);"`
-	Bank            string           `gorm:"column:bank; type:varchar(20);"`
+	Bank            string          
 	VirtualNumber   string           `gorm:"column:virtual_number; type:varchar(50);"`
-	BillKey         string           `gorm:"column:bill_key; type:varchar(50);"`
-	BillCode        string           `gorm:"column:bill_code; type:varchar(50);"`
-	CreatedAt       time.Time        `gorm:"index"`
-	ExpiredAt       *time.Time       `gorm:"nullable"`
-	PaidAt          *time.Time       `gorm:"default:null;"`
+	ExpiredAt       time.Time      
 	// Payment         Payment          `gorm:"embedded;embeddedPrefix:payment_"`
 }
 
@@ -57,8 +54,7 @@ func CoreToModelBook(input booking.BookingCore) Booking {
 		Method:          input.Method,
 		Bank:            input.Bank,
 		VirtualNumber:   input.VirtualNumber,
-		ExpiredAt:       &input.ExpiredAt,
-		PaidAt:          &input.PaidAt,
+		ExpiredAt:       input.ExpiredAt,
 		// Payment:         CoreToModelPay(input.Payment),
 	}
 }
@@ -92,8 +88,7 @@ func ModelToCoreBook(model Booking) booking.BookingCore {
 		Bank:          model.Bank,
 		VirtualNumber: model.VirtualNumber,
 		CreatedAt:     model.CreatedAt,
-		ExpiredAt:     *model.ExpiredAt,
-		PaidAt:        *model.PaidAt,
+		ExpiredAt:     model.ExpiredAt,
 		// Payment:       PaymentModelToCore(model.Payment),
 	}
 }
