@@ -5,6 +5,8 @@ import (
 	"KosKita/utils/middlewares"
 	"KosKita/utils/responses"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -25,7 +27,14 @@ func (handler *AdminHandler) GetAllData(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
 	}
 
-	dashboardData, errGet := handler.adminService.GetTotalData(userIdLogin)
+	// get the year from the query parameter, or use the current year as default
+	year, err := strconv.Atoi(c.QueryParam("year"))
+	if err != nil {
+		year = time.Now().Year()
+	}
+
+	// pass the year as the second argument to GetTotalData
+	dashboardData, errGet := handler.adminService.GetTotalData(userIdLogin, year)
 	if errGet != nil {
 		if errGet.Error() == "anda bukan admin" {
 			return c.JSON(http.StatusUnauthorized, responses.WebResponse(errGet.Error(), nil))
