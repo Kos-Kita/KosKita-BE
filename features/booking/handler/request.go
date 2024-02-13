@@ -21,8 +21,8 @@ func RequestToCoreBook(input BookRequest, userIdLogin uint) booking.BookingCore 
 		Code:            uuid.New().String(),
 		UserId:          userIdLogin,
 		BoardingHouseId: input.BoardingHouseId,
-		Method: input.Method,
-			Bank:   input.Bank,
+		Method:          input.Method,
+		Bank:            input.Bank,
 		// Payment: booking.PaymentCore{
 		// 	Method: input.Method,
 		// 	Bank:   input.Bank,
@@ -32,7 +32,6 @@ func RequestToCoreBook(input BookRequest, userIdLogin uint) booking.BookingCore 
 
 func CancelRequestToCoreBooking(input CancelBookingRequest) booking.BookingCore {
 	return booking.BookingCore{
-
 		Status: input.Status,
 	}
 }

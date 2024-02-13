@@ -7,10 +7,11 @@ import (
 )
 
 type BookingResponse struct {
-	Code                 string        `json:"booking_code,omitempty"`
+	Code                 string     `json:"booking_code,omitempty"`
 	Status               string     `json:"status,omitempty"`
 	Total                float64    `json:"total,omitempty"`
-	PaymentBank          string     `json:"payment_method,omitempty"`
+	PaymentMethod        string     `json:"payment_method,omitempty"`
+	PaymentBank          string     `json:"bank,omitempty"`
 	PaymentVirtualNumber string     `json:"virtual_number,omitempty"`
 	PaymentBillKey       string     `json:"key_bill,omitempty"`
 	PaymentBillCode      string     `json:"code_bill,omitempty"`
@@ -33,6 +34,7 @@ func CoreToResponseBook(core *booking.BookingCore) BookingResponse {
 		Code:                 core.Code,
 		Status:               core.Status,
 		Total:                core.Total,
+		PaymentMethod:        core.Method,
 		PaymentBank:          core.Bank,
 		PaymentVirtualNumber: core.VirtualNumber,
 		PaymentExpiredAt:     &core.ExpiredAt,
