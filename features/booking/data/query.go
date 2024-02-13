@@ -7,6 +7,7 @@ import (
 	kd "KosKita/features/kos/data"
 	"KosKita/utils/externalapi"
 	"errors"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -42,8 +43,10 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 
 	input.Code = bookModel.Code
 
+	log.Println("input book", input)
 	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
 
+	log.Println("input payment", payment)
 	if errPay != nil {
 		return nil, errPay
 	}
@@ -55,9 +58,10 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	bookModel.Payment.BillCode = payment.BillCode
 	bookModel.Payment.ExpiredAt = &payment.ExpiredAt
 	bookModel.Payment.PaidAt = &payment.PaidAt
-	bookModel.Payment.PaidAt = &payment.PaidAt
 
-	if err := repo.db.Save(&bookModel).Error; err != nil {
+	log.Println("input bookmodel", bookModel)
+
+	if err := repo.db.Updates(&bookModel).Error; err != nil {
 		return nil, err
 	}
 
