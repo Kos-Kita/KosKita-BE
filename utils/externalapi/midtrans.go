@@ -36,7 +36,7 @@ func New() MidtransInterface {
 func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.PaymentCore, error) {
 	req := new(coreapi.ChargeReq)
 	req.TransactionDetails = mid.TransactionDetails{
-		OrderID:  fmt.Sprintf("%d", book.Code),
+		OrderID: book.Code,
 		GrossAmt: int64(book.Total),
 	}
 
