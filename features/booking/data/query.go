@@ -36,10 +36,6 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	bookModel.UserId = uint(userIdLogin)
 	bookModel.Total = input.Total
 
-	if err := bookModel.GenerateCode(); err != nil {
-		return nil, err
-	}
-
 	if err := repo.db.Create(&bookModel).Error; err != nil {
 		return nil, err
 	}
@@ -57,7 +53,6 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	bookModel.Payment.VirtualNumber = payment.VirtualNumber
 	bookModel.Payment.BillKey = payment.BillKey
 	bookModel.Payment.BillCode = payment.BillCode
-	bookModel.Status = bookModel.Status
 	bookModel.Payment.ExpiredAt = &payment.ExpiredAt
 	bookModel.Payment.PaidAt = &payment.PaidAt
 	bookModel.Payment.PaidAt = &payment.PaidAt
