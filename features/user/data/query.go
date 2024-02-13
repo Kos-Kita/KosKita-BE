@@ -44,8 +44,8 @@ func (repo *userQuery) SelectById(userId int) (*user.Core, error) {
 }
 
 // Update implements user.UserDataInterface.
-func (repo *userQuery) Update(userId int, input user.Core) error {
-	dataGorm := CoreToModel(input)
+func (repo *userQuery) Update(userId int, input user.CoreUpdate) error {
+	dataGorm := CoreToModelUpdate(input)
 	tx := repo.db.Model(&User{}).Where("id = ?", userId).Updates(dataGorm)
 	if tx.Error != nil {
 		return tx.Error
@@ -75,7 +75,8 @@ func (repo *userQuery) Login(email string, password string) (data *user.Core, er
 	var userGorm User
 	tx := repo.db.Where("email = ?", email).First(&userGorm)
 	if tx.Error != nil {
-		return nil, tx.Error
+		// return nil, tx.Error
+		return nil, errors.New(" Invalid email or password")
 	}
 	result := userGorm.ModelToCore()
 	return &result, nil
