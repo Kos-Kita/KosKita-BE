@@ -64,6 +64,5 @@ func (as *adminService) GetTotalData(userIdLogin int, year int) (admin.Dashboard
 		dashboardData.TotalBookingPerMonth = append(dashboardData.TotalBookingPerMonth, totalBookingPerMonth)
 	}
 
-
 	return dashboardData, nil
 }

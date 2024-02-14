@@ -12,9 +12,6 @@ import (
 	kd "KosKita/features/kos/data"
 	kh "KosKita/features/kos/handler"
 	ks "KosKita/features/kos/service"
-	od "KosKita/features/order/data"
-	oh "KosKita/features/order/handler"
-	os "KosKita/features/order/service"
 	ud "KosKita/features/user/data"
 	uh "KosKita/features/user/handler"
 	us "KosKita/features/user/service"
@@ -47,13 +44,9 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	kosService := ks.New(kosData, userService)
 	kosHandlerAPI := kh.New(kosService, cloudinaryUploader)
 
-	bookData := bd.New(db, midtrans)
-	bookService := bs.New(bookData, userService)
-	bookHandlerAPI := bh.New(bookService)
-
-	orderData := od.NewOrder(db, midtrans)
-	orderService := os.NewOrder(orderData)
-	orderHandlerAPI := oh.NewOrder(orderService)
+	bookData := bd.NewBooking(db, midtrans)
+	bookService := bs.NewBooking(bookData)
+	bookHandlerAPI := bh.NewBooking(bookService)
 
 	adminService := as.New(userData, kosData, bookData, userService)
 	adminHandlerAPI := ah.New(adminService)
@@ -65,7 +58,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/room/:roomId", wsHandler.GetMessages)
 
 	// define routes/ endpoint MESSAGE // yoga
-	e.POST("/create-room", wsHandler.CreateRoom, middlewares.JWTMiddleware())
+	e.POST("/create-room", wsHandler.CreateRoom)
 	e.GET("/get-room", wsHandler.GetRooms)
 	e.GET("/join-room/:roomId", wsHandler.JoinRoom)
 	e.GET("/room/:roomId", wsHandler.GetMessages)
@@ -95,17 +88,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/users/kos", kosHandlerAPI.GetKosByUserId, middlewares.JWTMiddleware())
 	e.GET("/kos/search", kosHandlerAPI.SearchKos)
 
-	// define routes/ endpoint BOOKING
-	// e.POST("/booking", bookHandlerAPI.CreateBook, middlewares.JWTMiddleware())
-	// e.PUT("/booking/:id", bookHandlerAPI.CancelBooking, middlewares.JWTMiddleware())
-	// e.POST("/payment/notification", bookHandlerAPI.WebhoocksNotification)
-	e.GET("/booking", bookHandlerAPI.GetBooking, middlewares.JWTMiddleware())
-
 	// define routes/ endpoint Order
-	e.POST("/order", orderHandlerAPI.CreateOrder, middlewares.JWTMiddleware())
-	e.GET("/order", orderHandlerAPI.GetOrders, middlewares.JWTMiddleware())
-	e.PUT("/order/:order_id", orderHandlerAPI.CancelOrderById, middlewares.JWTMiddleware())
-	e.POST("/payment/notification/webhook", orderHandlerAPI.WebhoocksNotification)
-	// e.POST("/payment/notification", bookHandlerAPI.WebhoocksNotification)
-	// e.GET("/booking", bookHandlerAPI.GetBooking, middlewares.JWTMiddleware())
+	e.POST("/booking", bookHandlerAPI.CreateBooking, middlewares.JWTMiddleware())
+	e.GET("/booking", bookHandlerAPI.GetBookings, middlewares.JWTMiddleware())
+	e.PUT("/booking/:booking_id", bookHandlerAPI.CancelBookingById, middlewares.JWTMiddleware())
+	e.POST("/payment/notification/webhook", bookHandlerAPI.WebhoocksNotification)
+
 }

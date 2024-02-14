@@ -1,50 +1,41 @@
 package booking
 
 import (
-	"time"
-
 	kd "KosKita/features/kos"
 	ud "KosKita/features/user"
+	"time"
 )
 
 type BookingCore struct {
-	Code            string
-	Total           float64
-	BookedAt        time.Time
-	DeletedAt       time.Time
-	UserId          uint
-	User            ud.Core
+	ID              string
+	UserID          uint
 	BoardingHouseId uint
-	BoardingHouse   kd.Core
-	Method          string
+	StartDate       string
+	PaymentType     string
+	Total           float64
+	Status          string
 	Bank            string
 	VirtualNumber   string
-	BookingCode     int
-	BookingTotal    float64
-	Status          string
+	ExpiredAt       string
+	PaidAt          string
 	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	ExpiredAt       time.Time
-}
-
-type MonthCount struct {
-	Month int
-	Count int
+	User            ud.Core
+	BoardingHouse   kd.Core
 }
 
 type BookDataInterface interface {
-	Insert(userIdLogin int, input BookingCore) (*BookingCore, error)
-	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
-	GetBooking(userId uint) ([]BookingCore, error)
+	PostBooking(userId uint, input BookingCore) (*BookingCore, error)
+	GetBooking(userId uint) (*BookingCore, error)
+	GetBookings(userId uint) ([]BookingCore, error)
+	CancelBooking(userId int, bookingId string, bookingCore BookingCore) error
 	WebhoocksData(webhoocksReq BookingCore) error
 	GetTotalBooking() (int, error)
 	GetTotalBookingPerMonth(year int, month int) (int, error)
 }
 
-// interface untuk Service Layer
-type BookServiceInterface interface {
-	Create(userIdLogin int, input BookingCore) (*BookingCore, error)
-	CancelBooking(userIdLogin int, bookingId string, bookingCore BookingCore) error
-	GetBooking(userId uint) ([]BookingCore, error)
-	WebhoocksData(webhoocksReq BookingCore) error
+type BookingServiceInterface interface {
+	PostBooking(userId uint, input BookingCore) (*BookingCore, error)
+	GetBookings(userId uint) ([]BookingCore, error)
+	CancelBooking(userId int, bookingId string, bookingCore BookingCore) error
+	WebhoocksService(webhoocksReq BookingCore) error
 }
