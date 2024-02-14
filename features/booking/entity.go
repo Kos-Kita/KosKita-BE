@@ -5,15 +5,13 @@ import (
 
 	kd "KosKita/features/kos"
 	ud "KosKita/features/user"
-
-	"gorm.io/gorm"
 )
 
 type BookingCore struct {
 	Code            string
 	Total           float64
 	BookedAt        time.Time
-	DeletedAt       gorm.DeletedAt
+	DeletedAt       time.Time
 	UserId          uint
 	User            ud.Core
 	BoardingHouseId uint
@@ -25,29 +23,14 @@ type BookingCore struct {
 	BookingTotal    float64
 	Status          string
 	CreatedAt       time.Time
+	UpdatedAt       time.Time
 	ExpiredAt       time.Time
-	PaidAt          time.Time
-	// Payment         PaymentCore
 }
 
 type MonthCount struct {
 	Month int
 	Count int
 }
-
-// type PaymentCore struct {
-// 	Method        string
-// 	Bank          string
-// 	VirtualNumber string
-// 	BillKey       string
-// 	BillCode      string
-// 	BookingCode   int
-// 	BookingTotal  float64
-// 	Status        string
-// 	CreatedAt     time.Time
-// 	ExpiredAt     time.Time
-// 	PaidAt        time.Time
-// }
 
 type BookDataInterface interface {
 	Insert(userIdLogin int, input BookingCore) (*BookingCore, error)
