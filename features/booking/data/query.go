@@ -2,141 +2,28 @@ package data
 
 import (
 	"KosKita/features/booking"
-	"KosKita/features/kos"
-	"KosKita/features/kos/data"
+	kd "KosKita/features/kos/data"
 	"KosKita/utils/externalapi"
 	"errors"
-	"log"
+	"fmt"
 
 	"gorm.io/gorm"
 )
 
-type bookQuery struct {
+type bookingQuery struct {
 	db              *gorm.DB
 	paymentMidtrans externalapi.MidtransInterface
 }
 
-func New(db *gorm.DB, mid externalapi.MidtransInterface) booking.BookDataInterface {
-	return &bookQuery{
+func NewBooking(db *gorm.DB, mid externalapi.MidtransInterface) booking.BookDataInterface {
+	return &bookingQuery{
 		db:              db,
 		paymentMidtrans: mid,
 	}
 }
 
-// Insert implements booking.BookDataInterface.
-func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*booking.BookingCore, error) {
-	boardingHouse := data.BoardingHouse{}
-	if err := repo.db.First(&boardingHouse, input.BoardingHouseId).Error; err != nil {
-		return nil, err
-	}
-
-	input.Total = float64(boardingHouse.Price)
-	bookModel := CoreToModelBook(input)
-
-	
-	log.Println("BOOOK INPUT ===", input)
-	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
-	if errPay != nil {
-		return nil, errPay
-	}
-	
-	
-	log.Println("PAYMENT ===", payment)
-	
-	bookModel.Method = payment.Method
-	bookModel.Bank = payment.Bank
-	bookModel.VirtualNumber = payment.VirtualNumber
-	bookModel.Status= payment.Status
-	bookModel.ExpiredAt = payment.ExpiredAt
-	
-	log.Println("BOOKMODEL ====", bookModel)
-	
-	if err := repo.db.Create(&bookModel).Error; err != nil {
-		return nil, err
-	}
-
-	bookCore := ModelToCoreBook(bookModel)
-
-	return &bookCore, nil
-}
-
-// CancelBooking implements booking.BookDataInterface.
-func (repo *bookQuery) CancelBooking(userIdLogin int, bookingId string, bookingCore booking.BookingCore) error {
-	if bookingCore.Status == "cancelled" {
-		repo.paymentMidtrans.CancelOrderPayment(bookingId)
-	}
-
-	booking := Booking{}
-	tx := repo.db.Where("code = ? AND user_id = ?", bookingId, userIdLogin).First(&booking)
-	if tx.Error != nil {
-		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
-			return errors.New("you do not have permission to edit this product")
-		}
-		return tx.Error
-	}
-	bookingInputGorm := CoreToModelBookCancel(bookingCore)
-
-	tx = repo.db.Model(&booking).Updates(&bookingInputGorm)
-	if tx.Error != nil {
-		return tx.Error
-	}
-	if tx.RowsAffected == 0 {
-		return errors.New("error record not found")
-	}
-	return nil
-}
-
-// GetBooking implements booking.BookDataInterface.
-func (repo *bookQuery) GetBooking(userId uint) ([]booking.BookingCore, error) {
-	var bookingGorm []Booking
-	tx := repo.db.Preload("BoardingHouse").Preload("User").Find(&bookingGorm, "user_id = ?", userId)
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-	if tx.RowsAffected == 0 {
-		return nil, errors.New("find booking failed, row affected = 0")
-	}
-	var bookingCores []booking.BookingCore
-	for _, v := range bookingGorm {
-		bookingCores = append(bookingCores, ModelToCoreBook(v))
-	}
-
-	return bookingCores, nil
-}
-
-// WebhoocksData implements booking.BookDataInterface.
-func (repo *bookQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
-	bookingGorm := WebhoocksCoreToModel(webhoocksReq)
-
-	tx := repo.db.Model(&Booking{}).Where("code = ?", bookingGorm.Code).Updates(bookingGorm)
-	if tx.Error != nil {
-		return tx.Error
-	}
-
-	if tx.RowsAffected == 0 {
-		return errors.New("error record not found ")
-	}
-
-	return nil
-}
-
-func (repo *bookQuery) GetRatingAndFacility(userId uint) ([]kos.Core, error) {
-	var kosData []data.BoardingHouse
-	var result []kos.Core
-
-	tx := repo.db.Preload("Ratings").Preload("KosFacilities").Table("boarding_houses").Find(&kosData)
-
-	if tx.Error != nil {
-		return nil, tx.Error
-	}
-
-	for _, k := range kosData {
-		result = append(result, k.ModelToCoreKos())
-	}
-	return result, nil
-}
-
-func (repo *bookQuery) GetTotalBooking() (int, error) {
+// GetTotalBooking implements booking.BookDataInterface.
+func (repo *bookingQuery) GetTotalBooking() (int, error) {
 	var count int64
 	tx := repo.db.Model(&Booking{}).Count(&count)
 	if tx.Error != nil {
@@ -145,7 +32,8 @@ func (repo *bookQuery) GetTotalBooking() (int, error) {
 	return int(count), nil
 }
 
-func (repo *bookQuery) GetTotalBookingPerMonth(year int, month int) (int, error) {
+// GetTotalBookingPerYear implements booking.BookDataInterface.
+func (repo *bookingQuery) GetTotalBookingPerMonth(year int, month int) (int, error) {
 	var count int
 	row := repo.db.Raw("SELECT COUNT(*) as count FROM bookings WHERE YEAR(created_at) = ? AND MONTH(created_at) = ?", year, month).Row()
 	err := row.Scan(&count)
@@ -153,4 +41,104 @@ func (repo *bookQuery) GetTotalBookingPerMonth(year int, month int) (int, error)
 		return 0, err
 	}
 	return count, nil
+}
+
+// PostBooking implements Booking.BookingDataInterface.
+func (repo *bookingQuery) PostBooking(userId uint, input booking.BookingCore) (*booking.BookingCore, error) {
+	var BookingGorm Booking
+	// var Booking Booking.BookingCore
+
+	boardingHouse := kd.BoardingHouse{}
+	if err := repo.db.First(&boardingHouse, input.BoardingHouseId).Error; err != nil {
+		return nil, err
+	}
+	var amount = boardingHouse.Price
+
+	input.Total = float64(amount)
+	input.UserID = userId
+
+	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
+	if errPay != nil {
+		return nil, errPay
+	}
+
+	fmt.Println(payment.ExpiredAt)
+	// repo.db.Transaction
+	repo.db.Transaction(func(tx *gorm.DB) error {
+		// Create Data Booking
+		BookingGorm = BookingCoreToModel(input)
+		BookingGorm.PaymentType = payment.PaymentType
+		BookingGorm.Status = payment.Status
+		BookingGorm.VirtualNumber = payment.VirtualNumber
+		BookingGorm.PaidAt = payment.PaidAt
+		BookingGorm.ExpiredAt = payment.ExpiredAt
+		BookingGorm.Total = float64(amount)
+		if errBooking := tx.Create(&BookingGorm).Error; errBooking != nil {
+			return errBooking
+		}
+
+		return nil
+	})
+	var BookingCores = ModelToCore(BookingGorm)
+
+	return &BookingCores, nil
+}
+
+// GetBookings implements Booking.BookingDataInterface.
+func (repo *bookingQuery) GetBookings(userId uint) ([]booking.BookingCore, error) {
+	var BookingGorm []Booking
+	// tx := repo.db.Preload("ItemBookings").Preload("User").Find(&BookingGorm, "user_id = ?", userId)
+	tx := repo.db.Preload("BoardingHouse").Preload("User").Find(&BookingGorm, "user_id = ?", userId)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return nil, errors.New("find Booking failed, row affected = 0")
+	}
+	var BookingCores []booking.BookingCore
+	for _, v := range BookingGorm {
+		BookingCores = append(BookingCores, ModelToCore(v))
+	}
+
+	return BookingCores, nil
+}
+
+// CancelBooking implements Booking.BookingDataInterface.
+func (repo *bookingQuery) CancelBooking(userId int, BookingId string, BookingCore booking.BookingCore) error {
+	if BookingCore.Status == "cancelled" {
+		repo.paymentMidtrans.CancelOrderPayment(BookingId)
+	}
+
+	dataGorm := Booking{
+		Status: BookingCore.Status,
+	}
+	fmt.Println("Booking id::", BookingId)
+	tx := repo.db.Model(&Booking{}).Where("id = ? AND user_id = ?", BookingId, userId).Updates(dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
+	}
+	return nil
+}
+
+// GetBooking implements Booking.BookingDataInterface.
+func (repo *bookingQuery) GetBooking(userId uint) (*booking.BookingCore, error) {
+	panic("unimplemented")
+}
+
+// WebhoocksData implements Booking.BookingDataInterface.
+func (repo *bookingQuery) WebhoocksData(webhoocksReq booking.BookingCore) error {
+	dataGorm := WebhoocksCoreToModel(webhoocksReq)
+	tx := repo.db.Model(&Booking{}).Where("id = ?", webhoocksReq.ID).Updates(dataGorm)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return errors.New("error record not found ")
+	}
+	return nil
 }

@@ -2,97 +2,94 @@ package data
 
 import (
 	"KosKita/features/booking"
+	"KosKita/features/kos"
 	kd "KosKita/features/kos/data"
+	"KosKita/features/user"
 	ud "KosKita/features/user/data"
-	"time"
 
 	"gorm.io/gorm"
 )
 
 type Booking struct {
-	Code            string `gorm:"type:varchar(36);primary_key" json:"id"`
-	Total           float64
-	UserId          uint
+	ID string `gorm:"type:varchar(36);primary_key" json:"id"`
+	gorm.Model
+	UserID          uint
 	BoardingHouseId uint
+	StartDate       string
+	PaymentType     string
+	Total           float64
 	Status          string
-	BookedAt        time.Time        `gorm:"autoCreateTime"`
-	DeletedAt       gorm.DeletedAt   `gorm:"index"`
-	CreatedAt       time.Time        `gorm:"index"`
-	User            ud.User          `gorm:"foreignKey:UserId"`
-	BoardingHouse   kd.BoardingHouse `gorm:"foreignKey:BoardingHouseId"`
-	Method          string           `gorm:"column:method; type:varchar(20);"`
 	Bank            string
-	VirtualNumber   string `gorm:"column:virtual_number; type:varchar(50);"`
-	ExpiredAt       time.Time
-	UpdatedAt       time.Time
+	VirtualNumber   string
+	ExpiredAt       string
+	PaidAt          string
+	User            ud.User
+	BoardingHouse   kd.BoardingHouse
 }
 
-func CoreToModelBook(input booking.BookingCore) Booking {
+func BookingCoreToModel(o booking.BookingCore) Booking {
 	return Booking{
-		Code:            input.Code,
-		UserId:          input.UserId,
-		BoardingHouseId: input.BoardingHouseId,
-		Total:           input.Total,
-		BookedAt:        input.BookedAt,
-		Status:          input.Status,
-		Method:          input.Method,
-		Bank:            input.Bank,
-		VirtualNumber:   input.VirtualNumber,
-		ExpiredAt:       input.ExpiredAt,
-		// Payment:         CoreToModelPay(input.Payment),
+		ID:              o.ID,
+		UserID:          o.UserID,
+		BoardingHouseId: o.BoardingHouseId,
+		StartDate:       o.StartDate,
+		PaymentType:     o.PaymentType,
+		Total:           o.Total,
+		Status:          o.Status,
+		Bank:            o.Bank,
+		VirtualNumber:   o.VirtualNumber,
+		ExpiredAt:       o.ExpiredAt,
+		PaidAt:          o.PaidAt,
 	}
 }
 
-// func CoreToModelPay(input booking.PaymentCore) Payment {
-// 	return Payment{
-// 		Method:        input.Method,
-// 		Bank:          input.Bank,
-// 		VirtualNumber: input.VirtualNumber,
-// 		BillKey:       input.BillKey,
-// 		BillCode:      input.BillCode,
-// 		ExpiredAt:     &input.ExpiredAt,
-// 		PaidAt:        &input.PaidAt,
-// 	}
-// }
-
-func CoreToModelBookCancel(input booking.BookingCore) Booking {
-	return Booking{
-		Status: input.Status,
-	}
-}
-
-func ModelToCoreBook(model Booking) booking.BookingCore {
+func ModelToCore(o Booking) booking.BookingCore {
 	return booking.BookingCore{
-		Code:          model.Code,
-		Total:         model.Total,
-		UserId:        model.UserId,
-		Status:        model.Status,
-		BoardingHouse: model.BoardingHouse.ModelToCoreKos(),
-		Method:        model.Method,
-		Bank:          model.Bank,
-		VirtualNumber: model.VirtualNumber,
-		CreatedAt:     model.CreatedAt,
-		ExpiredAt:     model.ExpiredAt,
-		// Payment:       PaymentModelToCore(model.Payment),
+		ID:              o.ID,
+		UserID:          o.UserID,
+		BoardingHouseId: o.BoardingHouseId,
+		StartDate:       o.StartDate,
+		PaymentType:     o.PaymentType,
+		Total:           o.Total,
+		Status:          o.Status,
+		Bank:            o.Bank,
+		VirtualNumber:   o.VirtualNumber,
+		ExpiredAt:       o.ExpiredAt,
+		PaidAt:          o.PaidAt,
+		CreatedAt:       o.CreatedAt,
+		User: user.Core{
+			ID:           o.User.ID,
+			Name:         o.User.Name,
+			UserName:     o.User.UserName,
+			Email:        o.User.Email,
+			Password:     o.User.Password,
+			Gender:       o.User.Gender,
+			Role:         o.User.Role,
+			PhotoProfile: o.User.PhotoProfile,
+		},
+		BoardingHouse: kos.Core{
+			ID:          o.BoardingHouse.ID,
+			Name:        o.BoardingHouse.Name,
+			Description: o.BoardingHouse.Description,
+			Category:    o.BoardingHouse.Category,
+			Price:       o.BoardingHouse.Price,
+			Rooms:       o.BoardingHouse.Rooms,
+			Address:     o.BoardingHouse.Address,
+			Longitude:   o.BoardingHouse.Longitude,
+			Latitude:    o.BoardingHouse.Latitude,
+			PhotoMain:   o.BoardingHouse.PhotoMain,
+			// PhotoFront:      o.BoardingHouse,
+			// PhotoBack:       o.BoardingHouse,
+			// PhotoRoomFront:  o.BoardingHouse,
+			// PhotoRoomInside: o.BoardingHouse,
+			UserID: o.BoardingHouse.UserID,
+		},
 	}
 }
-
-// func PaymentModelToCore(model Payment) booking.PaymentCore {
-// 	return booking.PaymentCore{
-// 		Method:        model.Method,
-// 		Bank:          model.Bank,
-// 		VirtualNumber: model.VirtualNumber,
-// 		BillKey:       model.BillKey,
-// 		BillCode:      model.BillCode,
-// 		CreatedAt:     model.CreatedAt,
-// 		ExpiredAt:     *model.ExpiredAt,
-// 		PaidAt:        *model.PaidAt,
-// 	}
-// }
 
 func WebhoocksCoreToModel(reqNotif booking.BookingCore) Booking {
 	return Booking{
-		Code:   reqNotif.Code,
 		Status: reqNotif.Status,
+		PaidAt: reqNotif.PaidAt,
 	}
 }

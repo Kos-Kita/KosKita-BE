@@ -2,70 +2,62 @@ package handler
 
 import (
 	"KosKita/features/booking"
-	"KosKita/features/kos"
 	"time"
 )
 
 type BookingResponse struct {
-	Code                 string     `json:"booking_code"`
-	Status               string     `json:"status"`
-	Total                float64    `json:"total"`
-	PaymentMethod        string     `json:"payment_method"`
-	PaymentBank          string     `json:"bank"`
-	PaymentVirtualNumber string     `json:"virtual_number"`
-	PaymentExpiredAt     *time.Time `json:"payment_expired"`
+	Id            string  `json:"order_id"`
+	UserID        uint    `json:"user_id"`
+	StartDate     string  `json:"start_date"`
+	PaymentType   string  `json:"payment_method"`
+	Total         float64 `json:"total"`
+	Status        string  `json:"status"`
+	Bank          string  `json:"bank"`
+	VirtualNumber string  `json:"virtual_number"`
+	ExpiredAt     string  `json:"expired_at"`
 }
 
 type BookingHistoryResponse struct {
-	KosId         uint     `json:"kos_id"`
-	KosName       string   `json:"kos_name"`
-	KosFasilitas  []string `json:"kos_fasilitas"`
-	KosLokasi     string   `json:"kos_lokasi"`
-	KosRating     float64  `json:"kos_ratingy"`
-	KosMainFoto   string   `json:"kos_main_foto"`
-	PaymentStatus string   `json:"payment_status"`
-	TotalHarga    float64  `json:"total_harga"`
+	Id            string    `json:"order_id"`
+	KosId         uint      `json:"kos_id,omitempty"`
+	KosName       string    `json:"kos_name,omitempty"`
+	KosFasilitas  []string  `json:"kos_fasilitas,omitempty"`
+	KosLokasi     string    `json:"kos_lokasi,omitempty"`
+	KosRating     float64   `json:"kos_rating,omitempty"`
+	StartDate     string    `json:"start_date,omitempty"`
+	KosMainFoto   string    `json:"kos_main_foto,omitempty"`
+	PaymentStatus string    `json:"payment_status,omitempty"`
+	TotalHarga    float64   `json:"total_harga,omitempty"`
+	CreatedAt     time.Time `json:"created_at,omitempty"`
+	PaidAt        string    `json:"paid_at,omitempty"`
 }
 
-func CoreToResponseBook(core *booking.BookingCore) BookingResponse {
+func CoreToResponse(o booking.BookingCore) BookingResponse {
 	return BookingResponse{
-		Code:                 core.Code,
-		Status:               core.Status,
-		Total:                core.Total,
-		PaymentMethod:        core.Method,
-		PaymentBank:          core.Bank,
-		PaymentVirtualNumber: core.VirtualNumber,
-		PaymentExpiredAt:     &core.ExpiredAt,
+		Id:            o.ID,
+		UserID:        o.UserID,
+		StartDate:     o.StartDate,
+		PaymentType:   o.PaymentType,
+		Total:         o.Total,
+		Status:        o.Status,
+		Bank:          o.Bank,
+		VirtualNumber: o.VirtualNumber,
+		ExpiredAt:     o.ExpiredAt,
 	}
 }
 
-func CoreToResponseBookHistory(core *booking.BookingCore) BookingHistoryResponse {
+func CoreToResponseBookingHistory(core *booking.BookingCore) BookingHistoryResponse {
 	return BookingHistoryResponse{
-		KosId:         core.BoardingHouse.ID,
-		KosName:       core.BoardingHouse.Name,
-		KosLokasi:     core.BoardingHouse.Address,
-		KosRating:     KosRatingResult(core.BoardingHouse.Ratings),
+		Id:        core.ID,
+		KosId:     core.BoardingHouse.ID,
+		KosName:   core.BoardingHouse.Name,
+		KosLokasi: core.BoardingHouse.Address,
+		StartDate: core.StartDate,
+		// KosRating:     KosRatingResult(core.BoardingHouse.Ratings),
 		KosMainFoto:   core.BoardingHouse.PhotoMain,
 		PaymentStatus: core.Status,
 		TotalHarga:    core.Total,
+		CreatedAt:     core.CreatedAt,
+		PaidAt:        core.PaidAt,
 	}
-}
-
-func KosFasilitasList(kf []kos.KosFacilityCore) []string {
-	var results []string
-	for _, v := range kf {
-		results = append(results, v.Facility)
-	}
-	return results
-}
-
-func KosRatingResult(numbers []kos.RatingCore) float64 {
-	var results float64
-	if len(numbers) > 0 {
-		for _, num := range numbers {
-			results += float64(num.Score)
-		}
-		return float64(results) / float64(len(numbers))
-	}
-	return 0
 }
