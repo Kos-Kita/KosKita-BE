@@ -135,7 +135,7 @@ func (_m *UserServiceInterface) Login(email string, password string) (*user.Core
 }
 
 // Update provides a mock function with given fields: userId, input
-func (_m *UserServiceInterface) Update(userId int, input user.Core) error {
+func (_m *UserServiceInterface) Update(userId int, input user.CoreUpdate) error {
 	ret := _m.Called(userId, input)
 
 	if len(ret) == 0 {
@@ -143,7 +143,7 @@ func (_m *UserServiceInterface) Update(userId int, input user.Core) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(int, user.Core) error); ok {
+	if rf, ok := ret.Get(0).(func(int, user.CoreUpdate) error); ok {
 		r0 = rf(userId, input)
 	} else {
 		r0 = ret.Error(0)
