@@ -34,34 +34,28 @@ func (repo *bookQuery) Insert(userIdLogin int, input booking.BookingCore) (*book
 	bookModel := CoreToModelBook(input)
 
 	
-	log.Println("input book", input)
+	log.Println("BOOOK INPUT ===", input)
 	payment, errPay := repo.paymentMidtrans.NewOrderPayment(input)
 	if errPay != nil {
 		return nil, errPay
 	}
 	
-	if err := repo.db.Create(&bookModel).Error; err != nil {
-		return nil, err
-	}
 	
-	log.Println("input payment", payment)
-
+	log.Println("PAYMENT ===", payment)
+	
 	bookModel.Method = payment.Method
 	bookModel.Bank = payment.Bank
 	bookModel.VirtualNumber = payment.VirtualNumber
 	bookModel.Status= payment.Status
 	bookModel.ExpiredAt = payment.ExpiredAt
-
-	log.Println("input bookmodel", bookModel)
-
-	if err := repo.db.Updates(&bookModel).Error; err != nil {
+	
+	log.Println("BOOKMODEL ====", bookModel)
+	
+	if err := repo.db.Create(&bookModel).Error; err != nil {
 		return nil, err
 	}
 
 	bookCore := ModelToCoreBook(bookModel)
-	// if payment != nil {
-	// 	bookCore = *payment
-	// }
 
 	return &bookCore, nil
 }

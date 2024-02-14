@@ -90,8 +90,6 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Booking
 		book.ExpiredAt = expiredAt
 	}
 
-	book.BookingTotal = book.Total
-
 	return &book, nil
 }
 
