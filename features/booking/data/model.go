@@ -10,38 +10,22 @@ import (
 )
 
 type Booking struct {
-	Code            string  `gorm:"type:varchar(36);primary_key" json:"id"`
-	Total           float64 
+	Code            string `gorm:"type:varchar(36);primary_key" json:"id"`
+	Total           float64
 	UserId          uint
 	BoardingHouseId uint
-	Status          string           
+	Status          string
 	BookedAt        time.Time        `gorm:"autoCreateTime"`
 	DeletedAt       gorm.DeletedAt   `gorm:"index"`
-	CreatedAt       time.Time   `gorm:"index"`
+	CreatedAt       time.Time        `gorm:"index"`
 	User            ud.User          `gorm:"foreignKey:UserId"`
 	BoardingHouse   kd.BoardingHouse `gorm:"foreignKey:BoardingHouseId"`
 	Method          string           `gorm:"column:method; type:varchar(20);"`
-	Bank            string          
-	VirtualNumber   string           `gorm:"column:virtual_number; type:varchar(50);"`
-	ExpiredAt       time.Time      
-	// Payment         Payment          `gorm:"embedded;embeddedPrefix:payment_"`
+	Bank            string
+	VirtualNumber   string `gorm:"column:virtual_number; type:varchar(50);"`
+	ExpiredAt       time.Time
+	UpdatedAt       time.Time
 }
-
-// type Payment struct {
-// 	Method        string     `gorm:"column:method; type:varchar(20);"`
-// 	Bank          string     `gorm:"column:bank; type:varchar(20);"`
-// 	VirtualNumber string     `gorm:"column:virtual_number; type:varchar(50);"`
-// 	BillKey       string     `gorm:"column:bill_key; type:varchar(50);"`
-// 	BillCode      string     `gorm:"column:bill_code; type:varchar(50);"`
-// 	CreatedAt     time.Time  `gorm:"index"`
-// 	ExpiredAt     *time.Time `gorm:"nullable"`
-// 	PaidAt        *time.Time `gorm:"default:null;"`
-// }
-
-// type MonthCount struct {
-// 	Month int
-// 	Count int
-// }
 
 func CoreToModelBook(input booking.BookingCore) Booking {
 	return Booking{
