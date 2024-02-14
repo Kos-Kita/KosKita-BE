@@ -76,6 +76,10 @@ func (pay *midtrans) NewOrderPayment(book booking.BookingCore) (*booking.Booking
 		book.VirtualNumber = res.VaNumbers[0].VANumber
 	}
 
+	if res.PermataVaNumber != "" {
+		book.VirtualNumber = res.PermataVaNumber
+	}
+
 	if res.PaymentType != "" {
 		book.Method = res.PaymentType
 	}

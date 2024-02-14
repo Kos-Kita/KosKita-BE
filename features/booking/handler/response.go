@@ -7,26 +7,24 @@ import (
 )
 
 type BookingResponse struct {
-	Code                 string     `json:"booking_code,omitempty"`
-	Status               string     `json:"status,omitempty"`
-	Total                float64    `json:"total,omitempty"`
-	PaymentMethod        string     `json:"payment_method,omitempty"`
-	PaymentBank          string     `json:"bank,omitempty"`
-	PaymentVirtualNumber string     `json:"virtual_number,omitempty"`
-	PaymentBillKey       string     `json:"key_bill,omitempty"`
-	PaymentBillCode      string     `json:"code_bill,omitempty"`
-	PaymentExpiredAt     *time.Time `json:"payment_expired,omitempty"`
+	Code                 string     `json:"booking_code"`
+	Status               string     `json:"status"`
+	Total                float64    `json:"total"`
+	PaymentMethod        string     `json:"payment_method"`
+	PaymentBank          string     `json:"bank"`
+	PaymentVirtualNumber string     `json:"virtual_number"`
+	PaymentExpiredAt     *time.Time `json:"payment_expired"`
 }
 
 type BookingHistoryResponse struct {
-	KosId         uint     `json:"kos_id,omitempty"`
-	KosName       string   `json:"kos_name,omitempty"`
-	KosFasilitas  []string `json:"kos_fasilitas,omitempty"`
-	KosLokasi     string   `json:"kos_lokasi,omitempty"`
-	KosRating     float64  `json:"kos_rating,omitempty"`
-	KosMainFoto   string   `json:"kos_main_foto,omitempty"`
-	PaymentStatus string   `json:"payment_status,omitempty"`
-	TotalHarga    float64  `json:"total_harga,omitempty"`
+	KosId         uint     `json:"kos_id"`
+	KosName       string   `json:"kos_name"`
+	KosFasilitas  []string `json:"kos_fasilitas"`
+	KosLokasi     string   `json:"kos_lokasi"`
+	KosRating     float64  `json:"kos_ratingy"`
+	KosMainFoto   string   `json:"kos_main_foto"`
+	PaymentStatus string   `json:"payment_status"`
+	TotalHarga    float64  `json:"total_harga"`
 }
 
 func CoreToResponseBook(core *booking.BookingCore) BookingResponse {

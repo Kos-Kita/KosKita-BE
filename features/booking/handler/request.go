@@ -23,10 +23,6 @@ func RequestToCoreBook(input BookRequest, userIdLogin uint) booking.BookingCore 
 		BoardingHouseId: input.BoardingHouseId,
 		Method:          input.Method,
 		Bank:            input.Bank,
-		// Payment: booking.PaymentCore{
-		// 	Method: input.Method,
-		// 	Bank:   input.Bank,
-		// },
 	}
 }
 

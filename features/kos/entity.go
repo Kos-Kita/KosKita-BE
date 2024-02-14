@@ -29,7 +29,6 @@ type Core struct {
 	User            user.Core
 }
 
-
 type CoreInput struct {
 	ID              uint
 	Name            string `validate:"required"`
