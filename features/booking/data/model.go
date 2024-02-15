@@ -82,6 +82,7 @@ func ModelToCore(o Booking) booking.BookingCore {
 			Latitude:    o.BoardingHouse.Latitude,
 			PhotoMain:   o.BoardingHouse.PhotoMain,
 			UserID:      o.BoardingHouse.UserID,
+			Ratings:     []kos.RatingCore{},
 		},
 	}
 }
