@@ -3,7 +3,7 @@ package handler
 import "KosKita/features/user"
 
 type UserResponse struct {
-	ID uint `json:"name" form:"name"`
+	ID uint `json:"id" form:"id"`
 	Name         string `json:"name" form:"name"`
 	UserName     string `json:"user_name" form:"user_name"`
 	Email        string `json:"email" form:"email"`
