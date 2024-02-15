@@ -15,14 +15,14 @@ import (
 type ChatHandler struct {
 	chatService ch.ChatServiceInterface
 	hub         *hub.Hub
-	cu cu.UserServiceInterface
+	cu          cu.UserServiceInterface
 }
 
 func New(cs ch.ChatServiceInterface, h *hub.Hub, cu cu.UserServiceInterface) *ChatHandler {
 	return &ChatHandler{
 		chatService: cs,
 		hub:         h,
-		cu: cu,
+		cu:          cu,
 	}
 }
 
@@ -31,7 +31,7 @@ func (ch *ChatHandler) CreateRoom(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
-	
+
 	roomID := generateRoomID()
 	ch.hub.Rooms[roomID] = &hub.Room{
 		ID:      roomID,
@@ -71,7 +71,7 @@ func (ch *ChatHandler) JoinRoom(c echo.Context) error {
 	}
 
 	m := &cd.Chat{
-		Message: "",
+		Message: clientID + " Has join the room",
 		RoomID:  roomID,
 	}
 

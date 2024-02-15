@@ -19,6 +19,7 @@ type BookingCore struct {
 	VirtualNumber   string
 	ExpiredAt       string
 	PaidAt          string
+	Rating          float64
 	CreatedAt       time.Time
 	User            ud.Core
 	BoardingHouse   kd.Core
