@@ -84,18 +84,32 @@ func (repo *bookingQuery) PostBooking(userId uint, input booking.BookingCore) (*
 // GetBookings implements Booking.BookingDataInterface.
 func (repo *bookingQuery) GetBookings(userId uint) ([]booking.BookingCore, error) {
 	var BookingGorm []Booking
-	tx := repo.db.Preload("BoardingHouse").Preload("User").Find(&BookingGorm, "user_id = ?", userId)
+	tx := repo.db.Preload("BoardingHouse").Preload("BoardingHouse.Ratings").Preload("User").Find(&BookingGorm, "user_id = ?", userId)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
-	var BookingCores []booking.BookingCore
-	for _, v := range BookingGorm {
-		BookingCores = append(BookingCores, ModelToCore(v))
+	var kosRating []float64
+	for _, booking := range BookingGorm {
+		fmt.Println(booking.BoardingHouseId)
+		fmt.Println(booking.Total)
+		var ratings float64
+		for _, rating := range booking.BoardingHouse.Ratings {
+			ratings += float64(rating.Score)
+			fmt.Println(rating.Score)
+		}
+		resultRating := ratings / float64(len(booking.BoardingHouse.Ratings))
+		kosRating = append(kosRating, resultRating)
 	}
 
+	var BookingCores []booking.BookingCore
+	for i, v := range BookingGorm {
+		BookingCores = append(BookingCores, ModelToCore(v))
+		BookingCores[i].Rating = kosRating[i]
+	}
+
+	fmt.Println(BookingCores[0].StartDate)
 	return BookingCores, nil
 }
-
 
 // CancelBooking implements Booking.BookingDataInterface.
 func (repo *bookingQuery) CancelBooking(userId int, BookingId string, BookingCore booking.BookingCore) error {

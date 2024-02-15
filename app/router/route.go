@@ -26,7 +26,7 @@ import (
 )
 
 func InitRouter(db *gorm.DB, e *echo.Echo) {
-	
+
 	hash := encrypts.New()
 	cloudinaryUploader := cloudinary.New()
 	midtrans := externalapi.New()
@@ -59,10 +59,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/room/:roomId", wsHandler.GetMessages)
 
 	// define routes/ endpoint MESSAGE // yoga
-	e.POST("/create-room", wsHandler.CreateRoom)
-	e.GET("/get-room", wsHandler.GetRooms)
-	e.GET("/join-room/:roomId", wsHandler.JoinRoom)
-	e.GET("/room/:roomId", wsHandler.GetMessages)
+	// e.POST("/create-room", wsHandler.CreateRoom)
+	// e.GET("/get-room", wsHandler.GetRooms)
+	// e.GET("/join-room/:roomId", wsHandler.JoinRoom)
+	// e.GET("/room/:roomId", wsHandler.GetMessages)
 
 	// define routes/ endpoint ADMIN
 	e.GET("/admin", adminHandlerAPI.GetAllData, middlewares.JWTMiddleware())

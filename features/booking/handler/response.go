@@ -60,5 +60,6 @@ func CoreToResponseBookingHistory(core booking.BookingCore) BookingHistoryRespon
 		TotalHarga:    core.Total,
 		CreatedAt:     core.CreatedAt,
 		PaidAt:        core.PaidAt,
+		KosRating:     core.Rating,
 	}
 }
