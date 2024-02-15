@@ -63,11 +63,6 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface, cu c
 			break
 		}
 
-		msg := &cd.Chat{
-			Message: string(m),
-			RoomID:  c.RoomID,
-		}
-
 		senderID, err := strconv.Atoi(c.SenderID)
 		if err != nil {
 			log.Printf("Error converting SenderID to integer: %v", err)
@@ -78,6 +73,13 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface, cu c
 		if err != nil {
 			log.Printf("Error converting ReceiverID to integer: %v", err)
 			continue
+		}
+
+		msg := &cd.Chat{
+			Message:    string(m),
+			SenderID:   uint(senderID),
+			ReceiverID: uint(receiverID),
+			RoomID:     c.RoomID,
 		}
 
 		coreMsg := cc.Core{
