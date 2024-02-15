@@ -3,6 +3,7 @@ package handler
 import "KosKita/features/user"
 
 type UserResponse struct {
+	ID uint `json:"name" form:"name"`
 	Name         string `json:"name" form:"name"`
 	UserName     string `json:"user_name" form:"user_name"`
 	Email        string `json:"email" form:"email"`
@@ -19,6 +20,7 @@ type UserKosDetailResponse struct {
 
 func CoreToResponse(data *user.Core) UserResponse {
 	var result = UserResponse{
+		ID: data.ID,
 		Name:         data.Name,
 		UserName:     data.UserName,
 		Email:        data.Email,

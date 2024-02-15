@@ -65,11 +65,13 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface, cu c
 			Message: string(m),
 			RoomID:  c.RoomID,
 		}
+
 		userID, err := strconv.Atoi(c.ID)
 		if err != nil {
 			log.Printf("Error converting ID to integer: %v", err)
 			continue
 		}
+		
 		user, err := cu.GetById(userID)
 		if err != nil {
 			log.Printf("Error getting user: %v", err)
