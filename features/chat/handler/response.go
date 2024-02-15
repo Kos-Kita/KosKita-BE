@@ -1,9 +1,15 @@
 package handler
 
-import "KosKita/features/chat"
+import ("KosKita/features/user/handler"
+	"KosKita/features/chat")
 
 type RoomRes struct {
 	ID string `json:"room_id"`
+}
+
+type GetRoomRespon struct {
+	ID   string `json:"room_id"`
+	Name string `json:"name"`
 }
 
 type ChatRes struct {
@@ -33,4 +39,12 @@ func CoreToGetChats(chats []chat.Core) []ChatRes {
 		})
 	}
 	return res
+}
+
+func CoreToGetUser(room chat.Core) GetRoomRespon {
+	user := handler.CoreToResponse(&room.User)
+	return GetRoomRespon{
+		ID:   room.RoomID,
+		Name: user.UserName,
+	}
 }
