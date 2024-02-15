@@ -46,7 +46,6 @@ func (repo *bookingQuery) GetTotalBookingPerMonth(year int, month int) (int, err
 // PostBooking implements Booking.BookingDataInterface.
 func (repo *bookingQuery) PostBooking(userId uint, input booking.BookingCore) (*booking.BookingCore, error) {
 	var BookingGorm Booking
-	// var Booking Booking.BookingCore
 
 	boardingHouse := kd.BoardingHouse{}
 	if err := repo.db.First(&boardingHouse, input.BoardingHouseId).Error; err != nil {
@@ -63,9 +62,7 @@ func (repo *bookingQuery) PostBooking(userId uint, input booking.BookingCore) (*
 	}
 
 	fmt.Println(payment.ExpiredAt)
-	// repo.db.Transaction
 	repo.db.Transaction(func(tx *gorm.DB) error {
-		// Create Data Booking
 		BookingGorm = BookingCoreToModel(input)
 		BookingGorm.PaymentType = payment.PaymentType
 		BookingGorm.Status = payment.Status
@@ -91,9 +88,6 @@ func (repo *bookingQuery) GetBookings(userId uint) ([]booking.BookingCore, error
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
-	if tx.RowsAffected == 0 {
-		return nil, errors.New("find Booking failed, row affected = 0")
-	}
 	var BookingCores []booking.BookingCore
 	for _, v := range BookingGorm {
 		BookingCores = append(BookingCores, ModelToCore(v))
@@ -101,6 +95,7 @@ func (repo *bookingQuery) GetBookings(userId uint) ([]booking.BookingCore, error
 
 	return BookingCores, nil
 }
+
 
 // CancelBooking implements Booking.BookingDataInterface.
 func (repo *bookingQuery) CancelBooking(userId int, BookingId string, BookingCore booking.BookingCore) error {
