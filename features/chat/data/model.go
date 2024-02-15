@@ -46,6 +46,10 @@ func (m Chat) ModelToCoreRoom(userIdLogin uint) chat.Core {
 
 	return chat.Core{
 		RoomID: m.RoomID,
-		User:   user.Core{UserName: name},
+		SenderID: m.SenderID,
+		User:   user.Core{
+			UserName: name,
+			PhotoProfile: m.UserReceiver.PhotoProfile,
+		},
 	}
 }
