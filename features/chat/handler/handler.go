@@ -5,6 +5,7 @@ import (
 	cd "KosKita/features/chat/data"
 	hub "KosKita/features/chat/service"
 	cu "KosKita/features/user"
+	"KosKita/utils/middlewares"
 	"KosKita/utils/responses"
 	"net/http"
 
@@ -61,13 +62,15 @@ func (ch *ChatHandler) JoinRoom(c echo.Context) error {
 	}
 
 	roomID := c.Param("roomId")
-	clientID := c.QueryParam("userId")
+	senderId := c.QueryParam("senderId")
+	receiverId := c.QueryParam("receiverId")
 
 	cl := &hub.Client{
-		Conn:    conn,
-		Message: make(chan *cd.Chat, 10),
-		ID:      clientID,
-		RoomID:  roomID,
+		Conn:       conn,
+		Message:    make(chan *cd.Chat, 10),
+		SenderID:   senderId,
+		ReceiverID: receiverId,
+		RoomID:     roomID,
 	}
 
 	m := &cd.Chat{
@@ -95,17 +98,23 @@ func (ch *ChatHandler) GetMessages(c echo.Context) error {
 	chatResult := CoreToGetChats(chats)
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get message.", chatResult))
-
 }
 
 func (ch *ChatHandler) GetRooms(c echo.Context) error {
-	rooms := make([]RoomRes, 0)
-
-	for _, r := range ch.hub.Rooms {
-		rooms = append(rooms, RoomRes{
-			ID: r.ID,
-		})
+	userIdLogin := middlewares.ExtractTokenUserId(c)
+	if userIdLogin == 0 {
+		return c.JSON(http.StatusUnauthorized, responses.WebResponse("Unauthorized user", nil))
 	}
 
-	return c.JSON(http.StatusOK, rooms)
+	rooms, err := ch.chatService.GetRoom(userIdLogin)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	var roomRes []GetRoomRespon
+	for _, room := range rooms {
+		roomRes = append(roomRes, CoreToGetUser(room))
+	}
+
+	return c.JSON(http.StatusOK, roomRes)
 }

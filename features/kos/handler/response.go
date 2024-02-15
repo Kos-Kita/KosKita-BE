@@ -48,7 +48,7 @@ type KosIdResponse struct {
 
 type KosResponseDetail struct {
 	ID            uint                          `json:"id"`
-	Name          string                         `json:"kos_name"`
+	Name          string                        `json:"kos_name"`
 	Description   string                        `json:"description"`
 	Rooms         int                           `json:"rooms"`
 	Rating        float64                       `json:"rating"`
@@ -151,6 +151,7 @@ func CoreToGetDetail(kos kos.Core) KosResponseDetail {
 			PhotoRoomInside: kos.PhotoRoomInside,
 		},
 		User: handler.UserKosDetailResponse{
+			ID:           kos.User.ID,
 			Name:         kos.User.Name,
 			UserName:     kos.User.UserName,
 			PhotoProfile: kos.User.PhotoProfile,

@@ -2,6 +2,7 @@ package data
 
 import (
 	"KosKita/features/chat"
+	"KosKita/features/user"
 	"KosKita/features/user/data"
 
 	"gorm.io/gorm"
@@ -32,5 +33,19 @@ func (m Chat) ModelToCoreChat() chat.Core {
 		RoomID:     m.RoomID,
 		SenderID:   m.SenderID,
 		ReceiverID: m.ReceiverID,
+	}
+}
+
+func (m Chat) ModelToCoreRoom(userIdLogin uint) chat.Core {
+	var name string
+	if m.SenderID == userIdLogin {
+		name = m.UserReceiver.UserName
+	} else if m.ReceiverID == userIdLogin {
+		name = m.UserSender.UserName
+	}
+
+	return chat.Core{
+		RoomID: m.RoomID,
+		User:   user.Core{UserName: name},
 	}
 }

@@ -11,10 +11,12 @@ import (
 )
 
 type Client struct {
-	Conn    *websocket.Conn
-	Message chan *cd.Chat
-	ID      string `json:"id"`
-	RoomID  string `json:"roomId"`
+	Conn       *websocket.Conn
+	Message    chan *cd.Chat
+	SenderID   string `json:"sender_id"`
+	ReceiverID string `json:"receiver_id"`
+	Name       string `json:"name"`
+	RoomID     string `json:"roomId"`
 }
 
 type ChatRes struct {
@@ -66,26 +68,15 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface, cu c
 			RoomID:  c.RoomID,
 		}
 
-		userID, err := strconv.Atoi(c.ID)
+		senderID, err := strconv.Atoi(c.SenderID)
 		if err != nil {
-			log.Printf("Error converting ID to integer: %v", err)
-			continue
-		}
-		
-		user, err := cu.GetById(userID)
-		if err != nil {
-			log.Printf("Error getting user: %v", err)
+			log.Printf("Error converting SenderID to integer: %v", err)
 			continue
 		}
 
-		if user.Role == "renter" {
-			msg.SenderID = uint(userID)
-			msg.ReceiverID = user.ID
-		} else if user.Role == "owner" {
-			msg.ReceiverID = uint(userID)
-			msg.SenderID = user.ID
-		} else {
-			log.Printf("Invalid role: %v", user.Role)
+		receiverID, err := strconv.Atoi(c.ReceiverID)
+		if err != nil {
+			log.Printf("Error converting ReceiverID to integer: %v", err)
 			continue
 		}
 
@@ -96,7 +87,7 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface, cu c
 			SenderID:   msg.SenderID,
 		}
 
-		_, err = chatService.CreateChat(userID, coreMsg)
+		_, err = chatService.CreateChat(senderID, receiverID, coreMsg)
 		if err != nil {
 			log.Printf("Error saving message: %v", err)
 			continue

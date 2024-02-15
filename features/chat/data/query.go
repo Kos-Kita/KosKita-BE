@@ -16,10 +16,26 @@ func New(db *gorm.DB) chat.ChatDataInterface {
 	}
 }
 
+// GetRoom implements chat.ChatDataInterface.
+func (repo *chatQuery) GetRoom(userIdLogin int) ([]chat.Core, error) {
+	var rooms []Chat
+	tx := repo.db.Where("receiver_id = ? OR sender_id = ?", userIdLogin, userIdLogin).Preload("UserReceiver").Preload("UserSender").Find(&rooms)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	var result []chat.Core
+	for _, room := range rooms {
+		result = append(result, room.ModelToCoreRoom(uint(userIdLogin)))
+	}
+
+	return result, nil
+}
+
 // CreateRoom implements chat.ChatDataInterface.
 func (repo *chatQuery) CreateRoom(roomID string, receiverID int, senderID int) error {
 	room := Chat{
-		RoomID:         roomID,
+		RoomID:     roomID,
 		ReceiverID: uint(receiverID),
 		SenderID:   uint(senderID),
 	}
@@ -33,10 +49,10 @@ func (repo *chatQuery) CreateRoom(roomID string, receiverID int, senderID int) e
 }
 
 // CreateRoom implements chat.ChatDataInterface.
-func (repo *chatQuery) CreateMessage(userIdLogin int, input chat.Core) (chat.Core, error) {
+func (repo *chatQuery) CreateMessage(receiverID int, senderID int, input chat.Core) (chat.Core, error) {
 	chatInput := CoreToModelChat(input)
-	chatInput.ReceiverID = uint(userIdLogin)
-	chatInput.SenderID = uint(userIdLogin)
+	chatInput.ReceiverID = uint(receiverID)
+	chatInput.SenderID = uint(senderID)
 
 	tx := repo.db.Create(&chatInput)
 	if tx.Error != nil {
@@ -54,7 +70,7 @@ func (repo *chatQuery) CreateMessage(userIdLogin int, input chat.Core) (chat.Cor
 // GetMessage implements chat.ChatDataInterface.
 func (repo *chatQuery) GetMessage(roomId string) ([]chat.Core, error) {
 	var chats []Chat
-	tx := repo.db.Where("room_id = ?", roomId).Find(&chats)
+	tx := repo.db.Where("room_id = ?", roomId).Order("created_at desc").Find(&chats)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

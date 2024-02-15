@@ -4,6 +4,7 @@ import "KosKita/features/chat/data"
 
 type Room struct {
 	ID      string             `json:"id"`
+	Name    string             `json:"name"`
 	Clients map[string]*Client `json:"clients"`
 }
 
@@ -30,21 +31,21 @@ func (h *Hub) Run() {
 			if _, ok := h.Rooms[cl.RoomID]; ok {
 				r := h.Rooms[cl.RoomID]
 
-				if _, ok := r.Clients[cl.ID]; !ok {
-					r.Clients[cl.ID] = cl
+				if _, ok := r.Clients[cl.SenderID]; !ok {
+					r.Clients[cl.SenderID] = cl
 				}
 			}
 		case cl := <-h.Unregister:
 			if _, ok := h.Rooms[cl.RoomID]; ok {
-				if _, ok := h.Rooms[cl.RoomID].Clients[cl.ID]; ok {
+				if _, ok := h.Rooms[cl.RoomID].Clients[cl.SenderID]; ok {
 					if len(h.Rooms[cl.RoomID].Clients) != 0 {
 						h.Broadcast <- &data.Chat{
-							Message:  "",
-							RoomID:   cl.RoomID,
+							Message: "",
+							RoomID:  cl.RoomID,
 						}
 					}
 
-					delete(h.Rooms[cl.RoomID].Clients, cl.ID)
+					delete(h.Rooms[cl.RoomID].Clients, cl.SenderID)
 					close(cl.Message)
 				}
 			}

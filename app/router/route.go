@@ -54,15 +54,9 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	// define routes/ endpoint MESSAGE
 	e.POST("/create-room", wsHandler.CreateRoom)
-	e.GET("/get-room", wsHandler.GetRooms)
+	e.GET("/get-room", wsHandler.GetRooms, middlewares.JWTMiddleware())
 	e.GET("/join-room/:roomId", wsHandler.JoinRoom)
 	e.GET("/room/:roomId", wsHandler.GetMessages)
-
-	// define routes/ endpoint MESSAGE // yoga
-	// e.POST("/create-room", wsHandler.CreateRoom)
-	// e.GET("/get-room", wsHandler.GetRooms)
-	// e.GET("/join-room/:roomId", wsHandler.JoinRoom)
-	// e.GET("/room/:roomId", wsHandler.GetMessages)
 
 	// define routes/ endpoint ADMIN
 	e.GET("/admin", adminHandlerAPI.GetAllData, middlewares.JWTMiddleware())
@@ -94,5 +88,4 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/booking", bookHandlerAPI.GetBookings, middlewares.JWTMiddleware())
 	e.PUT("/booking/:booking_id", bookHandlerAPI.CancelBookingById, middlewares.JWTMiddleware())
 	e.POST("/payment/notification/webhook", bookHandlerAPI.WebhoocksNotification)
-
 }
