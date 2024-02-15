@@ -18,12 +18,14 @@ type Core struct {
 
 // interface untuk Data Layer
 type ChatDataInterface interface {
+	CreateRoom(roomID string, receiverID int, senderID int) error
 	CreateMessage(userIdLogin int, input Core) (Core, error)
 	GetMessage(roomId string) ([]Core, error)
 }
 
 // interface untuk Service Layer
 type ChatServiceInterface interface {
+	CreateRoom(roomID string, receiverID int, senderID int) error
 	CreateChat(userIdLogin int, input Core) (Core, error)
 	GetMessage(roomId string) ([]Core, error)
 }

@@ -3,6 +3,7 @@ package service
 import (
 	cc "KosKita/features/chat"
 	cd "KosKita/features/chat/data"
+	cu "KosKita/features/user"
 	"log"
 	"strconv"
 
@@ -45,7 +46,7 @@ func (c *Client) WriteMessage() {
 	}
 }
 
-func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface) {
+func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface, cu cu.UserServiceInterface) {
 	defer func() {
 		hub.Unregister <- c
 		c.Conn.Close()
@@ -64,6 +65,27 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface) {
 			Message: string(m),
 			RoomID:  c.RoomID,
 		}
+		userID, err := strconv.Atoi(c.ID)
+		if err != nil {
+			log.Printf("Error converting ID to integer: %v", err)
+			continue
+		}
+		user, err := cu.GetById(userID)
+		if err != nil {
+			log.Printf("Error getting user: %v", err)
+			continue
+		}
+
+		if user.Role == "renter" {
+			msg.SenderID = uint(userID)
+			msg.ReceiverID = user.ID
+		} else if user.Role == "owner" {
+			msg.ReceiverID = uint(userID)
+			msg.SenderID = user.ID
+		} else {
+			log.Printf("Invalid role: %v", user.Role)
+			continue
+		}
 
 		coreMsg := cc.Core{
 			Message:    msg.Message,
@@ -72,12 +94,6 @@ func (c *Client) ReadMessage(hub *Hub, chatService cc.ChatServiceInterface) {
 			SenderID:   msg.SenderID,
 		}
 
-		userID, err := strconv.Atoi(c.ID)
-		if err != nil {
-			log.Printf("Error converting ID to integer: %v", err)
-			continue
-		}
-		
 		_, err = chatService.CreateChat(userID, coreMsg)
 		if err != nil {
 			log.Printf("Error saving message: %v", err)

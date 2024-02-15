@@ -6,7 +6,7 @@ import (
 )
 
 type BookingResponse struct {
-	Id            string  `json:"order_id"`
+	Id            string  `json:"booking_id"`
 	UserID        uint    `json:"user_id"`
 	StartDate     string  `json:"start_date"`
 	PaymentType   string  `json:"payment_method"`
@@ -19,17 +19,17 @@ type BookingResponse struct {
 
 type BookingHistoryResponse struct {
 	Id            string    `json:"order_id"`
-	KosId         uint      `json:"kos_id,omitempty"`
-	KosName       string    `json:"kos_name,omitempty"`
-	KosFasilitas  []string  `json:"kos_fasilitas,omitempty"`
-	KosLokasi     string    `json:"kos_lokasi,omitempty"`
-	KosRating     float64   `json:"kos_rating,omitempty"`
-	StartDate     string    `json:"start_date,omitempty"`
-	KosMainFoto   string    `json:"kos_main_foto,omitempty"`
-	PaymentStatus string    `json:"payment_status,omitempty"`
-	TotalHarga    float64   `json:"total_harga,omitempty"`
-	CreatedAt     time.Time `json:"created_at,omitempty"`
-	PaidAt        string    `json:"paid_at,omitempty"`
+	KosId         uint      `json:"kos_id"`
+	KosName       string    `json:"kos_name"`
+	KosFasilitas  []string  `json:"kos_fasilitas"`
+	KosLokasi     string    `json:"kos_lokasi"`
+	KosRating     float64   `json:"kos_rating"`
+	StartDate     string    `json:"start_date"`
+	KosMainFoto   string    `json:"kos_main_foto"`
+	PaymentStatus string    `json:"payment_status"`
+	TotalHarga    float64   `json:"total_harga"`
+	CreatedAt     time.Time `json:"created_at"`
+	PaidAt        string    `json:"paid_at"`
 }
 
 func CoreToResponse(o booking.BookingCore) BookingResponse {
@@ -46,14 +46,13 @@ func CoreToResponse(o booking.BookingCore) BookingResponse {
 	}
 }
 
-func CoreToResponseBookingHistory(core *booking.BookingCore) BookingHistoryResponse {
+func CoreToResponseBookingHistory(core booking.BookingCore) BookingHistoryResponse {
 	return BookingHistoryResponse{
 		Id:        core.ID,
 		KosId:     core.BoardingHouse.ID,
 		KosName:   core.BoardingHouse.Name,
 		KosLokasi: core.BoardingHouse.Address,
 		StartDate: core.StartDate,
-		// KosRating:     KosRatingResult(core.BoardingHouse.Ratings),
 		KosMainFoto:   core.BoardingHouse.PhotoMain,
 		PaymentStatus: core.Status,
 		TotalHarga:    core.Total,

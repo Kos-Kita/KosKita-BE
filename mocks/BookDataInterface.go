@@ -13,9 +13,9 @@ type BookDataInterface struct {
 	mock.Mock
 }
 
-// CancelBooking provides a mock function with given fields: userIdLogin, bookingId, bookingCore
-func (_m *BookDataInterface) CancelBooking(userIdLogin int, bookingId string, bookingCore booking.BookingCore) error {
-	ret := _m.Called(userIdLogin, bookingId, bookingCore)
+// CancelBooking provides a mock function with given fields: userId, bookingId, bookingCore
+func (_m *BookDataInterface) CancelBooking(userId int, bookingId string, bookingCore booking.BookingCore) error {
+	ret := _m.Called(userId, bookingId, bookingCore)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CancelBooking")
@@ -23,7 +23,7 @@ func (_m *BookDataInterface) CancelBooking(userIdLogin int, bookingId string, bo
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(int, string, booking.BookingCore) error); ok {
-		r0 = rf(userIdLogin, bookingId, bookingCore)
+		r0 = rf(userId, bookingId, bookingCore)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -32,11 +32,41 @@ func (_m *BookDataInterface) CancelBooking(userIdLogin int, bookingId string, bo
 }
 
 // GetBooking provides a mock function with given fields: userId
-func (_m *BookDataInterface) GetBooking(userId uint) ([]booking.BookingCore, error) {
+func (_m *BookDataInterface) GetBooking(userId uint) (*booking.BookingCore, error) {
 	ret := _m.Called(userId)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetBooking")
+	}
+
+	var r0 *booking.BookingCore
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uint) (*booking.BookingCore, error)); ok {
+		return rf(userId)
+	}
+	if rf, ok := ret.Get(0).(func(uint) *booking.BookingCore); ok {
+		r0 = rf(userId)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*booking.BookingCore)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(userId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetBookings provides a mock function with given fields: userId
+func (_m *BookDataInterface) GetBookings(userId uint) ([]booking.BookingCore, error) {
+	ret := _m.Called(userId)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBookings")
 	}
 
 	var r0 []booking.BookingCore
@@ -117,29 +147,29 @@ func (_m *BookDataInterface) GetTotalBookingPerMonth(year int, month int) (int, 
 	return r0, r1
 }
 
-// Insert provides a mock function with given fields: userIdLogin, input
-func (_m *BookDataInterface) Insert(userIdLogin int, input booking.BookingCore) (*booking.BookingCore, error) {
-	ret := _m.Called(userIdLogin, input)
+// PostBooking provides a mock function with given fields: userId, input
+func (_m *BookDataInterface) PostBooking(userId uint, input booking.BookingCore) (*booking.BookingCore, error) {
+	ret := _m.Called(userId, input)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Insert")
+		panic("no return value specified for PostBooking")
 	}
 
 	var r0 *booking.BookingCore
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int, booking.BookingCore) (*booking.BookingCore, error)); ok {
-		return rf(userIdLogin, input)
+	if rf, ok := ret.Get(0).(func(uint, booking.BookingCore) (*booking.BookingCore, error)); ok {
+		return rf(userId, input)
 	}
-	if rf, ok := ret.Get(0).(func(int, booking.BookingCore) *booking.BookingCore); ok {
-		r0 = rf(userIdLogin, input)
+	if rf, ok := ret.Get(0).(func(uint, booking.BookingCore) *booking.BookingCore); ok {
+		r0 = rf(userId, input)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*booking.BookingCore)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(int, booking.BookingCore) error); ok {
-		r1 = rf(userIdLogin, input)
+	if rf, ok := ret.Get(1).(func(uint, booking.BookingCore) error); ok {
+		r1 = rf(userId, input)
 	} else {
 		r1 = ret.Error(1)
 	}

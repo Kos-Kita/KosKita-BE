@@ -17,6 +17,22 @@ func New(db *gorm.DB) chat.ChatDataInterface {
 }
 
 // CreateRoom implements chat.ChatDataInterface.
+func (repo *chatQuery) CreateRoom(roomID string, receiverID int, senderID int) error {
+	room := Chat{
+		RoomID:         roomID,
+		ReceiverID: uint(receiverID),
+		SenderID:   uint(senderID),
+	}
+
+	tx := repo.db.Create(&room)
+	if tx.Error != nil {
+		return tx.Error
+	}
+
+	return nil
+}
+
+// CreateRoom implements chat.ChatDataInterface.
 func (repo *chatQuery) CreateMessage(userIdLogin int, input chat.Core) (chat.Core, error) {
 	chatInput := CoreToModelChat(input)
 	chatInput.ReceiverID = uint(userIdLogin)

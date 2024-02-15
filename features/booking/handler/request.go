@@ -2,8 +2,11 @@ package handler
 
 import (
 	"KosKita/features/booking"
+	"fmt"
+	"math/rand"
+	"time"
 
-	"github.com/google/uuid"
+	// "github.com/google/uuid"
 )
 
 type BookingRequest struct {
@@ -31,7 +34,7 @@ type WebhoocksRequest struct {
 
 func RequestToCoreBooking(input BookingRequest) booking.BookingCore {
 	return booking.BookingCore{
-		ID:              uuid.New().String(),
+		ID:              generateRoomID(),
 		BoardingHouseId: input.BoardingHouseId,
 		StartDate:       input.StartDate,
 		PaymentType:     input.Method,
@@ -51,4 +54,9 @@ func WebhoocksRequestToCore(input WebhoocksRequest) booking.BookingCore {
 		Status: input.TransactionStatus,
 		PaidAt: input.TransactionTime,
 	}
+}
+
+func generateRoomID() string {
+	rand.Seed(time.Now().UnixNano())
+	return fmt.Sprintf("%05d", rand.Intn(100000))
 }

@@ -1,20 +1,17 @@
 package handler
 
 import (
-	"crypto/rand"
-	"encoding/hex"
+	"fmt"
+	"math/rand"
+	"time"
 )
 
 type CreateRoomReq struct {
-	ID string `json:"room_id"`
+	ReceiverID int `json:"receiver_id"`
+	SenderID   int `json:"sender_id"`
 }
 
-func generateRoomID() (string, error) {
-	b := make([]byte, 16)
-	_, err := rand.Read(b)
-	if err != nil {
-		return "", err
-	}
-
-	return hex.EncodeToString(b), nil
+func generateRoomID() string {
+	rand.Seed(time.Now().UnixNano())
+	return fmt.Sprintf("%05d", rand.Intn(100000))
 }
