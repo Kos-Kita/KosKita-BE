@@ -42,7 +42,6 @@ func (service *bookingService) CancelBooking(userId int, bookingId string, booki
 	if bookingCore.Status == "" {
 		bookingCore.Status = "cancelled"
 	}
-
 	err := service.bookingData.CancelBooking(userId, bookingId, bookingCore)
 	return err
 }
