@@ -4,6 +4,7 @@ import (
 	ch "KosKita/features/chat"
 	cd "KosKita/features/chat/data"
 	hub "KosKita/features/chat/service"
+	cu "KosKita/features/user"
 	"KosKita/utils/responses"
 	"net/http"
 
@@ -14,12 +15,14 @@ import (
 type ChatHandler struct {
 	chatService ch.ChatServiceInterface
 	hub         *hub.Hub
+	cu cu.UserServiceInterface
 }
 
-func New(cs ch.ChatServiceInterface, h *hub.Hub) *ChatHandler {
+func New(cs ch.ChatServiceInterface, h *hub.Hub, cu cu.UserServiceInterface) *ChatHandler {
 	return &ChatHandler{
 		chatService: cs,
 		hub:         h,
+		cu: cu,
 	}
 }
 
@@ -29,17 +32,18 @@ func (ch *ChatHandler) CreateRoom(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": err.Error()})
 	}
 	
-	roomID, err := generateRoomID()
-	if err != nil {
-		return err
-	}
-
-	ch.hub.Rooms[req.ID] = &hub.Room{
+	roomID := generateRoomID()
+	ch.hub.Rooms[roomID] = &hub.Room{
 		ID:      roomID,
 		Clients: make(map[string]*hub.Client),
 	}
 
-	return c.JSON(http.StatusOK, req)
+	err := ch.chatService.CreateRoom(roomID, req.ReceiverID, req.SenderID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, RoomRes{ID: roomID})
 }
 
 func (ch *ChatHandler) JoinRoom(c echo.Context) error {
@@ -75,7 +79,7 @@ func (ch *ChatHandler) JoinRoom(c echo.Context) error {
 	ch.hub.Broadcast <- m
 
 	go cl.WriteMessage()
-	cl.ReadMessage(ch.hub, ch.chatService)
+	cl.ReadMessage(ch.hub, ch.chatService, ch.cu)
 
 	return nil
 }

@@ -78,10 +78,6 @@ func ModelToCore(o Booking) booking.BookingCore {
 			Longitude:   o.BoardingHouse.Longitude,
 			Latitude:    o.BoardingHouse.Latitude,
 			PhotoMain:   o.BoardingHouse.PhotoMain,
-			// PhotoFront:      o.BoardingHouse,
-			// PhotoBack:       o.BoardingHouse,
-			// PhotoRoomFront:  o.BoardingHouse,
-			// PhotoRoomInside: o.BoardingHouse,
 			UserID: o.BoardingHouse.UserID,
 		},
 	}

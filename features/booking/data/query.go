@@ -87,7 +87,6 @@ func (repo *bookingQuery) PostBooking(userId uint, input booking.BookingCore) (*
 // GetBookings implements Booking.BookingDataInterface.
 func (repo *bookingQuery) GetBookings(userId uint) ([]booking.BookingCore, error) {
 	var BookingGorm []Booking
-	// tx := repo.db.Preload("ItemBookings").Preload("User").Find(&BookingGorm, "user_id = ?", userId)
 	tx := repo.db.Preload("BoardingHouse").Preload("User").Find(&BookingGorm, "user_id = ?", userId)
 	if tx.Error != nil {
 		return nil, tx.Error

@@ -13,6 +13,11 @@ func New(repo chat.ChatDataInterface) chat.ChatServiceInterface {
 }
 
 // CreateRoom implements chat.ChatServiceInterface.
+func (cs *chatService) CreateRoom(roomID string, receiverID int, senderID int) error {
+	return cs.chatData.CreateRoom(roomID, receiverID, senderID)
+}
+
+// CreateRoom implements chat.ChatServiceInterface.
 func (cs *chatService) CreateChat(userIdLogin int, input chat.Core) (chat.Core, error) {
 	chatOutput, errInsert := cs.chatData.CreateMessage(userIdLogin, input)
 	if errInsert != nil {

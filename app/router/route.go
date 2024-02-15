@@ -26,12 +26,7 @@ import (
 )
 
 func InitRouter(db *gorm.DB, e *echo.Echo) {
-	chatData := cd.New(db)
-	chatService := cs.New(chatData)
-	hub := cs.NewHub()
-	wsHandler := ch.New(chatService, hub)
-	go hub.Run()
-
+	
 	hash := encrypts.New()
 	cloudinaryUploader := cloudinary.New()
 	midtrans := externalapi.New()
@@ -50,6 +45,12 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	adminService := as.New(userData, kosData, bookData, userService)
 	adminHandlerAPI := ah.New(adminService)
+
+	chatData := cd.New(db)
+	chatService := cs.New(chatData)
+	hub := cs.NewHub()
+	wsHandler := ch.New(chatService, hub, userService)
+	go hub.Run()
 
 	// define routes/ endpoint MESSAGE
 	e.POST("/create-room", wsHandler.CreateRoom)

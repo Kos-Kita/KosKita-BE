@@ -57,13 +57,14 @@ func (handler *BookingHandler) GetBookings(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, responses.WebResponse("Error booking. "+err.Error(), nil))
 	}
 
-	var bookingResults []BookingHistoryResponse
+	var bookingResults []BookingResponse
 	for _, result := range results {
-		bookingResults = append(bookingResults, CoreToResponseBookingHistory(&result))
+		bookingResults = append(bookingResults, CoreToResponse(result))
 	}
 
 	return c.JSON(http.StatusOK, responses.WebResponse("Success get booking.", bookingResults))
 }
+
 
 func (handler *BookingHandler) CancelBookingById(c echo.Context) error {
 	userIdLogin := middlewares.ExtractTokenUserId(c)
