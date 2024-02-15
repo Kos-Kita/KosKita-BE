@@ -9,6 +9,7 @@ type BookingResponse struct {
 	Id            string  `json:"booking_id"`
 	UserID        uint    `json:"user_id"`
 	StartDate     string  `json:"start_date"`
+	EndDate       string  `json:"end_date"`
 	PaymentType   string  `json:"payment_method"`
 	Total         float64 `json:"total"`
 	Status        string  `json:"status"`
@@ -37,6 +38,7 @@ func CoreToResponse(o booking.BookingCore) BookingResponse {
 		Id:            o.ID,
 		UserID:        o.UserID,
 		StartDate:     o.StartDate,
+		EndDate:       o.EndDate,
 		PaymentType:   o.PaymentType,
 		Total:         o.Total,
 		Status:        o.Status,
@@ -48,11 +50,11 @@ func CoreToResponse(o booking.BookingCore) BookingResponse {
 
 func CoreToResponseBookingHistory(core booking.BookingCore) BookingHistoryResponse {
 	return BookingHistoryResponse{
-		Id:        core.ID,
-		KosId:     core.BoardingHouse.ID,
-		KosName:   core.BoardingHouse.Name,
-		KosLokasi: core.BoardingHouse.Address,
-		StartDate: core.StartDate,
+		Id:            core.ID,
+		KosId:         core.BoardingHouse.ID,
+		KosName:       core.BoardingHouse.Name,
+		KosLokasi:     core.BoardingHouse.Address,
+		StartDate:     core.StartDate,
 		KosMainFoto:   core.BoardingHouse.PhotoMain,
 		PaymentStatus: core.Status,
 		TotalHarga:    core.Total,

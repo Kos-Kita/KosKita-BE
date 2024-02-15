@@ -16,6 +16,7 @@ type Booking struct {
 	UserID          uint
 	BoardingHouseId uint
 	StartDate       string
+	EndDate         string
 	PaymentType     string
 	Total           float64
 	Status          string
@@ -33,6 +34,7 @@ func BookingCoreToModel(o booking.BookingCore) Booking {
 		UserID:          o.UserID,
 		BoardingHouseId: o.BoardingHouseId,
 		StartDate:       o.StartDate,
+		EndDate:         o.EndDate,
 		PaymentType:     o.PaymentType,
 		Total:           o.Total,
 		Status:          o.Status,
@@ -49,6 +51,7 @@ func ModelToCore(o Booking) booking.BookingCore {
 		UserID:          o.UserID,
 		BoardingHouseId: o.BoardingHouseId,
 		StartDate:       o.StartDate,
+		EndDate:         o.EndDate,
 		PaymentType:     o.PaymentType,
 		Total:           o.Total,
 		Status:          o.Status,
@@ -78,7 +81,7 @@ func ModelToCore(o Booking) booking.BookingCore {
 			Longitude:   o.BoardingHouse.Longitude,
 			Latitude:    o.BoardingHouse.Latitude,
 			PhotoMain:   o.BoardingHouse.PhotoMain,
-			UserID: o.BoardingHouse.UserID,
+			UserID:      o.BoardingHouse.UserID,
 		},
 	}
 }

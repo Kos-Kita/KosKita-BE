@@ -11,6 +11,7 @@ type BookingCore struct {
 	UserID          uint
 	BoardingHouseId uint
 	StartDate       string
+	EndDate         string
 	PaymentType     string
 	Total           float64
 	Status          string
