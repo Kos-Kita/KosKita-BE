@@ -24,13 +24,19 @@ func (repo *chatQuery) GetRoom(userIdLogin int) ([]chat.Core, error) {
 		return nil, tx.Error
 	}
 
-	var result []chat.Core
+	roomMap := make(map[string]chat.Core)
 	for _, room := range rooms {
-		result = append(result, room.ModelToCoreRoom(uint(userIdLogin)))
+		roomMap[room.RoomID] = room.ModelToCoreRoom(uint(userIdLogin))
+	}
+
+	var result []chat.Core
+	for _, room := range roomMap {
+		result = append(result, room)
 	}
 
 	return result, nil
 }
+
 
 // CreateRoom implements chat.ChatDataInterface.
 func (repo *chatQuery) CreateRoom(roomID string, receiverID int, senderID int) error {
