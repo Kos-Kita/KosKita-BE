@@ -13,9 +13,9 @@ type ChatDataInterface struct {
 	mock.Mock
 }
 
-// CreateMessage provides a mock function with given fields: userIdLogin, input
-func (_m *ChatDataInterface) CreateMessage(userIdLogin int, input chat.Core) (chat.Core, error) {
-	ret := _m.Called(userIdLogin, input)
+// CreateMessage provides a mock function with given fields: receiverID, senderID, input
+func (_m *ChatDataInterface) CreateMessage(receiverID int, senderID int, input chat.Core) (chat.Core, error) {
+	ret := _m.Called(receiverID, senderID, input)
 
 	if len(ret) == 0 {
 		panic("no return value specified for CreateMessage")
@@ -23,22 +23,40 @@ func (_m *ChatDataInterface) CreateMessage(userIdLogin int, input chat.Core) (ch
 
 	var r0 chat.Core
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int, chat.Core) (chat.Core, error)); ok {
-		return rf(userIdLogin, input)
+	if rf, ok := ret.Get(0).(func(int, int, chat.Core) (chat.Core, error)); ok {
+		return rf(receiverID, senderID, input)
 	}
-	if rf, ok := ret.Get(0).(func(int, chat.Core) chat.Core); ok {
-		r0 = rf(userIdLogin, input)
+	if rf, ok := ret.Get(0).(func(int, int, chat.Core) chat.Core); ok {
+		r0 = rf(receiverID, senderID, input)
 	} else {
 		r0 = ret.Get(0).(chat.Core)
 	}
 
-	if rf, ok := ret.Get(1).(func(int, chat.Core) error); ok {
-		r1 = rf(userIdLogin, input)
+	if rf, ok := ret.Get(1).(func(int, int, chat.Core) error); ok {
+		r1 = rf(receiverID, senderID, input)
 	} else {
 		r1 = ret.Error(1)
 	}
 
 	return r0, r1
+}
+
+// CreateRoom provides a mock function with given fields: roomID, receiverID, senderID
+func (_m *ChatDataInterface) CreateRoom(roomID string, receiverID int, senderID int) error {
+	ret := _m.Called(roomID, receiverID, senderID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for CreateRoom")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, int, int) error); ok {
+		r0 = rf(roomID, receiverID, senderID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // GetMessage provides a mock function with given fields: roomId
@@ -64,6 +82,36 @@ func (_m *ChatDataInterface) GetMessage(roomId string) ([]chat.Core, error) {
 
 	if rf, ok := ret.Get(1).(func(string) error); ok {
 		r1 = rf(roomId)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetRoom provides a mock function with given fields: userIdlogin
+func (_m *ChatDataInterface) GetRoom(userIdlogin int) ([]chat.Core, error) {
+	ret := _m.Called(userIdlogin)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetRoom")
+	}
+
+	var r0 []chat.Core
+	var r1 error
+	if rf, ok := ret.Get(0).(func(int) ([]chat.Core, error)); ok {
+		return rf(userIdlogin)
+	}
+	if rf, ok := ret.Get(0).(func(int) []chat.Core); ok {
+		r0 = rf(userIdlogin)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]chat.Core)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(userIdlogin)
 	} else {
 		r1 = ret.Error(1)
 	}
