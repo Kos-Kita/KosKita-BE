@@ -90,24 +90,27 @@ func (repo *bookingQuery) GetBookings(userId uint) ([]booking.BookingCore, error
 	}
 	var kosRating []float64
 	for _, booking := range BookingGorm {
-		fmt.Println(booking.BoardingHouseId)
-		fmt.Println(booking.Total)
 		var ratings float64
 		for _, rating := range booking.BoardingHouse.Ratings {
 			ratings += float64(rating.Score)
 			fmt.Println(rating.Score)
 		}
-		resultRating := ratings / float64(len(booking.BoardingHouse.Ratings))
+
+		var resultRating float64
+		if ratings > 0 {
+			resultRating = ratings / float64(len(booking.BoardingHouse.Ratings))
+		}
 		kosRating = append(kosRating, resultRating)
 	}
-
+	fmt.Println("Kos Rating", kosRating)
 	var BookingCores []booking.BookingCore
 	for i, v := range BookingGorm {
 		BookingCores = append(BookingCores, ModelToCore(v))
+
 		BookingCores[i].Rating = kosRating[i]
+		fmt.Println(i)
 	}
 
-	fmt.Println(BookingCores[0].StartDate)
 	return BookingCores, nil
 }
 
