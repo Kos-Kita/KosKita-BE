@@ -215,3 +215,75 @@ func TestLogin(t *testing.T) {
 		assert.NoError(t, err)
 	})
 }
+
+func TestChangePassword(t *testing.T) {
+    repo := new(mocks.UserDataInterface)
+    hash := new(mocks.HashInterface)
+    userService := New(repo, hash)
+
+     t.Run("invalid user id", func(t *testing.T) {
+        repo.On("SelectById", 0).Return(nil, errors.New("invalid id")).Once()
+        err := userService.ChangePassword(0, "oldPassword", "newPassword")
+
+        assert.Error(t, err)
+        assert.Contains(t, err.Error(), "invalid id")
+    })
+
+    t.Run("empty old password", func(t *testing.T) {
+        repo.On("SelectById", 1).Return(&user.Core{Password: "hashedOldPassword"}, nil).Once()
+        err := userService.ChangePassword(1, "", "newPassword")
+
+        assert.Error(t, err)
+        assert.Contains(t, err.Error(), "please input current password")
+    })
+
+    t.Run("empty new password", func(t *testing.T) {
+		repo.On("SelectById", 1).Return(&user.Core{Password: "hashedOldPassword"}, nil).Once()
+        err := userService.ChangePassword(1, "oldPassword", "")
+
+        assert.Error(t, err)
+        assert.Contains(t, err.Error(), "please input new password")
+    })
+
+    t.Run("old password not match", func(t *testing.T) {
+		repo.On("SelectById", 1).Return(&user.Core{Password: "hashedOldPassword"}, nil).Once()
+        hash.On("CheckPasswordHash", "hashedOldPassword", "oldPassword").Return(false).Once()
+        err := userService.ChangePassword(1, "oldPassword", "newPassword")
+
+        assert.Error(t, err)
+        assert.Contains(t, err.Error(), "current password not match")
+    })
+
+    t.Run("new password same as old password", func(t *testing.T) {
+		repo.On("SelectById", 1).Return(&user.Core{Password: "hashedOldPassword"}, nil).Once()
+        hash.On("CheckPasswordHash", "hashedOldPassword", "oldPassword").Return(true).Once()
+        hash.On("CheckPasswordHash", "hashedOldPassword", "newPassword").Return(true).Once()
+        err := userService.ChangePassword(1, "oldPassword", "newPassword")
+
+        assert.Error(t, err)
+        assert.Contains(t, err.Error(), "password cannot be the same")
+    })
+
+    t.Run("error hashing new password", func(t *testing.T) {
+		repo.On("SelectById", 1).Return(&user.Core{Password: "hashedOldPassword"}, nil).Once()
+        hash.On("CheckPasswordHash", "hashedOldPassword", "oldPassword").Return(true).Once()
+        hash.On("CheckPasswordHash", "hashedOldPassword", "newPassword").Return(false).Once()
+        hash.On("HashPassword", "newPassword").Return("", errors.New("hash error")).Once()
+        err := userService.ChangePassword(1, "oldPassword", "newPassword")
+
+        assert.Error(t, err)
+        assert.Contains(t, err.Error(), "error hash password")
+    })
+
+    t.Run("success", func(t *testing.T) {
+		repo.On("SelectById", 1).Return(&user.Core{Password: "hashedOldPassword"}, nil).Once()
+        hash.On("CheckPasswordHash", "hashedOldPassword", "oldPassword").Return(true).Once()
+        hash.On("CheckPasswordHash", "hashedOldPassword", "newPassword").Return(false).Once()
+        hash.On("HashPassword", "newPassword").Return("hashedNewPassword", nil).Once()
+        repo.On("ChangePassword", 1, "oldPassword", "hashedNewPassword").Return(nil).Once()
+
+        err := userService.ChangePassword(1, "oldPassword", "newPassword")
+
+        assert.NoError(t, err)
+    })
+}
