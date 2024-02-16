@@ -3,7 +3,6 @@ package service
 import (
 	"KosKita/features/user"
 	"KosKita/mocks"
-	hashMocks "KosKita/utils/encrypts/mocks"
 	"errors"
 	"testing"
 
@@ -13,7 +12,7 @@ import (
 
 func TestCreate(t *testing.T) {
 	repo := new(mocks.UserDataInterface)
-	hash := new(hashMocks.HashMock)
+	hash := new(mocks.HashInterface)
 	srv := New(repo, hash)
 
 	inputData := user.Core{
@@ -62,7 +61,7 @@ func TestCreate(t *testing.T) {
 
 func TestGetById(t *testing.T) {
 	repo := new(mocks.UserDataInterface)
-	hash := new(hashMocks.HashMock)
+	hash := new(mocks.HashInterface)
 
 	returnData := user.Core{
 		ID:           1,
@@ -99,7 +98,7 @@ func TestGetById(t *testing.T) {
 
 func TestUpdateUser(t *testing.T) {
 	repo := new(mocks.UserDataInterface)
-	hash := new(hashMocks.HashMock)
+	hash := new(mocks.HashInterface)
 	userService := New(repo, hash)
 
 	input := user.CoreUpdate{
@@ -137,7 +136,7 @@ func TestUpdateUser(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	repo := new(mocks.UserDataInterface)
-	hash := new(hashMocks.HashMock)
+	hash := new(mocks.HashInterface)
 	userService := New(repo, hash)
 
 	t.Run("invalid user id", func(t *testing.T) {
@@ -158,7 +157,7 @@ func TestDelete(t *testing.T) {
 
 func TestLogin(t *testing.T) {
 	repo := new(mocks.UserDataInterface)
-	hash := new(hashMocks.HashMock)
+	hash := new(mocks.HashInterface)
 	userService := New(repo, hash)
 
 	inputLogin := user.Core{

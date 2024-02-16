@@ -127,7 +127,7 @@ func (service *userService) ChangePassword(userId int, oldPassword, newPassword 
 
 	hashedNewPass, errHash := service.hashService.HashPassword(newPassword)
 	if errHash != nil {
-		return errors.New("Error hash password.")
+		return errors.New("error hash password")
 	}
 
 	err := service.userData.ChangePassword(userId, oldPassword, hashedNewPass)
