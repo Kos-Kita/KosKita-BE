@@ -20,6 +20,7 @@ import (
 	"KosKita/utils/encrypts"
 	"KosKita/utils/externalapi"
 	"KosKita/utils/middlewares"
+	ws "KosKita/utils/websocket"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -48,7 +49,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	chatData := cd.New(db)
 	chatService := cs.New(chatData)
-	hub := cs.NewHub()
+	hub := ws.NewHub()
 	wsHandler := ch.New(chatService, hub, userService)
 	go hub.Run()
 
@@ -83,7 +84,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/users/kos", kosHandlerAPI.GetKosByUserId, middlewares.JWTMiddleware())
 	e.GET("/kos/search", kosHandlerAPI.SearchKos)
 
-	// define routes/ endpoint Order
+	// define routes/ endpoint BOOKING
 	e.POST("/booking", bookHandlerAPI.CreateBooking, middlewares.JWTMiddleware())
 	e.GET("/booking", bookHandlerAPI.GetBookings, middlewares.JWTMiddleware())
 	e.PUT("/booking/:booking_id", bookHandlerAPI.CancelBookingById, middlewares.JWTMiddleware())

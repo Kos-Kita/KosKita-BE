@@ -1,7 +1,7 @@
 openapi: '3.0.3'
 info:
   description: |
-    Ini Adalah Dokumentasi E-commerce App API
+    Ini Adalah Dokumentasi KOSKITA API
   version: "1.0.0"
   title: E-commerce App
   contact:

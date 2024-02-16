@@ -3,7 +3,7 @@ package handler
 import (
 	ch "KosKita/features/chat"
 	cd "KosKita/features/chat/data"
-	hub "KosKita/features/chat/service"
+	hub "KosKita/utils/websocket"
 	cu "KosKita/features/user"
 	"KosKita/utils/middlewares"
 	"KosKita/utils/responses"
@@ -44,7 +44,7 @@ func (ch *ChatHandler) CreateRoom(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusOK, RoomRes{ID: roomID})
+	return c.JSON(http.StatusOK, responses.WebResponse("success create room", RoomRes{ID: roomID}))
 }
 
 func (ch *ChatHandler) JoinRoom(c echo.Context) error {
@@ -116,5 +116,5 @@ func (ch *ChatHandler) GetRooms(c echo.Context) error {
 		roomRes = append(roomRes, CoreToGetUser(room))
 	}
 
-	return c.JSON(http.StatusOK, roomRes)
+	return c.JSON(http.StatusOK, responses.WebResponse("success get room", roomRes))
 }
