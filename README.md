@@ -92,6 +92,32 @@ KosKita adalah aplikasi yang dirancang untuk memudahkan pengguna dalam mencari d
 |💬Message | `GET /room/:roomId` |
 |👮‍♂️Admin | `GET /admin` |
 
+## 🛠️Teknologi Stack
+
+- **Golang**
+    - -> Bahasa pemrograman yang digunakan untuk mengembangkan backend aplikasi.
+- **Echo**
+    - -> Framework web Go yang digunakan untuk membangun API.
+- **Gorilla WebSocket**
+    - -> Pustaka Go untuk implementasi protokol WebSocket.
+- **GORM** 
+    - -> Pustaka ORM (Object-Relational Mapping) untuk Go yang memudahkan interaksi dengan database.
+- **MySQL**
+    - -> Sistem manajemen basis data relasional yang digunakan untuk menyimpan data aplikasi.
+- **JWT (JSON Web Token)**
+     - -> Standar industri untuk token akses yang digunakan untuk otentikasi dan otorisasi.
+- **AWS (Amazon Web Services)**
+    - -> Layanan cloud yang digunakan untuk hosting dan layanan lainnya.
+- **Cloudinary**
+    - -> Platform media cloud yang digunakan untuk manajemen dan penyimpanan gambar.
+- **Midtrans**
+    - -> Gateway pembayaran yang digunakan untuk memproses transaksi pembayaran.
+- **Docker** 
+    - -> Platform yang digunakan untuk mengemas aplikasi dan dependensinya dalam bentuk kontainer.
+- **Postman**
+    - -> Alat pengujian API yang digunakan untuk menguji endpoint API.
+- **GitHub**
+    - -> Platform pengembangan perangkat lunak yang digunakan untuk kontrol versi dan kolaborasi.
 
 ## ✔️ Requirement
 Things you need to run the KosKita API
