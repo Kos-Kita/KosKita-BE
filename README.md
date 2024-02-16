@@ -1,5 +1,4 @@
 # KosKita API
-<div align="center">
   <h1>Welcome to KosKita</h1>
 
 <!-- PROJECT LOGO -->
