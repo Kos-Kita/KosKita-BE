@@ -38,10 +38,13 @@ func (m Chat) ModelToCoreChat() chat.Core {
 
 func (m Chat) ModelToCoreRoom(userIdLogin uint) chat.Core {
 	var name string
+	var photo string
 	if m.SenderID == userIdLogin {
 		name = m.UserReceiver.UserName
+		photo = m.UserReceiver.PhotoProfile
 	} else if m.ReceiverID == userIdLogin {
 		name = m.UserSender.UserName
+		photo = m.UserSender.PhotoProfile
 	}
 
 	return chat.Core{
@@ -50,7 +53,7 @@ func (m Chat) ModelToCoreRoom(userIdLogin uint) chat.Core {
 		ReceiverID: m.ReceiverID,
 		User: user.Core{
 			UserName:     name,
-			PhotoProfile: m.UserReceiver.PhotoProfile,
+			PhotoProfile: photo,
 		},
 	}
 }
