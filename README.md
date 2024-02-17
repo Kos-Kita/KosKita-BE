@@ -146,12 +146,12 @@ Follow these steps to install and set up the KosKita API:
 
 4. **Create a database** 
 
-5. **Copy `local.env.example` to `.env`**
+5. **Copy `local.env.example` to `local.env`**
 
     ```bash
     cp local.env.example .env
     
-6. **Configure your `.env` to configure JWT token, connect to your database, cloudinary, and Midtrans**
+6. **Configure your `local.env` to configure JWT token, connect to your database, cloudinary, and Midtrans**
 7. **Run KosKita API** 
 8. 
     ```bash
