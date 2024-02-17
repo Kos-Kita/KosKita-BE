@@ -12,6 +12,7 @@ type RoomRes struct {
 type GetRoomRespon struct {
 	ID           string `json:"room_id"`
 	SenderID     uint   `json:"sender_id"`
+	ReceiverID   uint   `json:"receiver_id"`
 	Name         string `json:"name"`
 	PhotoProfile string `json:"photo_profile"`
 }
@@ -50,6 +51,7 @@ func CoreToGetUser(room chat.Core) GetRoomRespon {
 	return GetRoomRespon{
 		ID:           room.RoomID,
 		SenderID:     room.SenderID,
+		ReceiverID:   room.ReceiverID,
 		Name:         user.UserName,
 		PhotoProfile: user.PhotoProfile,
 	}
