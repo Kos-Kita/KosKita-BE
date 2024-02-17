@@ -27,17 +27,10 @@ func (repo *chatQuery) GetRoom(userIdLogin int) ([]chat.Core, error) {
 	for _, room := range rooms {
 		roomMap[room.RoomID] = room.ModelToCoreRoom(uint(userIdLogin))
 	}
-	// for _, room := range roomMap {
-	// 	fmt.Println("rooms Map ::", room.ReceiverID)
-	// }
-
 	var result []chat.Core
 	for _, room := range roomMap {
 		result = append(result, room)
 	}
-	// for _, room := range result {
-	// 	fmt.Println(room.ReceiverID)
-	// }
 	return result, nil
 }
 

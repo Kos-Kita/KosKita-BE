@@ -118,3 +118,4 @@ func (ch *ChatHandler) GetRooms(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, responses.WebResponse("success get room", roomRes))
 }
+

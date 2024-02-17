@@ -56,3 +56,4 @@ func CoreToGetUser(room chat.Core) GetRoomRespon {
 		PhotoProfile: user.PhotoProfile,
 	}
 }
+

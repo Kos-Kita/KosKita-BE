@@ -2,7 +2,7 @@
   <h1>Welcome to KosKita</h1>
 
 <!-- PROJECT LOGO -->
-![LOGO](docs/koskitaa-high-resolution-logo-black.png)
+![LOGO](docs/koskitaa-high-resolution-logo-black.jpg)
 
 ## 📑 About the Project
 KosKita adalah aplikasi yang dirancang untuk memudahkan pengguna dalam mencari dan memesan kos. Aplikasi ini menawarkan berbagai fitur yang memudahkan pengguna dalam melakukan transaksi, mulai dari pencarian kos hingga pembayaran
@@ -62,6 +62,9 @@ KosKita adalah aplikasi yang dirancang untuk memudahkan pengguna dalam mencari d
 
 ## 🗺️ ERD
 ![ERD](docs/ggpm3egf%20(3).png)
+
+## ✔️ Unit Testing
+![Unit Testing](docs/testing.png)
 
 ## List Endpoint
 
