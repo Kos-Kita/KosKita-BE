@@ -31,4 +31,3 @@ type ChatServiceInterface interface {
 	GetMessage(roomId string) ([]Core, error)
 	GetRoom(userIdlogin int) ([]Core, error)
 }
-
