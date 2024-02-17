@@ -74,7 +74,6 @@ func (ch *ChatHandler) JoinRoom(c echo.Context) error {
 	}
 
 	m := &cd.Chat{
-		Message: "",
 		RoomID:  roomID,
 	}
 
