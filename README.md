@@ -2,7 +2,7 @@
   <h1>Welcome to KosKita</h1>
 
 <!-- PROJECT LOGO -->
-![LOGO](docs/koskitaa-high-resolution-logo-black.jpg)
+<img src="/koskitaa-high-resolution-logo-black.jpg" width="1280">
 
 ## 📑 About the Project
 KosKita adalah aplikasi yang dirancang untuk memudahkan pengguna dalam mencari dan memesan kos. Aplikasi ini menawarkan berbagai fitur yang memudahkan pengguna dalam melakukan transaksi, mulai dari pencarian kos hingga pembayaran
